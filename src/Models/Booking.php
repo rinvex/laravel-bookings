@@ -77,8 +77,8 @@ class Booking extends Model
         $this->setRules([
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string',
-            'customer_id' => 'required|integer|exists:'.(new $userModel)->getTable().',id',
-            'agent_id' => 'required|integer|exists:'.(new $userModel)->getTable().',id',
+            'customer_id' => 'required|integer|exists:'.(new $userModel())->getTable().',id',
+            'agent_id' => 'required|integer|exists:'.(new $userModel())->getTable().',id',
             'starts_at' => 'nullable|date',
             'ends_at' => 'nullable|date',
             'price' => 'numeric',
