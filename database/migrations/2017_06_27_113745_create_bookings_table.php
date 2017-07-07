@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -32,9 +33,9 @@ class CreateBookingsTable extends Migration
             $table->timestamps();
 
             // Indexes
-            $table->foreign('customer_id')->references('id')->on((new $userModel)->getTable())
+            $table->foreign('customer_id')->references('id')->on((new $userModel())->getTable())
                   ->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('agent_id')->references('id')->on((new $userModel)->getTable())
+            $table->foreign('agent_id')->references('id')->on((new $userModel())->getTable())
                   ->onDelete('cascade')->onUpdate('cascade');
         });
     }

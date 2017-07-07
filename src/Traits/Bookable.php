@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rinvex\Bookable\Traits;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Rinvex\Bookable\Models\Booking;
+use Illuminate\Database\Eloquent\Model;
 use Rinvex\Bookable\Models\BookingRate;
 use Rinvex\Bookable\Models\BookingAvailability;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
