@@ -33,7 +33,7 @@
 
 3. Add the following service provider to the `'providers'` array inside `app/config/app.php`:
     ```php
-    Rinvex\Bookable\Providers\BookableServiceProvider::class
+    Rinvex\Bookable\Providers\BookableServiceProvider::class,
     ```
 
    And then you can publish the migrations by running the following command:
