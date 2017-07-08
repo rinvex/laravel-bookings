@@ -23,7 +23,7 @@ class CreateBookingAvailabilityTable extends Migration
             $table->char('day', 3);
             $table->time('starts_at')->nullable();
             $table->time('ends_at')->nullable();
-            $table->decimal('price')->default('0.00');
+            $table->decimal('price')->nullable();
             $table->timestamps();
         });
     }
