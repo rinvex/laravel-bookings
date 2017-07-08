@@ -92,7 +92,7 @@ class Booking extends Model
             'agent_id' => 'required|integer|exists:'.(new $userModel())->getTable().',id',
             'starts_at' => 'nullable|date',
             'ends_at' => 'nullable|date',
-            'price' => 'numeric',
+            'price' => 'required|numeric',
             'price_equation' => 'json',
             'cancelled_at' => 'nullable|date',
             'notes' => 'nullable|string|max:10000',

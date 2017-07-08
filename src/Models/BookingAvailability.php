@@ -77,7 +77,7 @@ class BookingAvailability extends Model
             'day' => 'in:sun,mon,tue,wed,thu,fri,sat',
             'starts_at' => 'nullable|time',
             'ends_at' => 'nullable|time',
-            'price' => 'numeric',
+            'price' => 'nullable|numeric',
         ]);
     }
 
