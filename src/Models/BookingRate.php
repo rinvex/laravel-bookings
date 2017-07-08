@@ -28,6 +28,17 @@ class BookingRate extends Model
     /**
      * {@inheritdoc}
      */
+    protected $casts = [
+        'bookable_id' => 'integer',
+        'bookable_type' => 'string',
+        'percentage' => 'integer',
+        'operator' => 'string',
+        'amount' => 'integer',
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
     protected $observables = [
         'validating',
         'validated',

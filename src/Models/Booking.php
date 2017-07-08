@@ -17,11 +17,6 @@ class Booking extends Model
     use ValidatingTrait;
     use CacheableEloquent;
 
-    protected $dates = [
-        'starts_at',
-        'ends_at',
-        'cancelled_at',
-    ];
     /**
      * {@inheritdoc}
      */
@@ -36,6 +31,22 @@ class Booking extends Model
         'price_equation',
         'cancelled_at',
         'notes',
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $casts = [
+        'bookable_id' => 'integer',
+        'bookable_type' => 'string',
+        'customer_id' => 'integer',
+        'agent_id' => 'integer',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+        'price' => 'float',
+        'price_equation' => 'json',
+        'cancelled_at' => 'datetime',
+        'notes' => 'string',
     ];
 
     /**

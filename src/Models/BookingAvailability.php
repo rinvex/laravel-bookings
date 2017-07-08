@@ -29,6 +29,18 @@ class BookingAvailability extends Model
     /**
      * {@inheritdoc}
      */
+    protected $casts = [
+        'bookable_id' => 'integer',
+        'bookable_type' => 'string',
+        'day' => 'string',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+        'price' => 'float',
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
     protected $observables = [
         'validating',
         'validated',
