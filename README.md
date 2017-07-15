@@ -36,17 +36,17 @@
     Rinvex\Bookable\Providers\BookableServiceProvider::class,
     ```
 
-   And then you can publish the migrations by running the following command:
+4. **Optionally** you can publish migrations and config files by running the following commands:
     ```shell
-    php artisan vendor:publish --tag="migrations" --provider="Rinvex\Bookable\Providers\BookableServiceProvider"
+    php artisan vendor:publish --tag="rinvex-bookable-migrations"
     ```
 
    And also you can publish the config by running the following command:
     ```shell
-    php artisan vendor:publish --tag="config" --provider="Rinvex\Bookable\Providers\BookableServiceProvider"
+    php artisan vendor:publish --tag="rinvex-bookable-config"
     ```
 
-4. Done!
+5. Done!
 
 
 ## Usage

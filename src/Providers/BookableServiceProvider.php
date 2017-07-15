@@ -41,7 +41,7 @@ class BookableServiceProvider extends ServiceProvider
      */
     protected function publishResources()
     {
-        $this->publishes([realpath(__DIR__.'/../../database/migrations') => database_path('migrations')], 'migrations');
-        $this->publishes([realpath(__DIR__.'/../../config/config.php') => config_path('rinvex.bookable.php')], 'config');
+        $this->publishes([realpath(__DIR__.'/../../config/config.php') => config_path('rinvex.bookable.php')], 'rinvex-bookable-config');
+        $this->publishes([realpath(__DIR__.'/../../database/migrations') => database_path('migrations')], 'rinvex-bookable-migrations');
     }
 }
