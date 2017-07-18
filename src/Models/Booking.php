@@ -100,7 +100,7 @@ class Booking extends Model
     }
 
     /**
-     * Get the owning bookable model.
+     * Get the owning model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
