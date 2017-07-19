@@ -18,8 +18,7 @@ class CreateBookingRatesTable extends Migration
         Schema::create(config('rinvex.bookable.tables.booking_rates'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
-            $table->integer('bookable_id')->unsigned();
-            $table->string('bookable_type');
+            $table->morphs('bookable');
             $table->tinyInteger('percentage');
             $table->char('operator', 1);
             $table->integer('amount')->unsigned();

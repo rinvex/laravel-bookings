@@ -21,8 +21,7 @@ class CreateBookingsTable extends Migration
         Schema::create(config('rinvex.bookable.tables.bookings'), function (Blueprint $table) use ($userModel) {
             // Columns
             $table->increments('id');
-            $table->integer('bookable_id')->unsigned();
-            $table->string('bookable_type');
+            $table->morphs('bookable');
             $table->integer('customer_id')->unsigned();
             $table->integer('agent_id')->unsigned();
             $table->timestamp('starts_at')->nullable();
