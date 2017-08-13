@@ -28,25 +28,10 @@
 
 2. Execute migrations via the following command:
     ```shell
-    php artisan migrate --path="vendor/rinvex/bookable/database/migrations"
+    php artisan rinvex:migrate:bookable
     ```
 
-3. Add the following service provider to the `'providers'` array inside `app/config/app.php`:
-    ```php
-    Rinvex\Bookable\Providers\BookableServiceProvider::class,
-    ```
-
-4. **Optionally** you can publish migrations and config files by running the following commands:
-    ```shell
-    php artisan vendor:publish --tag="rinvex-bookable-migrations"
-    ```
-
-   And also you can publish the config by running the following command:
-    ```shell
-    php artisan vendor:publish --tag="rinvex-bookable-config"
-    ```
-
-5. Done!
+3. Done!
 
 
 ## Usage
