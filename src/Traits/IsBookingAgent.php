@@ -19,7 +19,7 @@ trait IsBookingAgent
      */
     public function bookings(): HasMany
     {
-        return $this->hasMany(Booking::class, 'agent_id', 'id');
+        return $this->hasMany(config('rinvex.bookable.models.booking'), 'agent_id', 'id');
     }
 
     /**

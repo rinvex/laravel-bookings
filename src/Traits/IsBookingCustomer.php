@@ -19,7 +19,7 @@ trait IsBookingCustomer
      */
     public function bookings(): HasMany
     {
-        return $this->hasMany(Booking::class, 'customer_id', 'id');
+        return $this->hasMany(config('rinvex.bookable.models.booking'), 'customer_id', 'id');
     }
 
     /**

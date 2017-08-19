@@ -20,7 +20,7 @@ trait Bookable
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(Booking::class, 'bookable');
+        return $this->morphMany(config('rinvex.bookable.models.booking'), 'bookable');
     }
 
     /**
@@ -246,7 +246,7 @@ trait Bookable
      */
     public function rates(): MorphMany
     {
-        return $this->morphMany(BookingRate::class, 'bookable');
+        return $this->morphMany(config('rinvex.bookable.models.booking_rate'), 'bookable');
     }
 
     /**
@@ -256,7 +256,7 @@ trait Bookable
      */
     public function availabilities(): MorphMany
     {
-        return $this->morphMany(BookingAvailability::class, 'bookable');
+        return $this->morphMany(config('rinvex.bookable.models.booking_availability'), 'bookable');
     }
 
     /**
