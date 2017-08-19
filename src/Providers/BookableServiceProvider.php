@@ -29,15 +29,15 @@ class BookableServiceProvider extends ServiceProvider
 
         // Register eloquent models
         $this->app->singleton('rinvex.bookable.booking', function ($app) {
-            return new $app['config']['rinvex.bookable.models.booking'];
+            return new $app['config']['rinvex.bookable.models.booking']();
         });
 
         $this->app->singleton('rinvex.bookable.booking_rate', function ($app) {
-            return new $app['config']['rinvex.bookable.models.booking_rate'];
+            return new $app['config']['rinvex.bookable.models.booking_rate']();
         });
 
         $this->app->singleton('rinvex.bookable.booking_availability', function ($app) {
-            return new $app['config']['rinvex.bookable.models.booking_availability'];
+            return new $app['config']['rinvex.bookable.models.booking_availability']();
         });
 
         // Register artisan commands
