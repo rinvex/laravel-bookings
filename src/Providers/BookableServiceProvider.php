@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Rinvex\Bookable\Providers;
 
+use Rinvex\Bookable\Models\Booking;
+use Rinvex\Bookable\Models\BookingRate;
 use Illuminate\Support\ServiceProvider;
+use Rinvex\Bookable\Models\BookingAvailability;
 use Rinvex\Bookable\Console\Commands\MigrateCommand;
 
 class BookableServiceProvider extends ServiceProvider
@@ -27,18 +30,21 @@ class BookableServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(realpath(__DIR__.'/../../config/config.php'), 'rinvex.bookable');
 
-        // Register eloquent models
+        // Bind eloquent models to IoC container
         $this->app->singleton('rinvex.bookable.booking', function ($app) {
             return new $app['config']['rinvex.bookable.models.booking']();
         });
+        $this->app->alias('rinvex.bookable.booking', Booking::class);
 
         $this->app->singleton('rinvex.bookable.booking_rate', function ($app) {
             return new $app['config']['rinvex.bookable.models.booking_rate']();
         });
+        $this->app->alias('rinvex.bookable.booking_rate', BookingRate::class);
 
         $this->app->singleton('rinvex.bookable.booking_availability', function ($app) {
             return new $app['config']['rinvex.bookable.models.booking_availability']();
         });
+        $this->app->alias('rinvex.bookable.booking_availability', BookingAvailability::class);
 
         // Register artisan commands
         foreach ($this->commands as $key => $value) {
