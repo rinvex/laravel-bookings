@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rinvex\Bookable\Providers;
 
 use Rinvex\Bookable\Models\Booking;
-use Rinvex\Bookable\Models\BookingRate;
 use Illuminate\Support\ServiceProvider;
+use Rinvex\Bookable\Models\BookingRate;
 use Rinvex\Bookable\Models\BookingAvailability;
 use Rinvex\Bookable\Console\Commands\MigrateCommand;
 
