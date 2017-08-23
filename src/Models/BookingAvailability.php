@@ -96,7 +96,7 @@ class BookingAvailability extends Model implements BookingAvailabilityContract
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('rinvex.bookable.tables.booking_availabilities'));
+        $this->setTable(config('rinvex.bookable.tables.booking_availability'));
         $this->setRules([
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string',
