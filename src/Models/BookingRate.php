@@ -7,10 +7,11 @@ namespace Rinvex\Bookable\Models;
 use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
+use Rinvex\Bookable\Contracts\BookingRateContract;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * Rinvex\Bookable\Models\BookingRate
+ * Rinvex\Bookable\Models\BookingRate.
  *
  * @property int                                                $id
  * @property int                                                $bookable_id
@@ -32,7 +33,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\BookingRate whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class BookingRate extends Model
+class BookingRate extends Model implements BookingRateContract
 {
     use ValidatingTrait;
     use CacheableEloquent;

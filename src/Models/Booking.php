@@ -9,6 +9,7 @@ use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Rinvex\Bookable\Contracts\BookingContract;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -63,7 +64,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\Booking whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Booking extends Model
+class Booking extends Model implements BookingContract
 {
     use ValidatingTrait;
     use CacheableEloquent;
