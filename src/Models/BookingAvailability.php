@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rinvex\Bookable\Models;
 
-use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
+use Rinvex\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Rinvex\Bookable\Contracts\BookingAvailabilityContract;
 
