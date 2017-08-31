@@ -47,7 +47,7 @@ class CreateBookingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('rinvex.bookable.tables.resource_bookings'));
+        Schema::dropIfExists(config('rinvex.bookable.tables.bookings'));
     }
 
     /**
