@@ -18,11 +18,10 @@ class CreateBookingsTable extends Migration
         // Get users model
         $userModel = config('auth.providers.'.config('auth.guards.'.config('auth.defaults.guard').'.provider').'.model');
 
-        Schema::create(config('rinvex.bookable.tables.bookings'), function (Blueprint $table) use ($userModel) {
+        Schema::create(config('rinvex.bookings.tables.bookings'), function (Blueprint $table) use ($userModel) {
             // Columns
             $table->increments('id');
-            $table->integer('bookable_id')->unsigned();
-            $table->string('bookable_type');
+            $table->morphs('bookable');
             $table->integer('customer_id')->unsigned();
             $table->integer('agent_id')->unsigned();
             $table->timestamp('starts_at')->nullable();
@@ -48,7 +47,7 @@ class CreateBookingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('rinvex.bookable.tables.resource_bookings'));
+        Schema::dropIfExists(config('rinvex.bookings.tables.bookings'));
     }
 
     /**

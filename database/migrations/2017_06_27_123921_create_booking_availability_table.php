@@ -15,15 +15,14 @@ class CreateBookingAvailabilityTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('rinvex.bookable.tables.booking_availability'), function (Blueprint $table) {
+        Schema::create(config('rinvex.bookings.tables.booking_availability'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
-            $table->integer('bookable_id')->unsigned();
-            $table->string('bookable_type');
+            $table->morphs('bookable');
             $table->char('day', 3);
             $table->time('starts_at')->nullable();
             $table->time('ends_at')->nullable();
-            $table->decimal('price')->default('0.00');
+            $table->decimal('price')->nullable();
             $table->timestamps();
         });
     }
@@ -35,6 +34,6 @@ class CreateBookingAvailabilityTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('rinvex.bookable.tables.booking_availability'));
+        Schema::dropIfExists(config('rinvex.bookings.tables.booking_availability'));
     }
 }

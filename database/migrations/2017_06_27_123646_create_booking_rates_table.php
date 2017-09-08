@@ -15,11 +15,10 @@ class CreateBookingRatesTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('rinvex.bookable.tables.booking_rates'), function (Blueprint $table) {
+        Schema::create(config('rinvex.bookings.tables.booking_rates'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
-            $table->integer('bookable_id')->unsigned();
-            $table->string('bookable_type');
+            $table->morphs('bookable');
             $table->tinyInteger('percentage');
             $table->char('operator', 1);
             $table->integer('amount')->unsigned();
@@ -34,6 +33,6 @@ class CreateBookingRatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('rinvex.bookable.tables.booking_rates'));
+        Schema::dropIfExists(config('rinvex.bookings.tables.booking_rates'));
     }
 }

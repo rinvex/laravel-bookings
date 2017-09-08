@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookable\Traits;
+namespace Rinvex\Bookings\Traits;
 
 use Carbon\Carbon;
-use Rinvex\Bookable\Models\Booking;
+use Rinvex\Bookings\Models\Booking;
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookable\Models\BookingRate;
-use Rinvex\Bookable\Models\BookingAvailability;
+use Rinvex\Bookings\Models\BookingRate;
+use Rinvex\Bookings\Models\BookingAvailability;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait Bookable
@@ -20,7 +20,7 @@ trait Bookable
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(Booking::class, 'bookable');
+        return $this->morphMany(config('rinvex.bookings.models.booking'), 'bookable');
     }
 
     /**
@@ -246,7 +246,7 @@ trait Bookable
      */
     public function rates(): MorphMany
     {
-        return $this->morphMany(BookingRate::class, 'bookable');
+        return $this->morphMany(config('rinvex.bookings.models.booking_rate'), 'bookable');
     }
 
     /**
@@ -256,7 +256,7 @@ trait Bookable
      */
     public function availabilities(): MorphMany
     {
-        return $this->morphMany(BookingAvailability::class, 'bookable');
+        return $this->morphMany(config('rinvex.bookings.models.booking_availability'), 'bookable');
     }
 
     /**
@@ -267,7 +267,7 @@ trait Bookable
      * @param string                              $ends
      * @param float                               $price
      *
-     * @return \Rinvex\Bookable\Models\Booking
+     * @return \Rinvex\Bookings\Models\Booking
      */
     public function newBooking(Model $customer, string $starts, string $ends, float $price): Booking
     {
@@ -289,7 +289,7 @@ trait Bookable
      * @param string $operator
      * @param int    $amount
      *
-     * @return \Rinvex\Bookable\Models\BookingRate
+     * @return \Rinvex\Bookings\Models\BookingRate
      */
     public function newRate(string $percentage, string $operator, int $amount): BookingRate
     {
@@ -310,7 +310,7 @@ trait Bookable
      * @param string     $ends
      * @param float|null $price
      *
-     * @return \Rinvex\Bookable\Models\BookingAvailability
+     * @return \Rinvex\Bookings\Models\BookingAvailability
      */
     public function newAvailability(string $day, string $starts, string $ends, float $price = null): BookingAvailability
     {

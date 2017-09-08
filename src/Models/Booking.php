@@ -2,26 +2,73 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookable\Models;
+namespace Rinvex\Bookings\Models;
 
 use Carbon\Carbon;
-use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Rinvex\Support\Traits\ValidatingTrait;
+use Rinvex\Bookings\Contracts\BookingContract;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Booking extends Model
+/**
+ * Rinvex\Bookings\Models\Booking.
+ *
+ * @property int                                                $id
+ * @property int                                                $bookable_id
+ * @property string                                             $bookable_type
+ * @property int                                                $customer_id
+ * @property int                                                $agent_id
+ * @property \Carbon\Carbon                                     $starts_at
+ * @property \Carbon\Carbon                                     $ends_at
+ * @property float                                              $price
+ * @property array                                              $price_equation
+ * @property \Carbon\Carbon                                     $cancelled_at
+ * @property string                                             $notes
+ * @property \Carbon\Carbon                                     $created_at
+ * @property \Carbon\Carbon                                     $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $agent
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $customer
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking bookingsOf($bookable)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byAgent($agentId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byCustomer($customerId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelled()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledAfter($date)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBefore($date)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBetween($starts, $ends)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking current()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsAfter($date)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBefore($date)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBetween($starts, $ends)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking future()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking past()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBefore($date)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBetween($starts, $ends)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereAgentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCancelledAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereEndsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking wherePriceEquation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereStartsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+class Booking extends Model implements BookingContract
 {
     use ValidatingTrait;
     use CacheableEloquent;
 
-    protected $dates = [
-        'starts_at',
-        'ends_at',
-        'cancelled_at',
-    ];
     /**
      * {@inheritdoc}
      */
@@ -36,6 +83,22 @@ class Booking extends Model
         'price_equation',
         'cancelled_at',
         'notes',
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $casts = [
+        'bookable_id' => 'integer',
+        'bookable_type' => 'string',
+        'customer_id' => 'integer',
+        'agent_id' => 'integer',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+        'price' => 'float',
+        'price_equation' => 'json',
+        'cancelled_at' => 'datetime',
+        'notes' => 'string',
     ];
 
     /**
@@ -73,7 +136,7 @@ class Booking extends Model
         // Get users model
         $userModel = config('auth.providers.'.config('auth.guards.'.config('auth.defaults.guard').'.provider').'.model');
 
-        $this->setTable(config('rinvex.bookable.tables.bookings'));
+        $this->setTable(config('rinvex.bookings.tables.bookings'));
         $this->setRules([
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string',
@@ -81,7 +144,7 @@ class Booking extends Model
             'agent_id' => 'required|integer|exists:'.(new $userModel())->getTable().',id',
             'starts_at' => 'nullable|date',
             'ends_at' => 'nullable|date',
-            'price' => 'numeric',
+            'price' => 'required|numeric',
             'price_equation' => 'json',
             'cancelled_at' => 'nullable|date',
             'notes' => 'nullable|string|max:10000',
@@ -89,7 +152,7 @@ class Booking extends Model
     }
 
     /**
-     * Get the owning bookable model.
+     * Get the owning model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
