@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
 
-    // Bookable Database Tables
+    // Bookings Database Tables
     'tables' => [
 
         'bookings' => 'bookings',
@@ -14,12 +14,12 @@ return [
 
     ],
 
-    // Bookable Models
+    // Bookings Models
     'models' => [
 
-        'booking' => \Rinvex\Bookable\Models\Booking::class,
-        'booking_rate' => \Rinvex\Bookable\Models\BookingRate::class,
-        'booking_availability' => \Rinvex\Bookable\Models\BookingAvailability::class,
+        'booking' => \Rinvex\Bookings\Models\Booking::class,
+        'booking_rate' => \Rinvex\Bookings\Models\BookingRate::class,
+        'booking_availability' => \Rinvex\Bookings\Models\BookingAvailability::class,
 
     ],
 

@@ -1,6 +1,6 @@
 {
-    "name": "rinvex/bookable",
-    "description": "Rinvex Bookable is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It's simple architecture, accompanied by powerful underlying to afford solid platform for your business.",
+    "name": "rinvex/bookings",
+    "description": "Rinvex Bookings is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It's simple architecture, accompanied by powerful underlying to afford solid platform for your business.",
     "keywords": [
         "usage",
         "rinvex",
@@ -16,9 +16,9 @@
     "homepage": "https://rinvex.com",
     "support": {
         "email": "help@rinvex.com",
-        "issues": "https://github.com/rinvex/bookable/issues",
-        "source": "https://github.com/rinvex/bookable",
-        "docs": "https://github.com/rinvex/bookable/blob/master/README.md"
+        "issues": "https://github.com/rinvex/bookings/issues",
+        "source": "https://github.com/rinvex/bookings",
+        "docs": "https://github.com/rinvex/bookings/blob/master/README.md"
     },
     "authors": [
         {
@@ -34,7 +34,7 @@
         },
         {
             "name": "The Generous Laravel Community",
-            "homepage": "https://github.com/rinvex/bookable/contributors"
+            "homepage": "https://github.com/rinvex/bookings/contributors"
         }
     ],
     "require": {
@@ -57,7 +57,7 @@
             "database"
         ],
         "psr-4": {
-            "Rinvex\\Bookable\\": "src"
+            "Rinvex\\Bookings\\": "src"
         }
     },
     "config": {
@@ -71,7 +71,7 @@
         },
         "laravel": {
             "providers": [
-                "Rinvex\\Bookable\\Providers\\BookableServiceProvider"
+                "Rinvex\\Bookings\\Providers\\BookingsServiceProvider"
             ]
         }
     },

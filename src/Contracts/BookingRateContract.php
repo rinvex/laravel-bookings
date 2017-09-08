@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookable\Contracts;
+namespace Rinvex\Bookings\Contracts;
 
 /**
- * Rinvex\Bookable\Contracts\BookingRateContract.
+ * Rinvex\Bookings\Contracts\BookingRateContract.
  *
  * @property int                                                $id
  * @property int                                                $bookable_id
@@ -17,14 +17,14 @@ namespace Rinvex\Bookable\Contracts;
  * @property \Carbon\Carbon                                     $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\BookingRate whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\BookingRate whereBookableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\BookingRate whereBookableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\BookingRate whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\BookingRate whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\BookingRate whereOperator($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\BookingRate wherePercentage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookable\Models\BookingRate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereBookableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereBookableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereOperator($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate wherePercentage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 interface BookingRateContract

@@ -18,7 +18,7 @@ class CreateBookingsTable extends Migration
         // Get users model
         $userModel = config('auth.providers.'.config('auth.guards.'.config('auth.defaults.guard').'.provider').'.model');
 
-        Schema::create(config('rinvex.bookable.tables.bookings'), function (Blueprint $table) use ($userModel) {
+        Schema::create(config('rinvex.bookings.tables.bookings'), function (Blueprint $table) use ($userModel) {
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
@@ -47,7 +47,7 @@ class CreateBookingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('rinvex.bookable.tables.bookings'));
+        Schema::dropIfExists(config('rinvex.bookings.tables.bookings'));
     }
 
     /**

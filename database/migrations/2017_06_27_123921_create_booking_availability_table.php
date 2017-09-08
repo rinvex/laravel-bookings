@@ -15,7 +15,7 @@ class CreateBookingAvailabilityTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('rinvex.bookable.tables.booking_availability'), function (Blueprint $table) {
+        Schema::create(config('rinvex.bookings.tables.booking_availability'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
@@ -34,6 +34,6 @@ class CreateBookingAvailabilityTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('rinvex.bookable.tables.booking_availability'));
+        Schema::dropIfExists(config('rinvex.bookings.tables.booking_availability'));
     }
 }

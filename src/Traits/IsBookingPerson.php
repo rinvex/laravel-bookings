@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookable\Traits;
+namespace Rinvex\Bookings\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;

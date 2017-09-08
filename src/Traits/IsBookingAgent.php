@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookable\Traits;
+namespace Rinvex\Bookings\Traits;
 
-use Rinvex\Bookable\Models\Booking;
+use Rinvex\Bookings\Models\Booking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -19,7 +19,7 @@ trait IsBookingAgent
      */
     public function bookings(): HasMany
     {
-        return $this->hasMany(config('rinvex.bookable.models.booking'), 'agent_id', 'id');
+        return $this->hasMany(config('rinvex.bookings.models.booking'), 'agent_id', 'id');
     }
 
     /**
@@ -31,7 +31,7 @@ trait IsBookingAgent
      * @param string                              $ends
      * @param float                               $price
      *
-     * @return \Rinvex\Bookable\Models\Booking
+     * @return \Rinvex\Bookings\Models\Booking
      */
     public function newBooking(Model $bookable, Model $customer, string $starts, string $ends, float $price): Booking
     {

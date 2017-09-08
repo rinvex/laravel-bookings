@@ -1,34 +1,34 @@
-# Rinvex Bookable
+# Rinvex Bookings
 
-**Rinvex Bookable** is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It's simple architecture, accompanied by powerful underlying to afford solid platform for your business.
+**Rinvex Bookings** is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It's simple architecture, accompanied by powerful underlying to afford solid platform for your business.
 
-[![Packagist](https://img.shields.io/packagist/v/rinvex/bookable.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/rinvex/bookable)
-[![VersionEye Dependencies](https://img.shields.io/versioneye/d/php/rinvex:bookable.svg?label=Dependencies&style=flat-square)](https://www.versioneye.com/php/rinvex:bookable/)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/rinvex/bookable.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/rinvex/bookable/)
-[![Code Climate](https://img.shields.io/codeclimate/github/rinvex/bookable.svg?label=CodeClimate&style=flat-square)](https://codeclimate.com/github/rinvex/bookable)
-[![Travis](https://img.shields.io/travis/rinvex/bookable.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/rinvex/bookable)
+[![Packagist](https://img.shields.io/packagist/v/rinvex/bookings.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/rinvex/bookings)
+[![VersionEye Dependencies](https://img.shields.io/versioneye/d/php/rinvex:bookings.svg?label=Dependencies&style=flat-square)](https://www.versioneye.com/php/rinvex:bookings/)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/rinvex/bookings.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/rinvex/bookings/)
+[![Code Climate](https://img.shields.io/codeclimate/github/rinvex/bookings.svg?label=CodeClimate&style=flat-square)](https://codeclimate.com/github/rinvex/bookings)
+[![Travis](https://img.shields.io/travis/rinvex/bookings.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/rinvex/bookings)
 [![SensioLabs Insight](https://img.shields.io/sensiolabs/i/1592b83c-f836-4b30-aef3-d997accf9de4.svg?label=SensioLabs&style=flat-square)](https://insight.sensiolabs.com/projects/1592b83c-f836-4b30-aef3-d997accf9de4)
 [![StyleCI](https://styleci.io/repos/96481479/shield)](https://styleci.io/repos/96481479)
-[![License](https://img.shields.io/packagist/l/rinvex/bookable.svg?label=License&style=flat-square)](https://github.com/rinvex/bookable/blob/develop/LICENSE)
+[![License](https://img.shields.io/packagist/l/rinvex/bookings.svg?label=License&style=flat-square)](https://github.com/rinvex/bookings/blob/develop/LICENSE)
 
 
 ## Considerations
 
 - Payments are out of scope for this package.
-- This package is for bookable resources, and has nothing to do with price plans and subscriptions. If you're looking for subscription management system, you may have to look at **[rinvex/subscribable](https://github.com/rinvex/subscribable).**
-- This package assumes that you've a bookable model that has at least `price` as a decimal field, and `unit` as a char field which accepts one of (h,d,w,m,y,u) representing (hour, day, week, month, year, use) respectively. But anyway even if you don't have these fields, **Rinvex Bookable** behaves agnostically since you've to define such behaviour and functionality yourself. You can extend package's functionality to add features like: minimum and maximum booking length, early and late booking limit, and many more, but this is out of scope for the package and up to your implementation actually.
+- This package is for bookable resources, and has nothing to do with price plans and subscriptions. If you're looking for subscription management system, you may have to look at **[rinvex/subscriptions](https://github.com/rinvex/subscriptions).**
+- This package assumes that you've a bookable model that has at least `price` as a decimal field, and `unit` as a char field which accepts one of (h,d,w,m,y,u) representing (hour, day, week, month, year, use) respectively. But anyway even if you don't have these fields, **Rinvex Bookings** behaves agnostically since you've to define such behaviour and functionality yourself. You can extend package's functionality to add features like: minimum and maximum booking length, early and late booking limit, and many more, but this is out of scope for the package and up to your implementation actually.
 
 
 ## Installation
 
 1. Install the package via composer:
     ```shell
-    composer require rinvex/bookable
+    composer require rinvex/bookings
     ```
 
 2. Execute migrations via the following command:
     ```shell
-    php artisan rinvex:migrate:bookable
+    php artisan rinvex:migrate:bookings
     ```
 
 3. Done!
@@ -36,14 +36,14 @@
 
 ## Usage
 
-### Add Bookable to your RESOURCE model
+### Add Bookings to your RESOURCE model
 
-**Rinvex Bookable** has been specially made for Eloquent and simplicity has been taken very serious as in any other Laravel related aspect. To add Bookable functionality to your model just use the `\Rinvex\Bookable\Traits\Bookable` trait like this:
+**Rinvex Bookings** has been specially made for Eloquent and simplicity has been taken very serious as in any other Laravel related aspect. To add Bookings functionality to your model just use the `\Rinvex\Bookings\Traits\Bookable` trait like this:
 
 ```php
 namespace App\Models;
 
-use Rinvex\Bookable\Traits\Bookable;
+use Rinvex\Bookings\Traits\Bookable;
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
@@ -54,16 +54,16 @@ class Event extends Model
 
 That's it, we only have to use that trait in our Event model! Now your events will be bookable.
 
-### Add Bookable to your USER model
+### Add Bookings to your USER model
 
-Bookings could be made by customers themeselves, or by agents on behalf of customers; **Rinvex Bookable** could handle both situations intelligently. To add Bookable support for your `Customer` and `Agent` models, follow these simple steps:
+Bookings could be made by customers themeselves, or by agents on behalf of customers; **Rinvex Bookings** could handle both situations intelligently. To add Bookings support for your `Customer` and `Agent` models, follow these simple steps:
 
 ```php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookable\Traits\IsBookingAgent;
-use Rinvex\Bookable\Traits\IsBookingCustomer;
+use Rinvex\Bookings\Traits\IsBookingAgent;
+use Rinvex\Bookings\Traits\IsBookingCustomer;
 
 class User extends Model
 {

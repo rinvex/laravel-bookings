@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookable\Console\Commands;
+namespace Rinvex\Bookings\Console\Commands;
 
 use Illuminate\Console\Command;
 
@@ -13,14 +13,14 @@ class MigrateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'rinvex:migrate:bookable';
+    protected $signature = 'rinvex:migrate:bookings';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Migrate Rinvex Bookable Tables.';
+    protected $description = 'Migrate Rinvex Bookings Tables.';
 
     /**
      * Execute the console command.
@@ -29,7 +29,7 @@ class MigrateCommand extends Command
      */
     public function handle()
     {
-        $this->warn('Migrate rinvex/bookable:');
-        $this->call('migrate', ['--step' => true, '--path' => 'vendor/rinvex/bookable/database/migrations']);
+        $this->warn('Migrate rinvex/bookings:');
+        $this->call('migrate', ['--step' => true, '--path' => 'vendor/rinvex/bookings/database/migrations']);
     }
 }
