@@ -46,17 +46,17 @@ namespace App\Models;
 use Rinvex\Bookings\Traits\Bookable;
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model
+class Room extends Model
 {
     use Bookable;
 }
 ```
 
-That's it, we only have to use that trait in our Event model! Now your events will be bookable.
+That's it, we only have to use that trait in our Room model! Now your rooms will be bookable.
 
 ### Add Bookings to your USER model
 
-Bookings could be made by customers themeselves, or by agents on behalf of customers; **Rinvex Bookings** could handle both situations intelligently. To add Bookings support for your `Customer` and `Agent` models, follow these simple steps:
+Bookings could be made by customers themselves, or by agents on behalf of customers; **Rinvex Bookings** could handle both situations intelligently. To add Bookings support for your `Customer` and `Agent` models, follow these simple steps:
 
 ```php
 namespace App\Models;
@@ -91,20 +91,20 @@ Creating a new booking is straightforward, and could be done in many right ways.
 
 ```php
 // Create a new booking via Bookable model
-$event = \App\Models\Event::find(1);
+$room = \App\Models\Room::find(1);
 $customer = \App\Models\Customer::find(1);
-$event->newBooking($customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
+$room->newBooking($customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
 
 // Create a new booking via agent model
-$event = \App\Models\Event::find(1);
+$room = \App\Models\Room::find(1);
 $agent = \App\Models\Agent::find(1);
 $customer = \App\Models\Customer::find(1);
-$agent->newBooking($event, $customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
+$agent->newBooking($room, $customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
 
 // Create a new booking via customer model
-$event = \App\Models\Event::find(1);
+$room = \App\Models\Room::find(1);
 $customer = \App\Models\Customer::find(1);
-$customer->newBooking($event, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
+$customer->newBooking($room, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
 ```
 
 As you can see, there's many right ways to create a new booking, it's up to you to use the appropriate method in the appropriate situation, according to the context.
@@ -116,9 +116,9 @@ Booking rates are special criteria used to modify the default booking price. For
 To create a booking rate, follow these steps:
 
 ```php
-$event = \App\Models\Event::find(1);
-$event->newRate('+15%', '^', 2); // Increate unit price by 15% for the first 2 units (probably hours)
-$event->newRate('-10%', '>', 5); // Discount unit price by 10% if booking is greater than 5 units (probably hours)
+$room = \App\Models\Room::find(1);
+$room->newRate('+15%', '^', 2); // Increate unit price by 15% for the first 2 units (probably hours)
+$room->newRate('-10%', '>', 5); // Discount unit price by 10% if booking is greater than 5 units (probably hours)
 ```
 
 ### Create a booking availability
@@ -128,12 +128,12 @@ Booking availabilities are the times that your model is allowed to be booked at.
 To create a booking availability, follow these steps:
 
 ```php
-$event = \App\Models\Event::find(1);
-$event->newAvailability('sun', '09:00 am', '05:00 pm');
-$event->newAvailability('mon', '09:00 am', '05:00 pm');
-$event->newAvailability('tue', '09:00 am', '05:00 pm');
-$event->newAvailability('wed', '09:00 am', '05:00 pm');
-$event->newAvailability('thu', '09:00 am', '05:00 pm', 10.5);
+$room = \App\Models\Room::find(1);
+$room->newAvailability('sun', '09:00 am', '05:00 pm');
+$room->newAvailability('mon', '09:00 am', '05:00 pm');
+$room->newAvailability('tue', '09:00 am', '05:00 pm');
+$room->newAvailability('wed', '09:00 am', '05:00 pm');
+$room->newAvailability('thu', '09:00 am', '05:00 pm', 10.5);
 ```
 
 Piece of cake, right? You just set the day, from-to times, and optionally the custom unit price (which should override the default bookable unit price).
@@ -145,46 +145,46 @@ Piece of cake, right? You just set the day, from-to times, and optionally the cu
 You can query the bookable model for further details, using the intuitive API as follows:
 
 ```php
-$event = \App\Models\Event::find(1);
+$room = \App\Models\Room::find(1);
 $agent = \App\Models\Agent::find(1);
 $customer = \App\Models\Customer::find(1);
 
-$event->bookings; // Get all bookings
-$event->pastBookings; // Get past bookings
-$event->futureBookings; // Get future bookings
-$event->currentBookings; // Get current bookings
-$event->cancelledBookings; // Get cancelled bookings
+$room->bookings; // Get all bookings
+$room->pastBookings; // Get past bookings
+$room->futureBookings; // Get future bookings
+$room->currentBookings; // Get current bookings
+$room->cancelledBookings; // Get cancelled bookings
 
-$event->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$event->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$event->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$room->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$room->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$room->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$event->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$event->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$event->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$room->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$room->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$room->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$event->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$event->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$event->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$room->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$room->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$room->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$event->bookingsByAgent($agent->id)->get(); // Get bookings by the given agent
-$event->bookingsByCustomer($customer->id)->get(); // Get bookings by the given customer
+$room->bookingsByAgent($agent->id)->get(); // Get bookings by the given agent
+$room->bookingsByCustomer($customer->id)->get(); // Get bookings by the given customer
 
 // Get all rates
-$event->rates;
+$room->rates;
 
 // Get all availabilities
-$event->availabilities;
+$room->availabilities;
 ```
 
-All the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$event->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
+All the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$room->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
 
 ### Get bookings via agent/customer instance
 
 Just like how you query your bookable models, you can query agent and/or customer models to retrieve booking related info so easily. Look at these examples:
 
 ```php
-$event = \App\Models\Event::find(1);
+$room = \App\Models\Room::find(1);
 $customer = \App\Models\Customer::find(1);
 
 $customer->bookings; // Get all bookings
@@ -205,8 +205,8 @@ $customer->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get booking
 $customer->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
 $customer->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$customer->bookingsOf(get_class($event))->get(); // Get bookings of the given model
-$customer->isBooked($event); // Check if the person booked the given model
+$customer->bookingsOf(get_class($room))->get(); // Get bookings of the given model
+$customer->isBooked($room); // Check if the person booked the given model
 ```
 
 Same functionality applies for both agents and customers, and just like bookable models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$customer->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
