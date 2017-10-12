@@ -163,7 +163,7 @@ Just like how you query your bookable models, you can query user models to retri
 
 ```php
 $room = \App\Models\Room::find(1);
-$user = \App\Models\$user::find(1);
+$user = \App\Models\User::find(1);
 
 $user->bookings; // Get all bookings
 $user->pastBookings; // Get past bookings
