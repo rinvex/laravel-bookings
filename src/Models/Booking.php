@@ -19,8 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int                                                $id
  * @property int                                                $bookable_id
  * @property string                                             $bookable_type
- * @property int                                                $customer_id
- * @property int                                                $agent_id
+ * @property int                                                $user_id
  * @property \Carbon\Carbon                                     $starts_at
  * @property \Carbon\Carbon                                     $ends_at
  * @property float                                              $price
@@ -29,13 +28,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string                                             $notes
  * @property \Carbon\Carbon                                     $created_at
  * @property \Carbon\Carbon                                     $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $agent
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $user
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $customer
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking bookingsOf($bookable)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byAgent($agentId)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byCustomer($customerId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelled()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBefore($date)
@@ -49,12 +46,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBefore($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBetween($starts, $ends)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereAgentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCancelledAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereEndsAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereNotes($value)
@@ -75,8 +71,7 @@ class Booking extends Model implements BookingContract
     protected $fillable = [
         'bookable_id',
         'bookable_type',
-        'customer_id',
-        'agent_id',
+        'user_id',
         'starts_at',
         'ends_at',
         'price',
@@ -91,8 +86,7 @@ class Booking extends Model implements BookingContract
     protected $casts = [
         'bookable_id' => 'integer',
         'bookable_type' => 'string',
-        'customer_id' => 'integer',
-        'agent_id' => 'integer',
+        'user_id' => 'integer',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'price' => 'float',
@@ -140,8 +134,7 @@ class Booking extends Model implements BookingContract
         $this->setRules([
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string',
-            'customer_id' => 'required|integer|exists:'.(new $userModel())->getTable().',id',
-            'agent_id' => 'required|integer|exists:'.(new $userModel())->getTable().',id',
+            'user_id' => 'required|integer|exists:'.(new $userModel())->getTable().',id',
             'starts_at' => 'nullable|date',
             'ends_at' => 'nullable|date',
             'price' => 'required|numeric',
@@ -356,29 +349,16 @@ class Booking extends Model implements BookingContract
     }
 
     /**
-     * Get bookings by the given customer.
+     * Get bookings by the given user.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param int                                   $customerId
+     * @param \Illuminate\Database\Eloquent\Model   $user
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeByCustomer(Builder $builder, int $customerId): Builder
+    public function scopeByUser(Builder $builder, Model $user): Builder
     {
-        return $builder->where('customer_id', $customerId);
-    }
-
-    /**
-     * Get bookings by the given agent.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param int                                   $agentId
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByAgent(Builder $builder, int $agentId): Builder
-    {
-        return $builder->where('agent_id', $agentId);
+        return $builder->where('user_id', $user->getKey());
     }
 
     /**
@@ -395,27 +375,15 @@ class Booking extends Model implements BookingContract
     }
 
     /**
-     * Get the booking customer.
+     * Get the booking user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function customer(): belongsTo
+    public function user(): belongsTo
     {
         $userModel = config('auth.providers.'.config('auth.guards.'.config('auth.defaults.guard').'.provider').'.model');
 
-        return $this->belongsTo($userModel, 'customer_id', 'id');
-    }
-
-    /**
-     * Get the booking agent.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function agent(): belongsTo
-    {
-        $userModel = config('auth.providers.'.config('auth.guards.'.config('auth.defaults.guard').'.provider').'.model');
-
-        return $this->belongsTo($userModel, 'agent_id', 'id');
+        return $this->belongsTo($userModel, 'user_id', 'id');
     }
 
     /**

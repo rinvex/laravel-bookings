@@ -22,8 +22,7 @@ class CreateBookingsTable extends Migration
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
-            $table->integer('customer_id')->unsigned();
-            $table->integer('agent_id')->unsigned();
+            $table->integer('user_id')->unsigned();
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->decimal('price')->default('0.00');
@@ -33,9 +32,7 @@ class CreateBookingsTable extends Migration
             $table->timestamps();
 
             // Indexes
-            $table->foreign('customer_id')->references('id')->on((new $userModel())->getTable())
-                  ->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('agent_id')->references('id')->on((new $userModel())->getTable())
+            $table->foreign('user_id')->references('id')->on((new $userModel())->getTable())
                   ->onDelete('cascade')->onUpdate('cascade');
         });
     }

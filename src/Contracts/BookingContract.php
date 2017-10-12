@@ -10,8 +10,7 @@ namespace Rinvex\Bookings\Contracts;
  * @property int                                                $id
  * @property int                                                $bookable_id
  * @property string                                             $bookable_type
- * @property int                                                $customer_id
- * @property int                                                $agent_id
+ * @property int                                                $user_id
  * @property \Carbon\Carbon                                     $starts_at
  * @property \Carbon\Carbon                                     $ends_at
  * @property float                                              $price
@@ -20,13 +19,11 @@ namespace Rinvex\Bookings\Contracts;
  * @property string                                             $notes
  * @property \Carbon\Carbon                                     $created_at
  * @property \Carbon\Carbon                                     $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $agent
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $user
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $customer
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking bookingsOf($bookable)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byAgent($agentId)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byCustomer($customerId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelled()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBefore($date)
@@ -40,12 +37,11 @@ namespace Rinvex\Bookings\Contracts;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBefore($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBetween($starts, $ends)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereAgentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCancelledAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereEndsAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereNotes($value)

@@ -36,9 +36,11 @@
 
 ## Usage
 
+**Rinvex Bookings** has been specially made for Eloquent and simplicity has been taken very serious as in any other Laravel related aspect. 
+
 ### Add Bookings to your RESOURCE model
 
-**Rinvex Bookings** has been specially made for Eloquent and simplicity has been taken very serious as in any other Laravel related aspect. To add Bookings functionality to your model just use the `\Rinvex\Bookings\Traits\Bookable` trait like this:
+To add Bookings functionality to your model just use the `\Rinvex\Bookings\Traits\Bookable` trait like this:
 
 ```php
 namespace App\Models;
@@ -54,64 +56,42 @@ class Room extends Model
 
 That's it, we only have to use that trait in our Room model! Now your rooms will be bookable.
 
-### Add Bookings to your USER model
+### Add Bookings to your user model
 
-Bookings could be made by customers themselves, or by agents on behalf of customers; **Rinvex Bookings** could handle both situations intelligently. To add Bookings support for your `Customer` and `Agent` models, follow these simple steps:
+To add support for booking resources to your user model(s), just use the `\Rinvex\Bookings\Traits\IsBookingUser` trait like this:
 
 ```php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Traits\IsBookingAgent;
-use Rinvex\Bookings\Traits\IsBookingCustomer;
+use Rinvex\Bookings\Traits\IsBookingUser;
 
 class User extends Model
 {
-    //
-}
-
-
-class Agent extends User
-{
-    use IsBookingAgent;
-}
-
-
-class Customer extends Model
-{
-    use IsBookingCustomer;
+    use IsBookingUser;
 }
 ```
-
-That's it, we only have to use either `IsBookingAgent` or `IsBookingCustomer` traits user model(s)!
 
 ### Create a new booking
 
-Creating a new booking is straightforward, and could be done in many right ways. Let's see how could we do that:
+Creating a new booking is straightforward, and could be done in many ways. Let's see how could we do that:
 
 ```php
-// Create a new booking via Bookable model
 $room = \App\Models\Room::find(1);
-$customer = \App\Models\Customer::find(1);
-$room->newBooking($customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
+$user = \App\Models\User::find(1);
 
-// Create a new booking via agent model
-$room = \App\Models\Room::find(1);
-$agent = \App\Models\Agent::find(1);
-$customer = \App\Models\Customer::find(1);
-$agent->newBooking($room, $customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
+// Create a new booking via Bookable model (model, starts, ends, price)
+$room->newBooking($user, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
 
-// Create a new booking via customer model
-$room = \App\Models\Room::find(1);
-$customer = \App\Models\Customer::find(1);
-$customer->newBooking($room, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
+// Create a new booking via user model (model, starts, ends, price)
+$user->newBooking($room, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
 ```
 
-As you can see, there's many right ways to create a new booking, it's up to you to use the appropriate method in the appropriate situation, according to the context.
+As you can see, there's many ways to create a new booking, use whatever suits your context.
 
 ### Create a booking rate
 
-Booking rates are special criteria used to modify the default booking price. For example, let’s assume that you have a model charged per hour, and you need to set a higher price for the first “2” hours to cover certain costs, while discounting pricing if booked more than “5” hours. That’s totally achievable through booking rates. Simply set the amount of units to apply this criteria on, and state the percentage you’d like to have increased or decreased from the default price using +/- signs, i.e. -10%, and of course select the operator from: (`**^**` means the first X units, `**<**` means when booking is less than X units, `**>**` means when booking is greater than X units)
+Booking rates are special criteria used to modify the default booking price. For example, let’s assume that you have a model charged per hour, and you need to set a higher price for the first "2" hours to cover certain costs, while discounting pricing if booked more than "5" hours. That’s totally achievable through booking rates. Simply set the amount of units to apply this criteria on, and state the percentage you’d like to have increased or decreased from the default price using +/- signs, i.e. -10%, and of course select the operator from: (`**^**` means the first X units, `**<**` means when booking is less than X units, `**>**` means when booking is greater than X units)
 
 To create a booking rate, follow these steps:
 
@@ -146,8 +126,7 @@ You can query the bookable model for further details, using the intuitive API as
 
 ```php
 $room = \App\Models\Room::find(1);
-$agent = \App\Models\Agent::find(1);
-$customer = \App\Models\Customer::find(1);
+$user = \App\Models\User::find(1);
 
 $room->bookings; // Get all bookings
 $room->pastBookings; // Get past bookings
@@ -167,8 +146,7 @@ $room->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings st
 $room->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
 $room->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$room->bookingsByAgent($agent->id)->get(); // Get bookings by the given agent
-$room->bookingsByCustomer($customer->id)->get(); // Get bookings by the given customer
+$room->bookingsBy($user)->get(); // Get bookings by the given user
 
 // Get all rates
 $room->rates;
@@ -179,37 +157,37 @@ $room->availabilities;
 
 All the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$room->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
 
-### Get bookings via agent/customer instance
+### Get bookings via user instance
 
-Just like how you query your bookable models, you can query agent and/or customer models to retrieve booking related info so easily. Look at these examples:
+Just like how you query your bookable models, you can query user models to retrieve bookings related info so easily. Look at these examples:
 
 ```php
 $room = \App\Models\Room::find(1);
-$customer = \App\Models\Customer::find(1);
+$user = \App\Models\$user::find(1);
 
-$customer->bookings; // Get all bookings
-$customer->pastBookings; // Get past bookings
-$customer->futureBookings; // Get future bookings
-$customer->currentBookings; // Get current bookings
-$customer->cancelledBookings; // Get cancelled bookings
+$user->bookings; // Get all bookings
+$user->pastBookings; // Get past bookings
+$user->futureBookings; // Get future bookings
+$user->currentBookings; // Get current bookings
+$user->cancelledBookings; // Get cancelled bookings
 
-$customer->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$customer->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$customer->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$user->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$user->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$user->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$customer->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$customer->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$customer->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$user->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$user->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$user->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$customer->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$customer->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$customer->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$user->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$user->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$user->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$customer->bookingsOf(get_class($room))->get(); // Get bookings of the given model
-$customer->isBooked($room); // Check if the person booked the given model
+$user->bookingsOf(get_class($room))->get(); // Get bookings of the given model
+$user->isBooked($room); // Check if the person booked the given model
 ```
 
-Same functionality applies for both agents and customers, and just like bookable models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$customer->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
+Just like bookable models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$user->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
 
 
 ## Changelog

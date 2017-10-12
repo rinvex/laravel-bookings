@@ -5,11 +5,22 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Traits;
 
 use Carbon\Carbon;
+use Rinvex\Bookings\Models\Booking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-trait IsBookingPerson
+trait IsBookingUser
 {
+    /**
+     * The user may have many bookings.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(config('rinvex.bookings.models.booking'), 'user_id', 'id');
+    }
+
     /**
      * Get past bookings.
      *
@@ -222,6 +233,28 @@ trait IsBookingPerson
      */
     public function isBooked(Model $model): bool
     {
-        return $this->bookings()->where('bookable_id', $model->id)->where('bookable_type', get_class($model))->exists();
+        return $this->bookings()->where('bookable_id', $model->getKey())->where('bookable_type', get_class($model))->exists();
+    }
+
+    /**
+     * Book the given model at the given dates with the given price.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $bookable
+     * @param string                              $starts
+     * @param string                              $ends
+     * @param float                               $price
+     *
+     * @return \Rinvex\Bookings\Models\Booking
+     */
+    public function newBooking(Model $bookable, string $starts, string $ends, float $price): Booking
+    {
+        return $this->bookings()->create([
+            'bookable_id' => $bookable->getKey(),
+            'bookable_type' => get_class($bookable),
+            'user_id' => $this->getKey(),
+            'starts_at' => $starts,
+            'ends_at' => $ends,
+            'price' => $price,
+        ]);
     }
 }

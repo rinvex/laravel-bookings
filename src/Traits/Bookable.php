@@ -24,6 +24,16 @@ trait Bookable
     }
 
     /**
+     * Get bookings by the given user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function bookingsBy(Model $user): MorphMany
+    {
+        return $this->bookings()->where('user_id', $user->getKey());
+    }
+
+    /**
      * Get past bookings.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
@@ -214,32 +224,6 @@ trait Bookable
     }
 
     /**
-     * Get bookings by the given customer.
-     *
-     * @param int $customerId
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsByCustomer($customerId): MorphMany
-    {
-        return $this->bookings()
-                    ->where('customer_id', $customerId);
-    }
-
-    /**
-     * Get bookings by the given agent.
-     *
-     * @param int $agentId
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsByAgent($agentId): MorphMany
-    {
-        return $this->bookings()
-                    ->where('customer_id', $agentId);
-    }
-
-    /**
      * Get all rates.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
@@ -260,22 +244,21 @@ trait Bookable
     }
 
     /**
-     * Book the model for the given customer at the given dates with the given price.
+     * Book the model for the given user at the given dates with the given price.
      *
-     * @param \Illuminate\Database\Eloquent\Model $customer
+     * @param \Illuminate\Database\Eloquent\Model $user
      * @param string                              $starts
      * @param string                              $ends
      * @param float                               $price
      *
      * @return \Rinvex\Bookings\Models\Booking
      */
-    public function newBooking(Model $customer, string $starts, string $ends, float $price): Booking
+    public function newBooking(Model $user, string $starts, string $ends, float $price): Booking
     {
         return $this->bookings()->create([
             'bookable_id' => static::getKey(),
             'bookable_type' => static::class,
-            'customer_id' => $customer->getKey(),
-            'agent_id' => $this->getKey(),
+            'user_id' => $user->getKey(),
             'starts_at' => $starts,
             'ends_at' => $ends,
             'price' => $price,
