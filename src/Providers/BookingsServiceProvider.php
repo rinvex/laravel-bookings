@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Rinvex\Bookings\Contracts\BookingContract;
 use Rinvex\Bookings\Contracts\BookingRateContract;
 use Rinvex\Bookings\Console\Commands\MigrateCommand;
+use Rinvex\Bookings\Console\Commands\PublishCommand;
 use Rinvex\Bookings\Contracts\BookingAvailabilityContract;
 
 class BookingsServiceProvider extends ServiceProvider
@@ -19,6 +20,7 @@ class BookingsServiceProvider extends ServiceProvider
      */
     protected $commands = [
         MigrateCommand::class => 'command.rinvex.bookings.migrate',
+        PublishCommand::class => 'command.rinvex.bookings.publish',
     ];
 
     /**
