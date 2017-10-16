@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Traits;
 
 use Carbon\Carbon;
+use Rinvex\Bookings\Models\Rate;
 use Rinvex\Bookings\Models\Booking;
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Models\BookingRate;
-use Rinvex\Bookings\Models\BookingAvailability;
+use Rinvex\Bookings\Models\Availability;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait Bookable
@@ -230,7 +230,7 @@ trait Bookable
      */
     public function rates(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.booking_rate'), 'bookable');
+        return $this->morphMany(config('rinvex.bookings.models.rate'), 'bookable');
     }
 
     /**
@@ -240,7 +240,7 @@ trait Bookable
      */
     public function availabilities(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.booking_availability'), 'bookable');
+        return $this->morphMany(config('rinvex.bookings.models.availability'), 'bookable');
     }
 
     /**
@@ -272,9 +272,9 @@ trait Bookable
      * @param string $operator
      * @param int    $amount
      *
-     * @return \Rinvex\Bookings\Models\BookingRate
+     * @return \Rinvex\Bookings\Models\Rate
      */
-    public function newRate(string $percentage, string $operator, int $amount): BookingRate
+    public function newRate(string $percentage, string $operator, int $amount): Rate
     {
         return $this->rates()->create([
             'bookable_id' => static::getKey(),
@@ -293,9 +293,9 @@ trait Bookable
      * @param string     $ends
      * @param float|null $price
      *
-     * @return \Rinvex\Bookings\Models\BookingAvailability
+     * @return \Rinvex\Bookings\Models\Availability
      */
-    public function newAvailability(string $day, string $starts, string $ends, float $price = null): BookingAvailability
+    public function newAvailability(string $day, string $starts, string $ends, float $price = null): Availability
     {
         return $this->rates()->create([
             'bookable_id' => static::getKey(),

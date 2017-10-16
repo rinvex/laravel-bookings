@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Contracts;
 
 /**
- * Rinvex\Bookings\Contracts\BookingContract.
+ * Rinvex\Bookings\Models\Booking.
  *
  * @property int                                                $id
  * @property int                                                $bookable_id
@@ -17,13 +17,13 @@ namespace Rinvex\Bookings\Contracts;
  * @property array                                              $price_equation
  * @property \Carbon\Carbon                                     $cancelled_at
  * @property string                                             $notes
- * @property \Carbon\Carbon                                     $created_at
- * @property \Carbon\Carbon                                     $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $user
+ * @property \Carbon\Carbon|null                                $created_at
+ * @property \Carbon\Carbon|null                                $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
+ * @property-read \Cortex\Fort\Models\User                      $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking bookingsOf($bookable)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byUser($user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking byUser(\Illuminate\Database\Eloquent\Model $user)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelled()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBefore($date)
@@ -37,7 +37,6 @@ namespace Rinvex\Bookings\Contracts;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBefore($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBetween($starts, $ends)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCancelledAt($value)
@@ -49,6 +48,7 @@ namespace Rinvex\Bookings\Contracts;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking wherePriceEquation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereStartsAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUserId($value)
  * @mixin \Eloquent
  */
 interface BookingContract

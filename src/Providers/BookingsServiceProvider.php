@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Rinvex\Bookings\Contracts\RateContract;
 use Rinvex\Bookings\Contracts\BookingContract;
-use Rinvex\Bookings\Contracts\BookingRateContract;
+use Rinvex\Bookings\Contracts\AvailabilityContract;
 use Rinvex\Bookings\Console\Commands\MigrateCommand;
 use Rinvex\Bookings\Console\Commands\PublishCommand;
-use Rinvex\Bookings\Contracts\BookingAvailabilityContract;
 
 class BookingsServiceProvider extends ServiceProvider
 {
@@ -38,15 +38,15 @@ class BookingsServiceProvider extends ServiceProvider
         });
         $this->app->alias('rinvex.bookings.booking', BookingContract::class);
 
-        $this->app->singleton('rinvex.bookings.booking_rate', function ($app) {
-            return new $app['config']['rinvex.bookings.models.booking_rate']();
+        $this->app->singleton('rinvex.bookings.rate', function ($app) {
+            return new $app['config']['rinvex.bookings.models.rate']();
         });
-        $this->app->alias('rinvex.bookings.booking_rate', BookingRateContract::class);
+        $this->app->alias('rinvex.bookings.rate', RateContract::class);
 
-        $this->app->singleton('rinvex.bookings.booking_availability', function ($app) {
-            return new $app['config']['rinvex.bookings.models.booking_availability']();
+        $this->app->singleton('rinvex.bookings.availability', function ($app) {
+            return new $app['config']['rinvex.bookings.models.availability']();
         });
-        $this->app->alias('rinvex.bookings.booking_availability', BookingAvailabilityContract::class);
+        $this->app->alias('rinvex.bookings.availability', AvailabilityContract::class);
 
         // Register console commands
         ! $this->app->runningInConsole() || $this->registerCommands();
