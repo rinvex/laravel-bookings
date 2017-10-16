@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Contracts;
 
 /**
- * Rinvex\Bookings\Models\Availability.
+ * Rinvex\Bookings\Contracts\AvailabilityContract.
  *
  * @property int                                                $id
  * @property int                                                $bookable_id
