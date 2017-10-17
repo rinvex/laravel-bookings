@@ -7,8 +7,8 @@ namespace Rinvex\Bookings\Models;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Rinvex\Support\Traits\ValidatingTrait;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Rinvex\Bookings\Contracts\PriceContract;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * Rinvex\Bookings\Models\Price.
