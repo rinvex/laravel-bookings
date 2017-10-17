@@ -5,28 +5,16 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Traits;
 
 use Carbon\Carbon;
-use Rinvex\Bookings\Models\Booking;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-trait IsBookingUser
+trait BookingScopes
 {
-    /**
-     * The user may have many bookings.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function bookings(): HasMany
-    {
-        return $this->hasMany(config('rinvex.bookings.models.booking'), 'user_id', 'id');
-    }
-
     /**
      * Get past bookings.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function pastBookings(): HasMany
+    public function pastBookings(): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
@@ -37,9 +25,9 @@ trait IsBookingUser
     /**
      * Get future bookings.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function futureBookings(): HasMany
+    public function futureBookings(): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
@@ -50,9 +38,9 @@ trait IsBookingUser
     /**
      * Get current bookings.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function currentBookings(): HasMany
+    public function currentBookings(): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
@@ -65,9 +53,9 @@ trait IsBookingUser
     /**
      * Get cancelled bookings.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function cancelledBookings(): HasMany
+    public function cancelledBookings(): MorphMany
     {
         return $this->bookings()
                     ->whereNotNull('cancelled_at');
@@ -78,9 +66,9 @@ trait IsBookingUser
      *
      * @param string $date
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsStartsBefore(string $date): HasMany
+    public function bookingsStartsBefore(string $date): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
@@ -93,9 +81,9 @@ trait IsBookingUser
      *
      * @param string $date
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsStartsAfter(string $date): HasMany
+    public function bookingsStartsAfter(string $date): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
@@ -109,9 +97,9 @@ trait IsBookingUser
      * @param string $starts
      * @param string $ends
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsStartsBetween(string $starts, string $ends): HasMany
+    public function bookingsStartsBetween(string $starts, string $ends): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
@@ -125,9 +113,9 @@ trait IsBookingUser
      *
      * @param string $date
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsEndsBefore(string $date): HasMany
+    public function bookingsEndsBefore(string $date): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
@@ -140,9 +128,9 @@ trait IsBookingUser
      *
      * @param string $date
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsEndsAfter(string $date): HasMany
+    public function bookingsEndsAfter(string $date): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
@@ -156,9 +144,9 @@ trait IsBookingUser
      * @param string $starts
      * @param string $ends
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsEndsBetween(string $starts, string $ends): HasMany
+    public function bookingsEndsBetween(string $starts, string $ends): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
@@ -172,9 +160,9 @@ trait IsBookingUser
      *
      * @param string $date
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsCancelledBefore(string $date): HasMany
+    public function bookingsCancelledBefore(string $date): MorphMany
     {
         return $this->bookings()
                     ->whereNotNull('cancelled_at')
@@ -186,9 +174,9 @@ trait IsBookingUser
      *
      * @param string $date
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsCancelledAfter(string $date): HasMany
+    public function bookingsCancelledAfter(string $date): MorphMany
     {
         return $this->bookings()
                     ->whereNotNull('cancelled_at')
@@ -201,60 +189,13 @@ trait IsBookingUser
      * @param string $starts
      * @param string $ends
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsCancelledBetween(string $starts, string $ends): HasMany
+    public function bookingsCancelledBetween(string $starts, string $ends): MorphMany
     {
         return $this->bookings()
                     ->whereNotNull('cancelled_at')
                     ->where('cancelled_at', '>', new Carbon($starts))
                     ->where('cancelled_at', '<', new Carbon($ends));
-    }
-
-    /**
-     * Get bookings of the given model.
-     *
-     * @param string $bookable
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function bookingsOf(string $bookable): HasMany
-    {
-        return $this->bookings()
-                    ->where('bookable_type', $bookable);
-    }
-
-    /**
-     * Check if the person booked the given model.
-     *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     *
-     * @return bool
-     */
-    public function isBooked(Model $model): bool
-    {
-        return $this->bookings()->where('bookable_id', $model->getKey())->where('bookable_type', get_class($model))->exists();
-    }
-
-    /**
-     * Book the given model at the given dates with the given price.
-     *
-     * @param \Illuminate\Database\Eloquent\Model $bookable
-     * @param string                              $starts
-     * @param string                              $ends
-     * @param float                               $price
-     *
-     * @return \Rinvex\Bookings\Models\Booking
-     */
-    public function newBooking(Model $bookable, string $starts, string $ends, float $price): Booking
-    {
-        return $this->bookings()->create([
-            'bookable_id' => $bookable->getKey(),
-            'bookable_type' => get_class($bookable),
-            'user_id' => $this->getKey(),
-            'starts_at' => $starts,
-            'ends_at' => $ends,
-            'price' => $price,
-        ]);
     }
 }

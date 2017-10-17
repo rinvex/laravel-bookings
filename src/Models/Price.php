@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Rinvex\Bookings\Contracts\AvailabilityContract;
+use Rinvex\Bookings\Contracts\PriceContract;
 
 /**
- * Rinvex\Bookings\Models\Availability.
+ * Rinvex\Bookings\Models\Price.
  *
  * @property int                                                $id
  * @property int                                                $bookable_id
@@ -24,18 +24,18 @@ use Rinvex\Bookings\Contracts\AvailabilityContract;
  * @property \Carbon\Carbon|null                                $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereBookableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereBookableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereDay($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereEndsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereStartsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereBookableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereBookableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereDay($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereEndsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereStartsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Availability extends Model implements AvailabilityContract
+class Price extends Model implements PriceContract
 {
     use ValidatingTrait;
     use CacheableEloquent;
@@ -96,7 +96,7 @@ class Availability extends Model implements AvailabilityContract
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('rinvex.bookings.tables.availabilities'));
+        $this->setTable(config('rinvex.bookings.tables.prices'));
         $this->setRules([
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string',

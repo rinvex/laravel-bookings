@@ -7,7 +7,7 @@ namespace Rinvex\Bookings\Providers;
 use Illuminate\Support\ServiceProvider;
 use Rinvex\Bookings\Contracts\RateContract;
 use Rinvex\Bookings\Contracts\BookingContract;
-use Rinvex\Bookings\Contracts\AvailabilityContract;
+use Rinvex\Bookings\Contracts\PriceContract;
 use Rinvex\Bookings\Console\Commands\MigrateCommand;
 use Rinvex\Bookings\Console\Commands\PublishCommand;
 
@@ -43,10 +43,10 @@ class BookingsServiceProvider extends ServiceProvider
         });
         $this->app->alias('rinvex.bookings.rate', RateContract::class);
 
-        $this->app->singleton('rinvex.bookings.availability', function ($app) {
-            return new $app['config']['rinvex.bookings.models.availability']();
+        $this->app->singleton('rinvex.bookings.price', function ($app) {
+            return new $app['config']['rinvex.bookings.models.price']();
         });
-        $this->app->alias('rinvex.bookings.availability', AvailabilityContract::class);
+        $this->app->alias('rinvex.bookings.price', PriceContract::class);
 
         // Register console commands
         ! $this->app->runningInConsole() || $this->registerCommands();

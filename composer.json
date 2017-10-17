@@ -10,6 +10,7 @@
         "availability",
         "database",
         "laravel",
+        "price",
         "rates"
     ],
     "license": "MIT",

@@ -15,14 +15,11 @@ class CreateBookingsTable extends Migration
      */
     public function up()
     {
-        // Get users model
-        $userModel = config('auth.providers.'.config('auth.guards.'.config('auth.defaults.guard').'.provider').'.model');
-
-        Schema::create(config('rinvex.bookings.tables.bookings'), function (Blueprint $table) use ($userModel) {
+        Schema::create(config('rinvex.bookings.tables.bookings'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
-            $table->integer('user_id')->unsigned();
+            $table->morphs('customer');
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->decimal('price')->default('0.00');
@@ -30,10 +27,6 @@ class CreateBookingsTable extends Migration
             $table->timestamp('cancelled_at')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
-
-            // Indexes
-            $table->foreign('user_id')->references('id')->on((new $userModel())->getTable())
-                  ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

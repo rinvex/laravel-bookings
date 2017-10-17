@@ -8,14 +8,14 @@ return [
     'tables' => [
         'bookings' => 'bookings',
         'rates' => 'booking_rates',
-        'availabilities' => 'booking_availabilities',
+        'prices' => 'booking_prices',
     ],
 
     // Bookings Models
     'models' => [
         'rate' => \Rinvex\Bookings\Models\Rate::class,
+        'price' => \Rinvex\Bookings\Models\Price::class,
         'booking' => \Rinvex\Bookings\Models\Booking::class,
-        'availability' => \Rinvex\Bookings\Models\Availability::class,
     ],
 
 ];

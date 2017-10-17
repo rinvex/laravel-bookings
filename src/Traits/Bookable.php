@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Rinvex\Bookings\Traits;
 
-use Carbon\Carbon;
 use Rinvex\Bookings\Models\Rate;
+use Rinvex\Bookings\Models\Price;
 use Rinvex\Bookings\Models\Booking;
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Models\Availability;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait Bookable
 {
+    use BookingScopes;
+
     /**
-     * Get all bookings.
+     * The bookable may have many bookings.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
@@ -24,207 +25,19 @@ trait Bookable
     }
 
     /**
-     * Get bookings by the given user.
+     * Get bookings of the given customer.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $customer
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsBy(Model $user): MorphMany
+    public function bookingsOfCustomer(Model $customer): MorphMany
     {
-        return $this->bookings()->where('user_id', $user->getKey());
+        return $this->bookings()->where('customer_type', $customer->getMorphClass())->where('customer_id', $customer->getKey());
     }
 
     /**
-     * Get past bookings.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function pastBookings(): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNull('cancelled_at')
-                    ->whereNotNull('ends_at')
-                    ->where('ends_at', '<', Carbon::now());
-    }
-
-    /**
-     * Get future bookings.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function futureBookings(): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNull('cancelled_at')
-                    ->whereNotNull('starts_at')
-                    ->where('starts_at', '>', Carbon::now());
-    }
-
-    /**
-     * Get current bookings.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function currentBookings(): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNull('cancelled_at')
-                    ->whereNotNull('starts_at')
-                    ->whereNotNull('ends_at')
-                    ->where('starts_at', '<', Carbon::now())
-                    ->where('ends_at', '>', Carbon::now());
-    }
-
-    /**
-     * Get cancelled bookings.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function cancelledBookings(): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNotNull('cancelled_at');
-    }
-
-    /**
-     * Get bookings starts before the given date.
-     *
-     * @param string $date
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsStartsBefore(string $date): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNull('cancelled_at')
-                    ->whereNotNull('starts_at')
-                    ->where('starts_at', '<', new Carbon($date));
-    }
-
-    /**
-     * Get bookings starts after the given date.
-     *
-     * @param string $date
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsStartsAfter(string $date): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNull('cancelled_at')
-                    ->whereNotNull('starts_at')
-                    ->where('starts_at', '>', new Carbon($date));
-    }
-
-    /**
-     * Get bookings starts between the given dates.
-     *
-     * @param string $starts
-     * @param string $ends
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsStartsBetween(string $starts, string $ends): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNull('cancelled_at')
-                    ->whereNotNull('starts_at')
-                    ->where('starts_at', '>', new Carbon($starts))
-                    ->where('starts_at', '<', new Carbon($ends));
-    }
-
-    /**
-     * Get bookings ends before the given date.
-     *
-     * @param string $date
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsEndsBefore(string $date): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNull('cancelled_at')
-                    ->whereNotNull('ends_at')
-                    ->where('ends_at', '<', new Carbon($date));
-    }
-
-    /**
-     * Get bookings ends after the given date.
-     *
-     * @param string $date
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsEndsAfter(string $date): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNull('cancelled_at')
-                    ->whereNotNull('ends_at')
-                    ->where('ends_at', '>', new Carbon($date));
-    }
-
-    /**
-     * Get bookings ends between the given dates.
-     *
-     * @param string $starts
-     * @param string $ends
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsEndsBetween(string $starts, string $ends): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNull('cancelled_at')
-                    ->whereNotNull('ends_at')
-                    ->where('ends_at', '>', new Carbon($starts))
-                    ->where('ends_at', '<', new Carbon($ends));
-    }
-
-    /**
-     * Get bookings cancelled before the given date.
-     *
-     * @param string $date
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsCancelledBefore(string $date): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNotNull('cancelled_at')
-                    ->where('cancelled_at', '<', new Carbon($date));
-    }
-
-    /**
-     * Get bookings cancelled after the given date.
-     *
-     * @param string $date
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsCancelledAfter(string $date): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNotNull('cancelled_at')
-                    ->where('cancelled_at', '>', new Carbon($date));
-    }
-
-    /**
-     * Get bookings cancelled between the given dates.
-     *
-     * @param string $starts
-     * @param string $ends
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function bookingsCancelledBetween(string $starts, string $ends): MorphMany
-    {
-        return $this->bookings()
-                    ->whereNotNull('cancelled_at')
-                    ->where('cancelled_at', '>', new Carbon($starts))
-                    ->where('cancelled_at', '<', new Carbon($ends));
-    }
-
-    /**
-     * Get all rates.
+     * The bookable may have many rates.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
@@ -234,31 +47,32 @@ trait Bookable
     }
 
     /**
-     * Get all availabilities.
+     * The bookable may have many prices.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function availabilities(): MorphMany
+    public function prices(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.availability'), 'bookable');
+        return $this->morphMany(config('rinvex.bookings.models.price'), 'bookable');
     }
 
     /**
      * Book the model for the given user at the given dates with the given price.
      *
-     * @param \Illuminate\Database\Eloquent\Model $user
+     * @param \Illuminate\Database\Eloquent\Model $customer
      * @param string                              $starts
      * @param string                              $ends
      * @param float                               $price
      *
      * @return \Rinvex\Bookings\Models\Booking
      */
-    public function newBooking(Model $user, string $starts, string $ends, float $price): Booking
+    public function newBooking(Model $customer, string $starts, string $ends, float $price): Booking
     {
         return $this->bookings()->create([
             'bookable_id' => static::getKey(),
-            'bookable_type' => static::class,
-            'user_id' => $user->getKey(),
+            'bookable_type' => static::getMorphClass(),
+            'customer_id' => $customer->getKey(),
+            'customer_type' => $customer->getMorphClass(),
             'starts_at' => $starts,
             'ends_at' => $ends,
             'price' => $price,
@@ -278,7 +92,7 @@ trait Bookable
     {
         return $this->rates()->create([
             'bookable_id' => static::getKey(),
-            'bookable_type' => static::class,
+            'bookable_type' => static::getMorphClass(),
             'percentage' => $percentage,
             'operator' => $operator,
             'amount' => $amount,
@@ -286,20 +100,20 @@ trait Bookable
     }
 
     /**
-     * Create a new booking availability.
+     * Create a new booking price.
      *
      * @param string     $day
      * @param string     $starts
      * @param string     $ends
      * @param float|null $price
      *
-     * @return \Rinvex\Bookings\Models\Availability
+     * @return \Rinvex\Bookings\Models\Price
      */
-    public function newAvailability(string $day, string $starts, string $ends, float $price = null): Availability
+    public function newPrice(string $day, string $starts, string $ends, float $price = null): Price
     {
-        return $this->rates()->create([
+        return $this->prices()->create([
             'bookable_id' => static::getKey(),
-            'bookable_type' => static::class,
+            'bookable_type' => static::getMorphClass(),
             'day' => $day,
             'starts_at' => $starts,
             'ends_at' => $ends,

@@ -58,17 +58,17 @@ That's it, we only have to use that trait in our Room model! Now your rooms will
 
 ### Add Bookings to your user model
 
-To add support for booking resources to your user model(s), just use the `\Rinvex\Bookings\Traits\IsBookingUser` trait like this:
+To add support for booking resources to your user model(s), just use the `\Rinvex\Bookings\Traits\BookingCustomer` trait like this:
 
 ```php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Traits\IsBookingUser;
+use Rinvex\Bookings\Traits\BookingCustomer;
 
 class User extends Model
 {
-    use IsBookingUser;
+    use BookingCustomer;
 }
 ```
 
@@ -101,24 +101,24 @@ $room->newRate('+15%', '^', 2); // Increate unit price by 15% for the first 2 un
 $room->newRate('-10%', '>', 5); // Discount unit price by 10% if booking is greater than 5 units (probably hours)
 ```
 
-### Create a booking availability
+### Create a booking price
 
-Booking availabilities are the times that your model is allowed to be booked at. For example, let’s you've a Coworking Space business, and one of your rooms is a Conference Room, which is only available Sunday through Thursday, from 09:00 am till 05:00 pm. Not just that, let's say you need to charge more for peak hours at Thursday! That's totally achievable through booking avialabilities, where you can set both time frames and their prices too. Awesome, huh?
+Booking prices are the times that your model is allowed to be booked at. For example, let’s you've a Coworking Space business, and one of your rooms is a Conference Room, which is only available Sunday through Thursday, from 09:00 am till 05:00 pm. Not just that, let's say you need to charge more for peak hours at Thursday! That's totally achievable through booking avialabilities, where you can set both time frames and their prices too. Awesome, huh?
 
-To create a booking availability, follow these steps:
+To create a booking price, follow these steps:
 
 ```php
 $room = \App\Models\Room::find(1);
-$room->newAvailability('sun', '09:00 am', '05:00 pm');
-$room->newAvailability('mon', '09:00 am', '05:00 pm');
-$room->newAvailability('tue', '09:00 am', '05:00 pm');
-$room->newAvailability('wed', '09:00 am', '05:00 pm');
-$room->newAvailability('thu', '09:00 am', '05:00 pm', 10.5);
+$room->newPrice('sun', '09:00 am', '05:00 pm');
+$room->newPrice('mon', '09:00 am', '05:00 pm');
+$room->newPrice('tue', '09:00 am', '05:00 pm');
+$room->newPrice('wed', '09:00 am', '05:00 pm');
+$room->newPrice('thu', '09:00 am', '05:00 pm', 10.5);
 ```
 
 Piece of cake, right? You just set the day, from-to times, and optionally the custom unit price (which should override the default bookable unit price).
 
-> **Note:** If you don't create any availabilities, then the model can be booked at any time.
+> **Note:** If you don't create any prices, then the model can be booked at any time.
 
 ### Get bookable details
 
@@ -146,13 +146,13 @@ $room->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings st
 $room->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
 $room->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$room->bookingsBy($user)->get(); // Get bookings by the given user
+$room->bookingsOfCustomer($user)->get(); // Get bookings of the given customer
 
 // Get all rates
 $room->rates;
 
-// Get all availabilities
-$room->availabilities;
+// Get all prices
+$room->prices;
 ```
 
 All the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$room->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
