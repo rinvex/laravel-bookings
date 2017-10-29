@@ -14,8 +14,8 @@
 ## Considerations
 
 - **Rinvex Bookings** is for bookable resources, and has nothing to do with price plans and subscriptions. If you're looking for subscription management system, you may have to look at **[rinvex/subscriptions](https://github.com/rinvex/subscriptions).**
+- **Rinvex Bookings** assumes that your resource model has at least three fields, `price` as a decimal field, and lastly `unit` as a char field which accepts one of (m,h,d) representing (minute, hour, day) respectively.
 - Payments and ordering are out of scope for **Rinvex Bookings**, so you've to take care of this yourself. Booking price is calculated by this package, so you may need to hook into the process or listen to saved bookings to issue invoice, or trigger payment process.
-- **Rinvex Bookings** assumes that your resource model has at least three fields, `price` as a decimal field, `unit` as a char field which accepts one of (m,h,d) representing (minute, hour, day) respectively, and lastly `offservice` as a JSON field including array of blocked times (unbookable / out of service).
 - You may extend **Rinvex Bookings** functionality to add features like: minimum and maximum booking length, early and late booking limit, and many more. These features may be supported natively sometime in the future.
 
 
