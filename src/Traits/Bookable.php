@@ -15,13 +15,13 @@ trait Bookable
     use BookingScopes;
 
     /**
-     * The bookable may have many bookings.
+     * The resource may have many bookings.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.booking'), 'bookable');
+        return $this->morphMany(config('rinvex.bookings.models.booking'), 'resource');
     }
 
     /**
@@ -37,62 +37,60 @@ trait Bookable
     }
 
     /**
-     * The bookable may have many rates.
+     * The resource may have many rates.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function rates(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.rate'), 'bookable');
+        return $this->morphMany(config('rinvex.bookings.models.rate'), 'resource');
     }
 
     /**
-     * The bookable may have many prices.
+     * The resource may have many prices.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function prices(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.price'), 'bookable');
+        return $this->morphMany(config('rinvex.bookings.models.price'), 'resource');
     }
 
     /**
      * Book the model for the given user at the given dates with the given price.
      *
      * @param \Illuminate\Database\Eloquent\Model $customer
-     * @param string                              $starts
-     * @param string                              $ends
-     * @param float                               $price
+     * @param string                              $startsAt
+     * @param string                              $endsAt
      *
      * @return \Rinvex\Bookings\Models\Booking
      */
-    public function newBooking(Model $customer, string $starts, string $ends, float $price): Booking
+    public function newBooking(Model $customer, string $startsAt, string $endsAt): Booking
     {
         return $this->bookings()->create([
-            'bookable_id' => static::getKey(),
-            'bookable_type' => static::getMorphClass(),
+            'resource_id' => static::getKey(),
+            'resource_type' => static::getMorphClass(),
             'customer_id' => $customer->getKey(),
             'customer_type' => $customer->getMorphClass(),
-            'starts_at' => $starts,
-            'ends_at' => $ends,
-            'price' => $price,
+            'starts_at' => (new Carbon($startsAt))->toDateTimeString(),
+            'ends_at' => (new Carbon($endsAt))->toDateTimeString(),
         ]);
     }
 
     /**
      * Create a new booking rate.
      *
-     * @param string $percentage
+     * @param float  $percentage
      * @param string $operator
      * @param int    $amount
      *
      * @return \Rinvex\Bookings\Models\Rate
      */
-    public function newRate(string $percentage, string $operator, int $amount): Rate
+    public function newRate(float $percentage, string $operator, int $amount): Rate
     {
         return $this->rates()->create([
-            'bookable_id' => static::getKey(),
-            'bookable_type' => static::getMorphClass(),
+            'resource_id' => static::getKey(),
+            'resource_type' => static::getMorphClass(),
             'percentage' => $percentage,
             'operator' => $operator,
             'amount' => $amount,
@@ -102,22 +100,22 @@ trait Bookable
     /**
      * Create a new booking price.
      *
-     * @param string     $day
-     * @param string     $starts
-     * @param string     $ends
-     * @param float|null $price
+     * @param string $weekday
+     * @param string $startsAt
+     * @param string $endsAt
+     * @param float  $percentage
      *
      * @return \Rinvex\Bookings\Models\Price
      */
-    public function newPrice(string $day, string $starts, string $ends, float $price = null): Price
+    public function newPrice(string $weekday, string $startsAt, string $endsAt, float $percentage): Price
     {
         return $this->prices()->create([
-            'bookable_id' => static::getKey(),
-            'bookable_type' => static::getMorphClass(),
-            'day' => $day,
-            'starts_at' => $starts,
-            'ends_at' => $ends,
-            'price' => $price,
+            'resource_id' => static::getKey(),
+            'resource_type' => static::getMorphClass(),
+            'percentage' => $percentage,
+            'weekday' => $weekday,
+            'starts_at' => (new Carbon($startsAt))->toTimeString(),
+            'ends_at' => (new Carbon($endsAt))->toTimeString(),
         ]);
     }
 }

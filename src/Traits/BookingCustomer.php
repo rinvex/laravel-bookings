@@ -23,49 +23,47 @@ trait BookingCustomer
     }
 
     /**
-     * Get bookings of the given bookable.
+     * Get bookings of the given resource.
      *
-     * @param \Illuminate\Database\Eloquent\Model $bookable
+     * @param \Illuminate\Database\Eloquent\Model $resource
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsOfBookable(string $bookable): MorphMany
+    public function bookingsOfResource(Model $resource): MorphMany
     {
-        return $this->bookings()->where('bookable_type', $bookable->getMorphClass())->where('bookable_id', $bookable->getKey());
+        return $this->bookings()->where('resource_type', $resource->getMorphClass())->where('resource_id', $resource->getKey());
     }
 
     /**
      * Check if the person booked the given model.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param \Illuminate\Database\Eloquent\Model $resource
      *
      * @return bool
      */
-    public function isBooked(Model $model): bool
+    public function isBooked(Model $resource): bool
     {
-        return $this->bookings()->where('bookable_id', $model->getKey())->where('bookable_type', get_class($model))->exists();
+        return $this->bookings()->where('resource_id', $resource->getKey())->exists();
     }
 
     /**
      * Book the given model at the given dates with the given price.
      *
-     * @param \Illuminate\Database\Eloquent\Model $bookable
-     * @param string                              $starts
-     * @param string                              $ends
-     * @param float                               $price
+     * @param \Illuminate\Database\Eloquent\Model $resource
+     * @param string                              $startsAt
+     * @param string                              $endsAt
      *
      * @return \Rinvex\Bookings\Models\Booking
      */
-    public function newBooking(Model $bookable, string $starts, string $ends, float $price): Booking
+    public function newBooking(Model $resource, string $startsAt, string $endsAt): Booking
     {
         return $this->bookings()->create([
-            'bookable_id' => $bookable->getKey(),
-            'bookable_type' => $bookable->getMorphClass(),
+            'resource_id' => $resource->getKey(),
+            'resource_type' => $resource->getMorphClass(),
             'customer_id' => $this->getKey(),
             'customer_type' => $this->getMorphClass(),
-            'starts_at' => $starts,
-            'ends_at' => $ends,
-            'price' => $price,
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
         ]);
     }
 }
