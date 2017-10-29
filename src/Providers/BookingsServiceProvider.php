@@ -6,8 +6,8 @@ namespace Rinvex\Bookings\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Rinvex\Bookings\Contracts\RateContract;
-use Rinvex\Bookings\Contracts\BookingContract;
 use Rinvex\Bookings\Contracts\PriceContract;
+use Rinvex\Bookings\Contracts\BookingContract;
 use Rinvex\Bookings\Console\Commands\MigrateCommand;
 use Rinvex\Bookings\Console\Commands\PublishCommand;
 
