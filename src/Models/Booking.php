@@ -201,7 +201,7 @@ class Booking extends Model implements BookingContract
         $totalUnits = 0;
         $totalPrice = 0;
 
-        for($date = $this->starts_at; $date->lte($this->ends_at); $date->$method()) {
+        for ($date = $this->starts_at; $date->lte($this->ends_at); $date->$method()) {
             // Count units
             $totalUnits++;
 
@@ -239,7 +239,7 @@ class Booking extends Model implements BookingContract
                     break;
                 case '=':
                 default:
-                    $totalPrice += $totalUnits == $rate['amount'] ? ((($rate['percentage'] * $this->resource->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits === $rate['amount'] ? ((($rate['percentage'] * $this->resource->price) / 100) * $totalUnits) : 0;
                     break;
             }
         }
