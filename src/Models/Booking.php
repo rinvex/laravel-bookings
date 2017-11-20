@@ -207,7 +207,7 @@ class Booking extends Model implements BookingContract
 
             // Get applicable custom prices. Use first custom price matched, and ignore
             // others. We should not have multiple custom prices for same time range anyway!
-            $customPrice = $prices->search(function ($price) use ($date, $resource) {
+            $customPrice = $prices->search(function ($price) use ($date) {
                 $dayMatched = $price['weekday'] === mb_strtolower($date->format('D'));
 
                 return $this->resource->unit === 'd' ? $dayMatched : $dayMatched && (new Carbon($date->format('H:i:s')))->between(new Carbon($price['starts_at']), new Carbon($price['ends_at']));
