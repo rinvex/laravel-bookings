@@ -498,6 +498,24 @@ class Booking extends Model implements BookingContract
     }
 
     /**
+     * Get bookings between the given dates.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $builder
+     * @param string                                $starts
+     * @param string                                $ends
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBetween(Builder $builder, string $starts, string $ends): Builder
+    {
+        return $builder->whereNull('cancelled_at')
+                       ->whereNotNull('starts_at')
+                       ->whereNotNull('ends_at')
+                       ->where('starts_at', '>=', new Carbon($starts))
+                       ->where('ends_at', '<=', new Carbon($ends));
+    }
+
+    /**
      * Check if the booking is cancelled.
      *
      * @return bool
