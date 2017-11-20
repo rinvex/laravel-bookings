@@ -402,8 +402,8 @@ class Booking extends Model implements BookingContract
     {
         return $builder->whereNull('cancelled_at')
                        ->whereNotNull('starts_at')
-                       ->where('starts_at', '>', new Carbon($starts))
-                       ->where('starts_at', '<', new Carbon($ends));
+                       ->where('starts_at', '>=', new Carbon($starts))
+                       ->where('starts_at', '<=', new Carbon($ends));
     }
 
     /**
@@ -437,7 +437,7 @@ class Booking extends Model implements BookingContract
     }
 
     /**
-     * Get bookings ends between the given date.
+     * Get bookings ends between the given dates.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      * @param string                                $starts
@@ -449,8 +449,8 @@ class Booking extends Model implements BookingContract
     {
         return $builder->whereNull('cancelled_at')
                        ->whereNotNull('ends_at')
-                       ->where('ends_at', '>', new Carbon($starts))
-                       ->where('ends_at', '<', new Carbon($ends));
+                       ->where('ends_at', '>=', new Carbon($starts))
+                       ->where('ends_at', '<=', new Carbon($ends));
     }
 
     /**
@@ -493,8 +493,8 @@ class Booking extends Model implements BookingContract
     public function scopeCancelledBetween(Builder $builder, string $starts, string $ends): Builder
     {
         return $builder->whereNotNull('cancelled_at')
-                       ->where('cancelled_at', '>', new Carbon($starts))
-                       ->where('cancelled_at', '<', new Carbon($ends));
+                       ->where('cancelled_at', '>=', new Carbon($starts))
+                       ->where('cancelled_at', '<=', new Carbon($ends));
     }
 
     /**
