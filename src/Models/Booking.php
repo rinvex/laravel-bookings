@@ -37,18 +37,18 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelled()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBefore($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBetween($starts, $ends)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBetween($startsAt, $endsAt)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking current()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBefore($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBetween($starts, $ends)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBetween($startsAt, $endsAt)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking future()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofCustomer(\Illuminate\Database\Eloquent\Model $customer)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofResource(\Illuminate\Database\Eloquent\Model $resource)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking past()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBefore($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBetween($starts, $ends)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBetween($startsAt, $endsAt)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCancelledAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCurrency($value)
@@ -393,17 +393,17 @@ class Booking extends Model implements BookingContract
      * Get bookings starts between the given dates.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param string                                $starts
-     * @param string                                $ends
+     * @param string                                $startsAt
+     * @param string                                $endsAt
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeStartsBetween(Builder $builder, string $starts, string $ends): Builder
+    public function scopeStartsBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
         return $builder->whereNull('cancelled_at')
                        ->whereNotNull('starts_at')
-                       ->where('starts_at', '>=', new Carbon($starts))
-                       ->where('starts_at', '<=', new Carbon($ends));
+                       ->where('starts_at', '>=', new Carbon($startsAt))
+                       ->where('starts_at', '<=', new Carbon($endsAt));
     }
 
     /**
@@ -440,17 +440,17 @@ class Booking extends Model implements BookingContract
      * Get bookings ends between the given dates.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param string                                $starts
-     * @param string                                $ends
+     * @param string                                $startsAt
+     * @param string                                $endsAt
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeEndsBetween(Builder $builder, string $starts, string $ends): Builder
+    public function scopeEndsBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
         return $builder->whereNull('cancelled_at')
                        ->whereNotNull('ends_at')
-                       ->where('ends_at', '>=', new Carbon($starts))
-                       ->where('ends_at', '<=', new Carbon($ends));
+                       ->where('ends_at', '>=', new Carbon($startsAt))
+                       ->where('ends_at', '<=', new Carbon($endsAt));
     }
 
     /**
@@ -485,34 +485,34 @@ class Booking extends Model implements BookingContract
      * Get bookings cancelled between the given dates.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param string                                $starts
-     * @param string                                $ends
+     * @param string                                $startsAt
+     * @param string                                $endsAt
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeCancelledBetween(Builder $builder, string $starts, string $ends): Builder
+    public function scopeCancelledBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
         return $builder->whereNotNull('cancelled_at')
-                       ->where('cancelled_at', '>=', new Carbon($starts))
-                       ->where('cancelled_at', '<=', new Carbon($ends));
+                       ->where('cancelled_at', '>=', new Carbon($startsAt))
+                       ->where('cancelled_at', '<=', new Carbon($endsAt));
     }
 
     /**
      * Get bookings between the given dates.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param string                                $starts
-     * @param string                                $ends
+     * @param string                                $startsAt
+     * @param string                                $endsAt
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeBetween(Builder $builder, string $starts, string $ends): Builder
+    public function scopeBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
         return $builder->whereNull('cancelled_at')
                        ->whereNotNull('starts_at')
                        ->whereNotNull('ends_at')
-                       ->where('starts_at', '>=', new Carbon($starts))
-                       ->where('ends_at', '<=', new Carbon($ends));
+                       ->where('starts_at', '>=', new Carbon($startsAt))
+                       ->where('ends_at', '<=', new Carbon($endsAt));
     }
 
     /**

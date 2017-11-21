@@ -94,18 +94,18 @@ trait BookingScopes
     /**
      * Get bookings starts between the given dates.
      *
-     * @param string $starts
-     * @param string $ends
+     * @param string $startsAt
+     * @param string $endsAt
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsStartsBetween(string $starts, string $ends): MorphMany
+    public function bookingsStartsBetween(string $startsAt, string $endsAt): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
                     ->whereNotNull('starts_at')
-                    ->where('starts_at', '>', new Carbon($starts))
-                    ->where('starts_at', '<', new Carbon($ends));
+                    ->where('starts_at', '>', new Carbon($startsAt))
+                    ->where('starts_at', '<', new Carbon($endsAt));
     }
 
     /**
@@ -141,18 +141,18 @@ trait BookingScopes
     /**
      * Get bookings ends between the given dates.
      *
-     * @param string $starts
-     * @param string $ends
+     * @param string $startsAt
+     * @param string $endsAt
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsEndsBetween(string $starts, string $ends): MorphMany
+    public function bookingsEndsBetween(string $startsAt, string $endsAt): MorphMany
     {
         return $this->bookings()
                     ->whereNull('cancelled_at')
                     ->whereNotNull('ends_at')
-                    ->where('ends_at', '>', new Carbon($starts))
-                    ->where('ends_at', '<', new Carbon($ends));
+                    ->where('ends_at', '>', new Carbon($startsAt))
+                    ->where('ends_at', '<', new Carbon($endsAt));
     }
 
     /**
@@ -186,16 +186,16 @@ trait BookingScopes
     /**
      * Get bookings cancelled between the given dates.
      *
-     * @param string $starts
-     * @param string $ends
+     * @param string $startsAt
+     * @param string $endsAt
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsCancelledBetween(string $starts, string $ends): MorphMany
+    public function bookingsCancelledBetween(string $startsAt, string $endsAt): MorphMany
     {
         return $this->bookings()
                     ->whereNotNull('cancelled_at')
-                    ->where('cancelled_at', '>', new Carbon($starts))
-                    ->where('cancelled_at', '<', new Carbon($ends));
+                    ->where('cancelled_at', '>', new Carbon($startsAt))
+                    ->where('cancelled_at', '<', new Carbon($endsAt));
     }
 }
