@@ -46,6 +46,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofCustomer(\Illuminate\Database\Eloquent\Model $customer)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofResource(\Illuminate\Database\Eloquent\Model $resource)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking past()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking range()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBefore($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBetween($startsAt, $endsAt)
@@ -506,13 +507,18 @@ class Booking extends Model implements BookingContract
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeBetween(Builder $builder, string $startsAt, string $endsAt): Builder
+    public function scopeRange(Builder $builder, string $startsAt, string $endsAt): Builder
     {
         return $builder->whereNull('cancelled_at')
                        ->whereNotNull('starts_at')
-                       ->whereNotNull('ends_at')
                        ->where('starts_at', '>=', new Carbon($startsAt))
-                       ->where('ends_at', '<=', new Carbon($endsAt));
+                       ->where(function (Builder $builder) use ($endsAt) {
+                           $builder->whereNull('ends_at')
+                                 ->orWhere(function (Builder $builder) use ($endsAt) {
+                                     $builder->whereNotNull('ends_at')
+                                           ->where('ends_at', '<=', new Carbon($endsAt));
+                                 });
+                       });
     }
 
     /**
