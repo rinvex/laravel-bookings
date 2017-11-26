@@ -162,7 +162,7 @@ class Booking extends Model implements BookingContract
 
         static::validating(function (self $booking) {
             list($price, $priceEquation, $currency) = is_null($booking->price)
-                ? $booking->calculatePrice() : [$booking->price, $booking->price_equation, $booking->currency];
+                ? $booking->calculatePrice($booking->resource, $booking->starts_at, $booking->ends_at) : [$booking->price, $booking->price_equation, $booking->currency];
 
             $booking->price_equation = $priceEquation;
             $booking->currency = $currency;
@@ -173,11 +173,15 @@ class Booking extends Model implements BookingContract
     /**
      * Calculate the booking price.
      *
+     * @param \Illuminate\Database\Eloquent\Model $resource
+     * @param string                              $startsAt
+     * @param string                              $endsAt
+     *
      * @return array
      */
-    protected function calculatePrice(): array
+    public static function calculatePrice(Model $resource, Carbon $startsAt, Carbon $endsAt = null): array
     {
-        switch ($this->resource->unit) {
+        switch ($resource->unit) {
             case 'd':
                 $method = 'addDay';
                 break;
@@ -190,7 +194,7 @@ class Booking extends Model implements BookingContract
                 break;
         }
 
-        $prices = $this->resource->prices->map(function (PriceContract $price) {
+        $prices = $resource->prices->map(function (PriceContract $price) {
             return [
                 'weekday' => $price->weekday,
                 'starts_at' => $price->starts_at,
@@ -201,24 +205,23 @@ class Booking extends Model implements BookingContract
 
         $totalUnits = 0;
         $totalPrice = 0;
-
-        for ($date = $this->starts_at; $date->lte($this->ends_at); $date->$method()) {
+        for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->$method()) {
             // Count units
             $totalUnits++;
 
             // Get applicable custom prices. Use first custom price matched, and ignore
             // others. We should not have multiple custom prices for same time range anyway!
-            $customPrice = $prices->search(function ($price) use ($date) {
+            $customPrice = $prices->search(function ($price) use ($date, $resource) {
                 $dayMatched = $price['weekday'] === mb_strtolower($date->format('D'));
 
-                return $this->resource->unit === 'd' ? $dayMatched : $dayMatched && (new Carbon($date->format('H:i:s')))->between(new Carbon($price['starts_at']), new Carbon($price['ends_at']));
+                return $resource->unit === 'd' ? $dayMatched : $dayMatched && (new Carbon($date->format('H:i:s')))->between(new Carbon($price['starts_at']), new Carbon($price['ends_at']));
             });
 
             // Use custom price if exists (custom price is a +/- percentage of original resource price)
-            $totalPrice += $customPrice !== false ? $this->resource->price + (($this->resource->price * $prices[$customPrice]['percentage']) / 100) : $this->resource->price;
+            $totalPrice += $customPrice !== false ? $resource->price + (($resource->price * $prices[$customPrice]['percentage']) / 100) : $resource->price;
         }
 
-        $rates = $this->resource->rates->map(function (RateContract $rate) {
+        $rates = $resource->rates->map(function (RateContract $rate) {
             return [
                 'percentage' => $rate->percentage,
                 'operator' => $rate->operator,
@@ -230,32 +233,32 @@ class Booking extends Model implements BookingContract
             switch ($rate['operator']) {
                 case '^':
                     $units = $totalUnits <= $rate['amount'] ? $totalUnits : $rate['amount'];
-                    $totalPrice += (($rate['percentage'] * $this->resource->price) / 100) * $units;
+                    $totalPrice += (($rate['percentage'] * $resource->price) / 100) * $units;
                     break;
                 case '>':
-                    $totalPrice += $totalUnits > $rate['amount'] ? ((($rate['percentage'] * $this->resource->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits > $rate['amount'] ? ((($rate['percentage'] * $resource->price) / 100) * $totalUnits) : 0;
                     break;
                 case '<':
-                    $totalPrice += $totalUnits < $rate['amount'] ? ((($rate['percentage'] * $this->resource->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits < $rate['amount'] ? ((($rate['percentage'] * $resource->price) / 100) * $totalUnits) : 0;
                     break;
                 case '=':
                 default:
-                    $totalPrice += $totalUnits === $rate['amount'] ? ((($rate['percentage'] * $this->resource->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits === $rate['amount'] ? ((($rate['percentage'] * $resource->price) / 100) * $totalUnits) : 0;
                     break;
             }
         }
 
         $priceEquation = [
-            'price' => $this->resource->price,
-            'unit' => $this->resource->unit,
-            'currency' => $this->resource->currency,
+            'price' => $resource->price,
+            'unit' => $resource->unit,
+            'currency' => $resource->currency,
             'total_units' => $totalUnits,
             'total_price' => $totalPrice,
             'prices' => $prices,
             'rates' => $rates,
         ];
 
-        return [$totalPrice, $priceEquation, $this->resource->currency];
+        return [$totalPrice, $priceEquation, $resource->currency];
     }
 
     /**
