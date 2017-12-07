@@ -14,22 +14,22 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * Rinvex\Bookings\Models\Rate.
  *
  * @property int                                                $id
- * @property int                                                $resource_id
- * @property string                                             $resource_type
+ * @property int                                                $bookable_id
+ * @property string                                             $bookable_type
  * @property int                                                $percentage
  * @property string                                             $operator
  * @property int                                                $amount
  * @property \Carbon\Carbon|null                                $created_at
  * @property \Carbon\Carbon|null                                $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $resource
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereOperator($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate wherePercentage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereResourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereResourceType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereBookableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereBookableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereUpdatedAt($value)
  * @mixin \Eloquent
  */
@@ -42,8 +42,8 @@ class Rate extends Model implements RateContract
      * {@inheritdoc}
      */
     protected $fillable = [
-        'resource_id',
-        'resource_type',
+        'bookable_id',
+        'bookable_type',
         'percentage',
         'operator',
         'amount',
@@ -53,8 +53,8 @@ class Rate extends Model implements RateContract
      * {@inheritdoc}
      */
     protected $casts = [
-        'resource_id' => 'integer',
-        'resource_type' => 'string',
+        'bookable_id' => 'integer',
+        'bookable_type' => 'string',
         'percentage' => 'float',
         'operator' => 'string',
         'amount' => 'integer',
@@ -94,8 +94,8 @@ class Rate extends Model implements RateContract
 
         $this->setTable(config('rinvex.bookings.tables.rates'));
         $this->setRules([
-            'resource_id' => 'required|integer',
-            'resource_type' => 'required|string',
+            'bookable_id' => 'required|integer',
+            'bookable_type' => 'required|string',
             'percentage' => 'required|numeric|min:-100|max:100',
             'operator' => 'required|string|in:^,<,>,=',
             'amount' => 'required|integer|max:10000000',
@@ -107,7 +107,7 @@ class Rate extends Model implements RateContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function resource(): MorphTo
+    public function bookable(): MorphTo
     {
         return $this->morphTo();
     }

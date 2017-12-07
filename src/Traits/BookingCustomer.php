@@ -25,41 +25,41 @@ trait BookingCustomer
     /**
      * Get bookings of the given resource.
      *
-     * @param \Illuminate\Database\Eloquent\Model $resource
+     * @param \Illuminate\Database\Eloquent\Model $bookable
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsOfResource(Model $resource): MorphMany
+    public function bookingsOf(Model $bookable): MorphMany
     {
-        return $this->bookings()->where('resource_type', $resource->getMorphClass())->where('resource_id', $resource->getKey());
+        return $this->bookings()->where('bookable_type', $bookable->getMorphClass())->where('bookable_id', $bookable->getKey());
     }
 
     /**
      * Check if the person booked the given model.
      *
-     * @param \Illuminate\Database\Eloquent\Model $resource
+     * @param \Illuminate\Database\Eloquent\Model $bookable
      *
      * @return bool
      */
-    public function isBooked(Model $resource): bool
+    public function isBooked(Model $bookable): bool
     {
-        return $this->bookings()->where('resource_id', $resource->getKey())->exists();
+        return $this->bookings()->where('bookable_id', $bookable->getKey())->exists();
     }
 
     /**
      * Book the given model at the given dates with the given price.
      *
-     * @param \Illuminate\Database\Eloquent\Model $resource
+     * @param \Illuminate\Database\Eloquent\Model $bookable
      * @param string                              $startsAt
      * @param string                              $endsAt
      *
      * @return \Rinvex\Bookings\Models\Booking
      */
-    public function newBooking(Model $resource, string $startsAt, string $endsAt): Booking
+    public function newBooking(Model $bookable, string $startsAt, string $endsAt): Booking
     {
         return $this->bookings()->create([
-            'resource_id' => $resource->getKey(),
-            'resource_type' => $resource->getMorphClass(),
+            'bookable_id' => $bookable->getKey(),
+            'bookable_type' => $bookable->getMorphClass(),
             'customer_id' => $this->getKey(),
             'customer_type' => $this->getMorphClass(),
             'starts_at' => $startsAt,

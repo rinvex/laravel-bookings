@@ -14,22 +14,22 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * Rinvex\Bookings\Models\Price.
  *
  * @property int                                                $id
- * @property int                                                $resource_id
- * @property string                                             $resource_type
+ * @property int                                                $bookable_id
+ * @property string                                             $bookable_type
  * @property \Carbon\Carbon                                     $starts_at
  * @property \Carbon\Carbon                                     $ends_at
  * @property float                                              $percentage
  * @property \Carbon\Carbon|null                                $created_at
  * @property \Carbon\Carbon|null                                $updated_at
  * @property string                                             $weekday
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $resource
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereEndsAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price wherePercentage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereResourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereResourceType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereBookableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereBookableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereStartsAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereWeekday($value)
@@ -44,8 +44,8 @@ class Price extends Model implements PriceContract
      * {@inheritdoc}
      */
     protected $fillable = [
-        'resource_id',
-        'resource_type',
+        'bookable_id',
+        'bookable_type',
         'percentage',
         'weekday',
         'starts_at',
@@ -56,8 +56,8 @@ class Price extends Model implements PriceContract
      * {@inheritdoc}
      */
     protected $casts = [
-        'resource_id' => 'integer',
-        'resource_type' => 'string',
+        'bookable_id' => 'integer',
+        'bookable_type' => 'string',
         'percentage' => 'float',
         'weekday' => 'string',
         'starts_at' => 'string',
@@ -98,8 +98,8 @@ class Price extends Model implements PriceContract
 
         $this->setTable(config('rinvex.bookings.tables.prices'));
         $this->setRules([
-            'resource_id' => 'required|integer',
-            'resource_type' => 'required|string',
+            'bookable_id' => 'required|integer',
+            'bookable_type' => 'required|string',
             'percentage' => 'required|numeric|min:-100|max:100',
             'weekday' => 'required|string|in:sun,mon,tue,wed,thu,fri,sat',
             'starts_at' => 'required|date_format:"H:i:s"',
@@ -112,7 +112,7 @@ class Price extends Model implements PriceContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function resource(): MorphTo
+    public function bookable(): MorphTo
     {
         return $this->morphTo();
     }

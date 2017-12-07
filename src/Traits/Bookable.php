@@ -21,7 +21,7 @@ trait Bookable
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.booking'), 'resource');
+        return $this->morphMany(config('rinvex.bookings.models.booking'), 'bookable');
     }
 
     /**
@@ -31,7 +31,7 @@ trait Bookable
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsOfCustomer(Model $customer): MorphMany
+    public function bookingsOf(Model $customer): MorphMany
     {
         return $this->bookings()->where('customer_type', $customer->getMorphClass())->where('customer_id', $customer->getKey());
     }
@@ -43,7 +43,7 @@ trait Bookable
      */
     public function rates(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.rate'), 'resource');
+        return $this->morphMany(config('rinvex.bookings.models.rate'), 'bookable');
     }
 
     /**
@@ -53,7 +53,7 @@ trait Bookable
      */
     public function prices(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.price'), 'resource');
+        return $this->morphMany(config('rinvex.bookings.models.price'), 'bookable');
     }
 
     /**
@@ -68,8 +68,8 @@ trait Bookable
     public function newBooking(Model $customer, string $startsAt, string $endsAt): Booking
     {
         return $this->bookings()->create([
-            'resource_id' => static::getKey(),
-            'resource_type' => static::getMorphClass(),
+            'bookable_id' => static::getKey(),
+            'bookable_type' => static::getMorphClass(),
             'customer_id' => $customer->getKey(),
             'customer_type' => $customer->getMorphClass(),
             'starts_at' => (new Carbon($startsAt))->toDateTimeString(),
@@ -89,8 +89,8 @@ trait Bookable
     public function newRate(float $percentage, string $operator, int $amount): Rate
     {
         return $this->rates()->create([
-            'resource_id' => static::getKey(),
-            'resource_type' => static::getMorphClass(),
+            'bookable_id' => static::getKey(),
+            'bookable_type' => static::getMorphClass(),
             'percentage' => $percentage,
             'operator' => $operator,
             'amount' => $amount,
@@ -110,8 +110,8 @@ trait Bookable
     public function newPrice(string $weekday, string $startsAt, string $endsAt, float $percentage): Price
     {
         return $this->prices()->create([
-            'resource_id' => static::getKey(),
-            'resource_type' => static::getMorphClass(),
+            'bookable_id' => static::getKey(),
+            'bookable_type' => static::getMorphClass(),
             'percentage' => $percentage,
             'weekday' => $weekday,
             'starts_at' => (new Carbon($startsAt))->toTimeString(),

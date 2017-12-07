@@ -92,7 +92,7 @@ $customer->newBooking($room, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
 // Create a new booking explicitly
 $booking->make(['starts_at' => \Carbon\Carbon::now(), 'ends_at' => \Carbon\Carbon::tomorrow()])
         ->customer()->associate($customer)
-        ->resource()->associate($room)
+        ->bookable()->associate($room)
         ->save();
 ```
 
@@ -108,7 +108,7 @@ You can get more details about a specific booking as follows:
 ```php
 $booking = app('rinvex.bookings.booking')->find(1);
 
-$resource = $booking->resource; // Get the owning resource model
+$bookable = $booking->bookable; // Get the owning resource model
 $customer = $booking->customer; // Get the owning customer model
 
 $booking->isPast(); // Check if the booking is past
@@ -138,7 +138,7 @@ $bookingsCancelledBefore = app('rinvex.bookings.booking')->cancelledBefore('2017
 $bookingsCancelledBetween = app('rinvex.bookings.booking')->cancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
 $room = \App\Models\Room::find(1);
-$bookingsOfResource = app('rinvex.bookings.booking')->ofResource($room)->get(); // Get bookings of the given resource
+$bookingsOfBookable = app('rinvex.bookings.booking')->ofBookable($room)->get(); // Get bookings of the given resource
 
 $customer = \App\Models\Customer::find(1);
 $bookingsOfCustomer = app('rinvex.bookings.booking')->ofCustomer($customer)->get(); // Get bookings of the given customer
@@ -159,16 +159,17 @@ $room->newRate('-10', '>', 5); // Discount unit price by 10% if booking is great
 Alternatively you can create a new booking rate explicitly as follows:
 
 ```php
+$room = \App\Models\Room::find(1);
 $rate = app('rinvex.bookings.rate');
 $rate->make(['percentage' => '15', 'operator' => '^', 'amount' => 2])
-     ->resource()->associate(app('cortex.bookings.resource')->find(1))
+     ->bookable()->associate($room)
      ->save();
 ```
 
 And here's the booking rate relations:
 
 ```php
-$resource = $rate->resource; // Get the owning resource model
+$bookable = $rate->bookable; // Get the owning resource model
 ```
 
 > **Notes:**
@@ -192,7 +193,7 @@ Piece of cake, right? You just set the day, from-to times, and the +/- percentag
 And here's the custom price relations:
 
 ```php
-$resource = $room->resource; // Get the owning resource model
+$bookable = $room->bookable; // Get the owning resource model
 ```
 
 > **Notse:**
@@ -225,7 +226,7 @@ $room->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings sta
 $room->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
 $customer = \App\Models\Customer::find(1);
-$room->bookingsOfCustomer($customer)->get(); // Get bookings of the given customer
+$room->bookingsOf($customer)->get(); // Get bookings of the given customer
 
 $room->rates; // Get all booking rates
 $room->prices; // Get all custom prices
@@ -260,7 +261,7 @@ $customer->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00'
 
 $room = \App\Models\Room::find(1);
 $customer->isBooked($room); // Check if the customer booked the given room
-$customer->bookingsOfResource($room)->get(); // Get bookings by the customer for the given room
+$customer->bookingsOf($room)->get(); // Get bookings by the customer for the given room
 ```
 
 Just like resource models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$customer->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.

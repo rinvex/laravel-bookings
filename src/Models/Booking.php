@@ -18,8 +18,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * Rinvex\Bookings\Models\Booking.
  *
  * @property int                                                $id
- * @property int                                                $resource_id
- * @property string                                             $resource_type
+ * @property int                                                $bookable_id
+ * @property string                                             $bookable_type
  * @property string                                             $currency
  * @property int                                                $customer_id
  * @property string                                             $customer_type
@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string                                             $notes
  * @property \Carbon\Carbon|null                                $created_at
  * @property \Carbon\Carbon|null                                $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $resource
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $customer
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelled()
@@ -43,8 +43,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBefore($date)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBetween($startsAt, $endsAt)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking future()
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofBookable(\Illuminate\Database\Eloquent\Model $bookable)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofCustomer(\Illuminate\Database\Eloquent\Model $customer)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofResource(\Illuminate\Database\Eloquent\Model $resource)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking past()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking range()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
@@ -60,8 +60,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking wherePriceEquation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereResourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereResourceType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereStartsAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUpdatedAt($value)
  * @mixin \Eloquent
@@ -75,8 +75,8 @@ class Booking extends Model implements BookingContract
      * {@inheritdoc}
      */
     protected $fillable = [
-        'resource_id',
-        'resource_type',
+        'bookable_id',
+        'bookable_type',
         'customer_id',
         'customer_type',
         'starts_at',
@@ -92,8 +92,8 @@ class Booking extends Model implements BookingContract
      * {@inheritdoc}
      */
     protected $casts = [
-        'resource_id' => 'integer',
-        'resource_type' => 'string',
+        'bookable_id' => 'integer',
+        'bookable_type' => 'string',
         'customer_id' => 'integer',
         'customer_type' => 'string',
         'starts_at' => 'datetime',
@@ -139,8 +139,8 @@ class Booking extends Model implements BookingContract
 
         $this->setTable(config('rinvex.bookings.tables.bookings'));
         $this->setRules([
-            'resource_id' => 'required|integer',
-            'resource_type' => 'required|string',
+            'bookable_id' => 'required|integer',
+            'bookable_type' => 'required|string',
             'customer_id' => 'required|integer',
             'customer_type' => 'required|string',
             'starts_at' => 'required|date',
@@ -162,7 +162,7 @@ class Booking extends Model implements BookingContract
 
         static::validating(function (self $booking) {
             list($price, $priceEquation, $currency) = is_null($booking->price)
-                ? $booking->calculatePrice($booking->resource, $booking->starts_at, $booking->ends_at) : [$booking->price, $booking->price_equation, $booking->currency];
+                ? $booking->calculatePrice($booking->bookable, $booking->starts_at, $booking->ends_at) : [$booking->price, $booking->price_equation, $booking->currency];
 
             $booking->price_equation = $priceEquation;
             $booking->currency = $currency;
@@ -173,15 +173,15 @@ class Booking extends Model implements BookingContract
     /**
      * Calculate the booking price.
      *
-     * @param \Illuminate\Database\Eloquent\Model $resource
+     * @param \Illuminate\Database\Eloquent\Model $bookable
      * @param string                              $startsAt
      * @param string                              $endsAt
      *
      * @return array
      */
-    public static function calculatePrice(Model $resource, Carbon $startsAt, Carbon $endsAt = null): array
+    public static function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null): array
     {
-        switch ($resource->unit) {
+        switch ($bookable->unit) {
             case 'd':
                 $method = 'addDay';
                 break;
@@ -194,7 +194,7 @@ class Booking extends Model implements BookingContract
                 break;
         }
 
-        $prices = $resource->prices->map(function (PriceContract $price) {
+        $prices = $bookable->prices->map(function (PriceContract $price) {
             return [
                 'weekday' => $price->weekday,
                 'starts_at' => $price->starts_at,
@@ -211,17 +211,17 @@ class Booking extends Model implements BookingContract
 
             // Get applicable custom prices. Use first custom price matched, and ignore
             // others. We should not have multiple custom prices for same time range anyway!
-            $customPrice = $prices->search(function ($price) use ($date, $resource) {
+            $customPrice = $prices->search(function ($price) use ($date, $bookable) {
                 $dayMatched = $price['weekday'] === mb_strtolower($date->format('D'));
 
-                return $resource->unit === 'd' ? $dayMatched : $dayMatched && (new Carbon($date->format('H:i:s')))->between(new Carbon($price['starts_at']), new Carbon($price['ends_at']));
+                return $bookable->unit === 'd' ? $dayMatched : $dayMatched && (new Carbon($date->format('H:i:s')))->between(new Carbon($price['starts_at']), new Carbon($price['ends_at']));
             });
 
             // Use custom price if exists (custom price is a +/- percentage of original resource price)
-            $totalPrice += $customPrice !== false ? $resource->price + (($resource->price * $prices[$customPrice]['percentage']) / 100) : $resource->price;
+            $totalPrice += $customPrice !== false ? $bookable->price + (($bookable->price * $prices[$customPrice]['percentage']) / 100) : $bookable->price;
         }
 
-        $rates = $resource->rates->map(function (RateContract $rate) {
+        $rates = $bookable->rates->map(function (RateContract $rate) {
             return [
                 'percentage' => $rate->percentage,
                 'operator' => $rate->operator,
@@ -233,32 +233,32 @@ class Booking extends Model implements BookingContract
             switch ($rate['operator']) {
                 case '^':
                     $units = $totalUnits <= $rate['amount'] ? $totalUnits : $rate['amount'];
-                    $totalPrice += (($rate['percentage'] * $resource->price) / 100) * $units;
+                    $totalPrice += (($rate['percentage'] * $bookable->price) / 100) * $units;
                     break;
                 case '>':
-                    $totalPrice += $totalUnits > $rate['amount'] ? ((($rate['percentage'] * $resource->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits > $rate['amount'] ? ((($rate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
                     break;
                 case '<':
-                    $totalPrice += $totalUnits < $rate['amount'] ? ((($rate['percentage'] * $resource->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits < $rate['amount'] ? ((($rate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
                     break;
                 case '=':
                 default:
-                    $totalPrice += $totalUnits === $rate['amount'] ? ((($rate['percentage'] * $resource->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits === $rate['amount'] ? ((($rate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
                     break;
             }
         }
 
         $priceEquation = [
-            'price' => $resource->price,
-            'unit' => $resource->unit,
-            'currency' => $resource->currency,
+            'price' => $bookable->price,
+            'unit' => $bookable->unit,
+            'currency' => $bookable->currency,
             'total_units' => $totalUnits,
             'total_price' => $totalPrice,
             'prices' => $prices,
             'rates' => $rates,
         ];
 
-        return [$totalPrice, $priceEquation, $resource->currency];
+        return [$totalPrice, $priceEquation, $bookable->currency];
     }
 
     /**
@@ -266,7 +266,7 @@ class Booking extends Model implements BookingContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function resource(): MorphTo
+    public function bookable(): MorphTo
     {
         return $this->morphTo();
     }
@@ -285,13 +285,13 @@ class Booking extends Model implements BookingContract
      * Get bookings of the given resource.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \Illuminate\Database\Eloquent\Model   $resource
+     * @param \Illuminate\Database\Eloquent\Model   $bookable
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOfResource(Builder $builder, Model $resource): Builder
+    public function scopeOfBookable(Builder $builder, Model $bookable): Builder
     {
-        return $builder->where('resource_type', $resource->getMorphClass())->where('resource_id', $resource->getKey());
+        return $builder->where('bookable_type', $bookable->getMorphClass())->where('bookable_id', $bookable->getKey());
     }
 
     /**

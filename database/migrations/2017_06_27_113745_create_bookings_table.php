@@ -18,7 +18,7 @@ class CreateBookingsTable extends Migration
         Schema::create(config('rinvex.bookings.tables.bookings'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
-            $table->morphs('resource');
+            $table->morphs('bookable');
             $table->morphs('customer');
             $table->string('currency', 3);
             $table->timestamp('starts_at');

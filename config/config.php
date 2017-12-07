@@ -7,8 +7,8 @@ return [
     // Bookings Database Tables
     'tables' => [
         'bookings' => 'bookings',
-        'rates' => 'booking_rates',
-        'prices' => 'booking_prices',
+        'rates' => 'bookable_rates',
+        'prices' => 'bookable_prices',
     ],
 
     // Bookings Models
