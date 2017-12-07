@@ -10,6 +10,7 @@ use Rinvex\Bookings\Contracts\PriceContract;
 use Rinvex\Bookings\Contracts\BookingContract;
 use Rinvex\Bookings\Console\Commands\MigrateCommand;
 use Rinvex\Bookings\Console\Commands\PublishCommand;
+use Rinvex\Bookings\Console\Commands\RollbackCommand;
 
 class BookingsServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,7 @@ class BookingsServiceProvider extends ServiceProvider
     protected $commands = [
         MigrateCommand::class => 'command.rinvex.bookings.migrate',
         PublishCommand::class => 'command.rinvex.bookings.publish',
+        RollbackCommand::class => 'command.rinvex.bookings.rollback',
     ];
 
     /**
