@@ -6,7 +6,6 @@
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/rinvex/bookings.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/rinvex/bookings/)
 [![Code Climate](https://img.shields.io/codeclimate/github/rinvex/bookings.svg?label=CodeClimate&style=flat-square)](https://codeclimate.com/github/rinvex/bookings)
 [![Travis](https://img.shields.io/travis/rinvex/bookings.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/rinvex/bookings)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/1592b83c-f836-4b30-aef3-d997accf9de4.svg?label=SensioLabs&style=flat-square)](https://insight.sensiolabs.com/projects/1592b83c-f836-4b30-aef3-d997accf9de4)
 [![StyleCI](https://styleci.io/repos/96481479/shield)](https://styleci.io/repos/96481479)
 [![License](https://img.shields.io/packagist/l/rinvex/bookings.svg?label=License&style=flat-square)](https://github.com/rinvex/bookings/blob/develop/LICENSE)
 
@@ -76,7 +75,7 @@ Again, that's all you need to do! Now your Customer model can book resources.
 
 ### Create a new booking
 
-Creating a new booking is straightforward, and could be done in many ways. Let's see how could we do that:
+Creating a new booking is straight forward, and could be done in many ways. Let's see how could we do that:
 
 ```php
 $room = \App\Models\Room::find(1);
