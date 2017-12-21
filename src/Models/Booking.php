@@ -118,7 +118,19 @@ class Booking extends Model implements BookingContract
      *
      * @var array
      */
-    protected $rules = [];
+    protected $rules = [
+        'bookable_id' => 'required|integer',
+        'bookable_type' => 'required|string',
+        'customer_id' => 'required|integer',
+        'customer_type' => 'required|string',
+        'starts_at' => 'required|date',
+        'ends_at' => 'required|date',
+        'price' => 'required|numeric',
+        'currency' => 'required|alpha|size:3',
+        'price_equation' => 'nullable|array',
+        'cancelled_at' => 'nullable|date',
+        'notes' => 'nullable|string|max:10000',
+    ];
 
     /**
      * Whether the model should throw a
@@ -138,19 +150,6 @@ class Booking extends Model implements BookingContract
         parent::__construct($attributes);
 
         $this->setTable(config('rinvex.bookings.tables.bookings'));
-        $this->setRules([
-            'bookable_id' => 'required|integer',
-            'bookable_type' => 'required|string',
-            'customer_id' => 'required|integer',
-            'customer_type' => 'required|string',
-            'starts_at' => 'required|date',
-            'ends_at' => 'required|date',
-            'price' => 'required|numeric',
-            'currency' => 'required|alpha|size:3',
-            'price_equation' => 'nullable|array',
-            'cancelled_at' => 'nullable|date',
-            'notes' => 'nullable|string|max:10000',
-        ]);
     }
 
     /**

@@ -77,7 +77,14 @@ class Price extends Model implements PriceContract
      *
      * @var array
      */
-    protected $rules = [];
+    protected $rules = [
+        'bookable_id' => 'required|integer',
+        'bookable_type' => 'required|string',
+        'percentage' => 'required|numeric|min:-100|max:100',
+        'weekday' => 'required|string|in:sun,mon,tue,wed,thu,fri,sat',
+        'starts_at' => 'required|date_format:"H:i:s"',
+        'ends_at' => 'required|date_format:"H:i:s"',
+    ];
 
     /**
      * Whether the model should throw a
@@ -97,14 +104,6 @@ class Price extends Model implements PriceContract
         parent::__construct($attributes);
 
         $this->setTable(config('rinvex.bookings.tables.prices'));
-        $this->setRules([
-            'bookable_id' => 'required|integer',
-            'bookable_type' => 'required|string',
-            'percentage' => 'required|numeric|min:-100|max:100',
-            'weekday' => 'required|string|in:sun,mon,tue,wed,thu,fri,sat',
-            'starts_at' => 'required|date_format:"H:i:s"',
-            'ends_at' => 'required|date_format:"H:i:s"',
-        ]);
     }
 
     /**

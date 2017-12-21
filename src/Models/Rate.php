@@ -73,7 +73,13 @@ class Rate extends Model implements RateContract
      *
      * @var array
      */
-    protected $rules = [];
+    protected $rules = [
+        'bookable_id' => 'required|integer',
+        'bookable_type' => 'required|string',
+        'percentage' => 'required|numeric|min:-100|max:100',
+        'operator' => 'required|string|in:^,<,>,=',
+        'amount' => 'required|integer|max:10000000',
+    ];
 
     /**
      * Whether the model should throw a
@@ -93,13 +99,6 @@ class Rate extends Model implements RateContract
         parent::__construct($attributes);
 
         $this->setTable(config('rinvex.bookings.tables.rates'));
-        $this->setRules([
-            'bookable_id' => 'required|integer',
-            'bookable_type' => 'required|string',
-            'percentage' => 'required|numeric|min:-100|max:100',
-            'operator' => 'required|string|in:^,<,>,=',
-            'amount' => 'required|integer|max:10000000',
-        ]);
     }
 
     /**
