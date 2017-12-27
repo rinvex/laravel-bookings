@@ -21,8 +21,8 @@ class CreateBookingsTable extends Migration
             $table->morphs('bookable');
             $table->morphs('customer');
             $table->string('currency', 3);
-            $table->timestamp('starts_at');
-            $table->timestamp('ends_at');
+            $table->timestamp('starts_at')->useCurrent();
+            $table->timestamp('ends_at')->useCurrent();
             $table->decimal('price')->default('0.00');
             $table->{$this->jsonable()}('price_equation')->nullable();
             $table->timestamp('cancelled_at')->nullable();
