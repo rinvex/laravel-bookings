@@ -231,7 +231,7 @@ $room->rates; // Get all booking rates
 $room->prices; // Get all custom prices
 ```
 
-All the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$room->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
+All the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$room->bookings()->where('starts_at', '>', new \Carbon\Carbon())->first()`.
 
 ### Query customer models
 
@@ -263,7 +263,7 @@ $customer->isBooked($room); // Check if the customer booked the given room
 $customer->bookingsOf($room)->get(); // Get bookings by the customer for the given room
 ```
 
-Just like resource models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$customer->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
+Just like resource models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$customer->bookings()->where('starts_at', '>', new \Carbon\Carbon())->first()`.
 
 
 ## Changelog

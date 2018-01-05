@@ -317,7 +317,7 @@ class Booking extends Model implements BookingContract
     {
         return $builder->whereNull('cancelled_at')
                        ->whereNotNull('ends_at')
-                       ->where('ends_at', '<', Carbon::now());
+                       ->where('ends_at', '<', now());
     }
 
     /**
@@ -331,7 +331,7 @@ class Booking extends Model implements BookingContract
     {
         return $builder->whereNull('cancelled_at')
                        ->whereNotNull('starts_at')
-                       ->where('starts_at', '>', Carbon::now());
+                       ->where('starts_at', '>', now());
     }
 
     /**
@@ -346,8 +346,8 @@ class Booking extends Model implements BookingContract
         return $builder->whereNull('cancelled_at')
                        ->whereNotNull('starts_at')
                        ->whereNotNull('ends_at')
-                       ->where('starts_at', '<', Carbon::now())
-                       ->where('ends_at', '>', Carbon::now());
+                       ->where('starts_at', '<', now())
+                       ->where('ends_at', '>', now());
     }
 
     /**
@@ -560,6 +560,6 @@ class Booking extends Model implements BookingContract
      */
     public function isCurrent(): bool
     {
-        return ! $this->isCancelled() && Carbon::now()->between($this->starts_at, $this->ends_at);
+        return ! $this->isCancelled() && now()->between($this->starts_at, $this->ends_at);
     }
 }
