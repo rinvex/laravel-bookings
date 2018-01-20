@@ -7,7 +7,6 @@ namespace Rinvex\Bookings\Models;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Rinvex\Support\Traits\ValidatingTrait;
-use Rinvex\Bookings\Contracts\RateContract;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -33,7 +32,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Rate extends Model implements RateContract
+class Rate extends Model
 {
     use ValidatingTrait;
     use CacheableEloquent;

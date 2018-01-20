@@ -7,7 +7,6 @@ namespace Rinvex\Bookings\Models;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Rinvex\Support\Traits\ValidatingTrait;
-use Rinvex\Bookings\Contracts\PriceContract;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -35,7 +34,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Price whereWeekday($value)
  * @mixin \Eloquent
  */
-class Price extends Model implements PriceContract
+class Price extends Model
 {
     use ValidatingTrait;
     use CacheableEloquent;

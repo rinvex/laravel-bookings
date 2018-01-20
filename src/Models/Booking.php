@@ -9,9 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\ValidatingTrait;
-use Rinvex\Bookings\Contracts\RateContract;
-use Rinvex\Bookings\Contracts\PriceContract;
-use Rinvex\Bookings\Contracts\BookingContract;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -66,7 +63,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Booking extends Model implements BookingContract
+class Booking extends Model
 {
     use ValidatingTrait;
     use CacheableEloquent;
@@ -193,7 +190,7 @@ class Booking extends Model implements BookingContract
                 break;
         }
 
-        $prices = $bookable->prices->map(function (PriceContract $price) {
+        $prices = $bookable->prices->map(function (Price $price) {
             return [
                 'weekday' => $price->weekday,
                 'starts_at' => $price->starts_at,
@@ -220,7 +217,7 @@ class Booking extends Model implements BookingContract
             $totalPrice += $customPrice !== false ? $bookable->price + (($bookable->price * $prices[$customPrice]['percentage']) / 100) : $bookable->price;
         }
 
-        $rates = $bookable->rates->map(function (RateContract $rate) {
+        $rates = $bookable->rates->map(function (Rate $rate) {
             return [
                 'percentage' => $rate->percentage,
                 'operator' => $rate->operator,
