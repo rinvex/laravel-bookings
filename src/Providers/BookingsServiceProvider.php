@@ -35,20 +35,14 @@ class BookingsServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(realpath(__DIR__.'/../../config/config.php'), 'rinvex.bookings');
 
         // Bind eloquent models to IoC container
-        $this->app->singleton('rinvex.bookings.booking', function ($app) {
-            return new $app['config']['rinvex.bookings.models.booking']();
-        });
-        $this->app->alias('rinvex.bookings.booking', Booking::class);
+        $this->app->singleton('rinvex.bookings.booking', $bookingModel = $this->app['config']['rinvex.bookings.models.booking']);
+        $bookingModel === Booking::class || $this->app->alias('rinvex.bookings.booking', Booking::class);
 
-        $this->app->singleton('rinvex.bookings.rate', function ($app) {
-            return new $app['config']['rinvex.bookings.models.rate']();
-        });
-        $this->app->alias('rinvex.bookings.rate', Rate::class);
+        $this->app->singleton('rinvex.bookings.rate', $rateModel = $this->app['config']['rinvex.bookings.models.rate']);
+        $rateModel === Rate::class || $this->app->alias('rinvex.bookings.rate', Rate::class);
 
-        $this->app->singleton('rinvex.bookings.price', function ($app) {
-            return new $app['config']['rinvex.bookings.models.price']();
-        });
-        $this->app->alias('rinvex.bookings.price', Price::class);
+        $this->app->singleton('rinvex.bookings.price', $priceModel = $this->app['config']['rinvex.bookings.models.price']);
+        $priceModel === Price::class || $this->app->alias('rinvex.bookings.price', Price::class);
 
         // Register console commands
         ! $this->app->runningInConsole() || $this->registerCommands();
@@ -88,9 +82,7 @@ class BookingsServiceProvider extends ServiceProvider
     {
         // Register artisan commands
         foreach ($this->commands as $key => $value) {
-            $this->app->singleton($value, function ($app) use ($key) {
-                return new $key();
-            });
+            $this->app->singleton($value, $key);
         }
 
         $this->commands(array_values($this->commands));
