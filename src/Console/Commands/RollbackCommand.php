@@ -13,7 +13,7 @@ class RollbackCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'rinvex:rollback:bookings';
+    protected $signature = 'rinvex:rollback:bookings {--force : Force the operation to run when in production.}';
 
     /**
      * The console command description.
@@ -30,6 +30,6 @@ class RollbackCommand extends Command
     public function handle(): void
     {
         $this->warn($this->description);
-        $this->call('migrate:reset', ['--path' => 'vendor/rinvex/bookings/database/migrations']);
+        $this->call('migrate:reset', ['--path' => 'vendor/rinvex/bookings/database/migrations', '--force' => $this->option('force')]);
     }
 }
