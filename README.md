@@ -57,17 +57,17 @@ That's it, you only have to use that trait in your Room model! Now your rooms wi
 
 ### Add bookable functionality to your customer model
 
-To add bookable functionality to your customer model just use the `\Rinvex\Bookings\Traits\BookingCustomer` trait like this:
+To add bookable functionality to your customer model just use the `\Rinvex\Bookings\Traits\HasBookings` trait like this:
 
 ```php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Traits\BookingCustomer;
+use Rinvex\Bookings\Traits\HasBookings;
 
 class Customer extends Model
 {
-    use BookingCustomer;
+    use HasBookings;
 }
 ```
 

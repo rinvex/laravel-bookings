@@ -8,7 +8,7 @@ use Rinvex\Bookings\Models\Booking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-trait BookingCustomer
+trait HasBookings
 {
     use BookingScopes;
 
