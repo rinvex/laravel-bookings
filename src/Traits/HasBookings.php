@@ -26,13 +26,13 @@ trait HasBookings
     abstract public function morphMany($related, $name, $type = null, $id = null, $localKey = null);
 
     /**
-     * The customer may have many bookings.
+     * The user may have many bookings.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.booking'), 'customer');
+        return $this->morphMany(config('rinvex.bookings.models.booking'), 'user');
     }
 
     /**
@@ -73,8 +73,8 @@ trait HasBookings
         return $this->bookings()->create([
             'bookable_id' => $bookable->getKey(),
             'bookable_type' => $bookable->getMorphClass(),
-            'customer_id' => $this->getKey(),
-            'customer_type' => $this->getMorphClass(),
+            'user_id' => $this->getKey(),
+            'user_type' => $this->getMorphClass(),
             'starts_at' => $startsAt,
             'ends_at' => $endsAt,
         ]);

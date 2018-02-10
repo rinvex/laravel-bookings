@@ -19,7 +19,7 @@ class CreateBookingsTable extends Migration
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
-            $table->morphs('customer');
+            $table->morphs('user');
             $table->string('currency', 3);
             $table->timestamp('starts_at')->useCurrent();
             $table->timestamp('ends_at')->useCurrent();

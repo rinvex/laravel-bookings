@@ -55,9 +55,9 @@ class Room extends Model
 
 That's it, you only have to use that trait in your Room model! Now your rooms will be bookable.
 
-### Add bookable functionality to your customer model
+### Add bookable functionality to your user model
 
-To add bookable functionality to your customer model just use the `\Rinvex\Bookings\Traits\HasBookings` trait like this:
+To add bookable functionality to your user model just use the `\Rinvex\Bookings\Traits\HasBookings` trait like this:
 
 ```php
 namespace App\Models;
@@ -65,13 +65,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Bookings\Traits\HasBookings;
 
-class Customer extends Model
+class User extends Model
 {
     use HasBookings;
 }
 ```
 
-Again, that's all you need to do! Now your Customer model can book resources.
+Again, that's all you need to do! Now your User model can book resources.
 
 ### Create a new booking
 
@@ -79,18 +79,18 @@ Creating a new booking is straight forward, and could be done in many ways. Let'
 
 ```php
 $room = \App\Models\Room::find(1);
-$customer = \App\Models\Customer::find(1);
+$user = \App\Models\User::find(1);
 $booking = app('rinvex.bookings.booking');
 
-// Create a new booking via resource model (customer, starts, ends)
-$room->newBooking($customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
+// Create a new booking via resource model (user, starts, ends)
+$room->newBooking($user, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
 
-// Create a new booking via customer model (resource, starts, ends)
-$customer->newBooking($room, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
+// Create a new booking via user model (resource, starts, ends)
+$user->newBooking($room, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
 
 // Create a new booking explicitly
 $booking->make(['starts_at' => \Carbon\Carbon::now(), 'ends_at' => \Carbon\Carbon::tomorrow()])
-        ->customer()->associate($customer)
+        ->user()->associate($user)
         ->bookable()->associate($room)
         ->save();
 ```
@@ -108,7 +108,7 @@ You can get more details about a specific booking as follows:
 $booking = app('rinvex.bookings.booking')->find(1);
 
 $bookable = $booking->bookable; // Get the owning resource model
-$customer = $booking->customer; // Get the owning customer model
+$user = $booking->user; // Get the owning user model
 
 $booking->isPast(); // Check if the booking is past
 $booking->isFuture(); // Check if the booking is future
@@ -139,8 +139,8 @@ $bookingsCancelledBetween = app('rinvex.bookings.booking')->cancelledBetween('20
 $room = \App\Models\Room::find(1);
 $bookingsOfBookable = app('rinvex.bookings.booking')->ofBookable($room)->get(); // Get bookings of the given resource
 
-$customer = \App\Models\Customer::find(1);
-$bookingsOfCustomer = app('rinvex.bookings.booking')->ofCustomer($customer)->get(); // Get bookings of the given customer
+$user = \App\Models\User::find(1);
+$bookingsOfUser = app('rinvex.bookings.booking')->ofUser($user)->get(); // Get bookings of the given user
 ```
 
 ### Create a new booking rate
@@ -224,8 +224,8 @@ $room->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings st
 $room->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
 $room->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$customer = \App\Models\Customer::find(1);
-$room->bookingsOf($customer)->get(); // Get bookings of the given customer
+$user = \App\Models\User::find(1);
+$room->bookingsOf($user)->get(); // Get bookings of the given user
 
 $room->rates; // Get all booking rates
 $room->prices; // Get all custom prices
@@ -233,37 +233,37 @@ $room->prices; // Get all custom prices
 
 All the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$room->bookings()->where('starts_at', '>', new \Carbon\Carbon())->first()`.
 
-### Query customer models
+### Query user models
 
-Just like how you query your resources, you can query customers to retrieve related booking info easily. Look at these examples:
+Just like how you query your resources, you can query users to retrieve related booking info easily. Look at these examples:
 
 ```php
-$customer = \App\Models\Customer::find(1);
+$user = \App\Models\User::find(1);
 
-$customer->bookings; // Get all bookings
-$customer->pastBookings; // Get past bookings
-$customer->futureBookings; // Get future bookings
-$customer->currentBookings; // Get current bookings
-$customer->cancelledBookings; // Get cancelled bookings
+$user->bookings; // Get all bookings
+$user->pastBookings; // Get past bookings
+$user->futureBookings; // Get future bookings
+$user->currentBookings; // Get current bookings
+$user->cancelledBookings; // Get cancelled bookings
 
-$customer->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$customer->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$customer->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$user->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$user->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$user->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$customer->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$customer->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$customer->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$user->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$user->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$user->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$customer->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$customer->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$customer->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$user->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$user->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$user->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
 $room = \App\Models\Room::find(1);
-$customer->isBooked($room); // Check if the customer booked the given room
-$customer->bookingsOf($room)->get(); // Get bookings by the customer for the given room
+$user->isBooked($room); // Check if the user booked the given room
+$user->bookingsOf($room)->get(); // Get bookings by the user for the given room
 ```
 
-Just like resource models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$customer->bookings()->where('starts_at', '>', new \Carbon\Carbon())->first()`.
+Just like resource models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$user->bookings()->where('starts_at', '>', new \Carbon\Carbon())->first()`.
 
 
 ## Changelog

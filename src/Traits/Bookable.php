@@ -25,15 +25,15 @@ trait Bookable
     }
 
     /**
-     * Get bookings of the given customer.
+     * Get bookings of the given user.
      *
-     * @param \Illuminate\Database\Eloquent\Model $customer
+     * @param \Illuminate\Database\Eloquent\Model $user
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bookingsOf(Model $customer): MorphMany
+    public function bookingsOf(Model $user): MorphMany
     {
-        return $this->bookings()->where('customer_type', $customer->getMorphClass())->where('customer_id', $customer->getKey());
+        return $this->bookings()->where('user_type', $user->getMorphClass())->where('user_id', $user->getKey());
     }
 
     /**
@@ -59,19 +59,19 @@ trait Bookable
     /**
      * Book the model for the given user at the given dates with the given price.
      *
-     * @param \Illuminate\Database\Eloquent\Model $customer
+     * @param \Illuminate\Database\Eloquent\Model $user
      * @param string                              $startsAt
      * @param string                              $endsAt
      *
      * @return \Rinvex\Bookings\Models\Booking
      */
-    public function newBooking(Model $customer, string $startsAt, string $endsAt): Booking
+    public function newBooking(Model $user, string $startsAt, string $endsAt): Booking
     {
         return $this->bookings()->create([
             'bookable_id' => static::getKey(),
             'bookable_type' => static::getMorphClass(),
-            'customer_id' => $customer->getKey(),
-            'customer_type' => $customer->getMorphClass(),
+            'user_id' => $user->getKey(),
+            'user_type' => $user->getMorphClass(),
             'starts_at' => (new Carbon($startsAt))->toDateTimeString(),
             'ends_at' => (new Carbon($endsAt))->toDateTimeString(),
         ]);
