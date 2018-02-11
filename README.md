@@ -145,7 +145,7 @@ $bookingsOfUser = app('rinvex.bookings.booking')->ofUser($user)->get(); // Get b
 
 ### Create a new booking rate
 
-Booking rates are special criteria used to modify the default booking price. For example, let’s assume that you have a resource charged per hour, and you need to set a higher price for the first "2" hours to cover certain costs, while discounting pricing if booked more than "5" hours. That’s totally achievable through booking rates. Simply set the amount of units to apply this criteria on, and state the percentage you’d like to have increased or decreased from the default price using +/- signs, i.e. -10%, and of course select the operator from: (`**^**` means the first starting X units, `**<**` means when booking is less than X units, `**>**` means when booking is greater than X units). Allowed percentages could be between -100% and +100%.
+Booking rates are special criteria used to modify the default booking price. For example, let’s assume that you have a resource charged per hour, and you need to set a higher price for the first "2" hours to cover certain costs, while discounting pricing if booked more than "5" hours. That’s totally achievable through booking rates. Simply set the amount of units to apply this criteria on, and state the percentage you’d like to have increased or decreased from the default price using +/- signs, i.e. -10%, and of course select the operator from: (**`^`** means the first starting X units, **`<`** means when booking is less than X units, **`>`** means when booking is greater than X units). Allowed percentages could be between -100% and +100%.
 
 To create a new booking rate, follow these steps:
 
@@ -195,7 +195,7 @@ And here's the custom price relations:
 $bookable = $room->bookable; // Get the owning resource model
 ```
 
-> **Notse:**
+> **Notes:**
 > - If you don't create any custom prices, then the resource will be booked at the default resource price.
 > - **Rinvex Bookings** is intelegent enough to detect time format and convert if required, the above example show the explicitly correct format, but you still can write something like: '09:00 am' and it will be converted automatically for you.
 
