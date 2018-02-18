@@ -13,30 +13,21 @@ class CreateBookingsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        // Get users model
-        $userModel = config('auth.providers.'.config('auth.guards.'.config('auth.defaults.guard').'.provider').'.model');
-
-        Schema::create(config('rinvex.bookings.tables.bookings'), function (Blueprint $table) use ($userModel) {
+        Schema::create(config('rinvex.bookings.tables.bookings'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
-            $table->integer('customer_id')->unsigned();
-            $table->integer('agent_id')->unsigned();
-            $table->timestamp('starts_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
+            $table->morphs('user');
+            $table->string('currency', 3);
+            $table->timestamp('starts_at')->useCurrent();
+            $table->timestamp('ends_at')->useCurrent();
             $table->decimal('price')->default('0.00');
             $table->{$this->jsonable()}('price_equation')->nullable();
             $table->timestamp('cancelled_at')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
-
-            // Indexes
-            $table->foreign('customer_id')->references('id')->on((new $userModel())->getTable())
-                  ->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('agent_id')->references('id')->on((new $userModel())->getTable())
-                  ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -45,7 +36,7 @@ class CreateBookingsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists(config('rinvex.bookings.tables.bookings'));
     }
@@ -55,7 +46,7 @@ class CreateBookingsTable extends Migration
      *
      * @return string
      */
-    protected function jsonable()
+    protected function jsonable(): string
     {
         return DB::connection()->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql'
                && version_compare(DB::connection()->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION), '5.7.8', 'ge')

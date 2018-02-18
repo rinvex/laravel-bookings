@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Rinvex\Bookings\Providers;
 
+use Rinvex\Bookings\Models\Rate;
+use Rinvex\Bookings\Models\Price;
+use Rinvex\Bookings\Models\Booking;
 use Illuminate\Support\ServiceProvider;
-use Rinvex\Bookings\Contracts\BookingContract;
-use Rinvex\Bookings\Contracts\BookingRateContract;
 use Rinvex\Bookings\Console\Commands\MigrateCommand;
-use Rinvex\Bookings\Contracts\BookingAvailabilityContract;
+use Rinvex\Bookings\Console\Commands\PublishCommand;
+use Rinvex\Bookings\Console\Commands\RollbackCommand;
 
 class BookingsServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,8 @@ class BookingsServiceProvider extends ServiceProvider
      */
     protected $commands = [
         MigrateCommand::class => 'command.rinvex.bookings.migrate',
+        PublishCommand::class => 'command.rinvex.bookings.publish',
+        RollbackCommand::class => 'command.rinvex.bookings.rollback',
     ];
 
     /**
@@ -26,25 +30,19 @@ class BookingsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(realpath(__DIR__.'/../../config/config.php'), 'rinvex.bookings');
 
         // Bind eloquent models to IoC container
-        $this->app->singleton('rinvex.bookings.booking', function ($app) {
-            return new $app['config']['rinvex.bookings.models.booking']();
-        });
-        $this->app->alias('rinvex.bookings.booking', BookingContract::class);
+        $this->app->singleton('rinvex.bookings.booking', $bookingModel = $this->app['config']['rinvex.bookings.models.booking']);
+        $bookingModel === Booking::class || $this->app->alias('rinvex.bookings.booking', Booking::class);
 
-        $this->app->singleton('rinvex.bookings.booking_rate', function ($app) {
-            return new $app['config']['rinvex.bookings.models.booking_rate']();
-        });
-        $this->app->alias('rinvex.bookings.booking_rate', BookingRateContract::class);
+        $this->app->singleton('rinvex.bookings.rate', $rateModel = $this->app['config']['rinvex.bookings.models.rate']);
+        $rateModel === Rate::class || $this->app->alias('rinvex.bookings.rate', Rate::class);
 
-        $this->app->singleton('rinvex.bookings.booking_availability', function ($app) {
-            return new $app['config']['rinvex.bookings.models.booking_availability']();
-        });
-        $this->app->alias('rinvex.bookings.booking_availability', BookingAvailabilityContract::class);
+        $this->app->singleton('rinvex.bookings.price', $priceModel = $this->app['config']['rinvex.bookings.models.price']);
+        $priceModel === Price::class || $this->app->alias('rinvex.bookings.price', Price::class);
 
         // Register console commands
         ! $this->app->runningInConsole() || $this->registerCommands();
@@ -55,7 +53,7 @@ class BookingsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         // Load migrations
         ! $this->app->runningInConsole() || $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
@@ -69,7 +67,7 @@ class BookingsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function publishResources()
+    protected function publishResources(): void
     {
         $this->publishes([realpath(__DIR__.'/../../config/config.php') => config_path('rinvex.bookings.php')], 'rinvex-bookings-config');
         $this->publishes([realpath(__DIR__.'/../../database/migrations') => database_path('migrations')], 'rinvex-bookings-migrations');
@@ -80,13 +78,11 @@ class BookingsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerCommands()
+    protected function registerCommands(): void
     {
         // Register artisan commands
         foreach ($this->commands as $key => $value) {
-            $this->app->singleton($value, function ($app) use ($key) {
-                return new $key();
-            });
+            $this->app->singleton($value, $key);
         }
 
         $this->commands(array_values($this->commands));

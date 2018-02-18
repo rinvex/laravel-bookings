@@ -7,11 +7,10 @@ namespace Rinvex\Bookings\Models;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Rinvex\Support\Traits\ValidatingTrait;
-use Rinvex\Bookings\Contracts\BookingRateContract;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * Rinvex\Bookings\Models\BookingRate.
+ * Rinvex\Bookings\Models\Rate.
  *
  * @property int                                                $id
  * @property int                                                $bookable_id
@@ -19,21 +18,21 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int                                                $percentage
  * @property string                                             $operator
  * @property int                                                $amount
- * @property \Carbon\Carbon                                     $created_at
- * @property \Carbon\Carbon                                     $updated_at
+ * @property \Carbon\Carbon|null                                $created_at
+ * @property \Carbon\Carbon|null                                $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereBookableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereBookableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereOperator($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate wherePercentage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\BookingRate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereOperator($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate wherePercentage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereBookableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereBookableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class BookingRate extends Model implements BookingRateContract
+class Rate extends Model
 {
     use ValidatingTrait;
     use CacheableEloquent;
@@ -55,7 +54,7 @@ class BookingRate extends Model implements BookingRateContract
     protected $casts = [
         'bookable_id' => 'integer',
         'bookable_type' => 'string',
-        'percentage' => 'integer',
+        'percentage' => 'float',
         'operator' => 'string',
         'amount' => 'integer',
     ];
@@ -73,7 +72,13 @@ class BookingRate extends Model implements BookingRateContract
      *
      * @var array
      */
-    protected $rules = [];
+    protected $rules = [
+        'bookable_id' => 'required|integer',
+        'bookable_type' => 'required|string',
+        'percentage' => 'required|numeric|min:-100|max:100',
+        'operator' => 'required|string|in:^,<,>,=',
+        'amount' => 'required|integer|max:10000000',
+    ];
 
     /**
      * Whether the model should throw a
@@ -92,18 +97,11 @@ class BookingRate extends Model implements BookingRateContract
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('rinvex.bookings.tables.booking_rates'));
-        $this->setRules([
-            'bookable_id' => 'required|integer',
-            'bookable_type' => 'required|string',
-            'percentage' => 'required|integer|min:-100|max:100',
-            'operator' => 'required|in:^|>|<|=',
-            'amount' => 'required|integer|max:10000000',
-        ]);
+        $this->setTable(config('rinvex.bookings.tables.rates'));
     }
 
     /**
-     * Get the owning model.
+     * Get the owning resource model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */

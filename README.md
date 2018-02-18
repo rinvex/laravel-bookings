@@ -1,22 +1,21 @@
 # Rinvex Bookings
 
-**Rinvex Bookings** is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It's simple architecture, accompanied by powerful underlying to afford solid platform for your business.
+**Rinvex Bookings** is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It has a simple architecture, with powerful underlying to afford solid platform for your business.
 
 [![Packagist](https://img.shields.io/packagist/v/rinvex/bookings.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/rinvex/bookings)
-[![VersionEye Dependencies](https://img.shields.io/versioneye/d/php/rinvex:bookings.svg?label=Dependencies&style=flat-square)](https://www.versioneye.com/php/rinvex:bookings/)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/rinvex/bookings.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/rinvex/bookings/)
 [![Code Climate](https://img.shields.io/codeclimate/github/rinvex/bookings.svg?label=CodeClimate&style=flat-square)](https://codeclimate.com/github/rinvex/bookings)
 [![Travis](https://img.shields.io/travis/rinvex/bookings.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/rinvex/bookings)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/1592b83c-f836-4b30-aef3-d997accf9de4.svg?label=SensioLabs&style=flat-square)](https://insight.sensiolabs.com/projects/1592b83c-f836-4b30-aef3-d997accf9de4)
 [![StyleCI](https://styleci.io/repos/96481479/shield)](https://styleci.io/repos/96481479)
 [![License](https://img.shields.io/packagist/l/rinvex/bookings.svg?label=License&style=flat-square)](https://github.com/rinvex/bookings/blob/develop/LICENSE)
 
 
 ## Considerations
 
-- Payments are out of scope for this package.
-- This package is for bookable resources, and has nothing to do with price plans and subscriptions. If you're looking for subscription management system, you may have to look at **[rinvex/subscriptions](https://github.com/rinvex/subscriptions).**
-- This package assumes that you've a bookable model that has at least `price` as a decimal field, and `unit` as a char field which accepts one of (h,d,w,m,y,u) representing (hour, day, week, month, year, use) respectively. But anyway even if you don't have these fields, **Rinvex Bookings** behaves agnostically since you've to define such behaviour and functionality yourself. You can extend package's functionality to add features like: minimum and maximum booking length, early and late booking limit, and many more, but this is out of scope for the package and up to your implementation actually.
+- **Rinvex Bookings** is for bookable resources, and has nothing to do with price plans and subscriptions. If you're looking for subscription management system, you may have to look at **[rinvex/subscriptions](https://github.com/rinvex/subscriptions).**
+- **Rinvex Bookings** assumes that your resource model has at least three fields, `price` as a decimal field, and lastly `unit` as a string field which accepts one of (minute, hour, day) respectively.
+- Payments and ordering are out of scope for **Rinvex Bookings**, so you've to take care of this yourself. Booking price is calculated by this package, so you may need to hook into the process or listen to saved bookings to issue invoice, or trigger payment process.
+- You may extend **Rinvex Bookings** functionality to add features like: minimum and maximum booking length, early and late booking limit, and many more. These features may be supported natively sometime in the future.
 
 
 ## Installation
@@ -36,9 +35,11 @@
 
 ## Usage
 
-### Add Bookings to your RESOURCE model
+**Rinvex Bookings** has been specially made for Eloquent and simplicity has been taken very serious as in any other Laravel related aspect. 
 
-**Rinvex Bookings** has been specially made for Eloquent and simplicity has been taken very serious as in any other Laravel related aspect. To add Bookings functionality to your model just use the `\Rinvex\Bookings\Traits\Bookable` trait like this:
+### Add bookable functionality to your resource model
+
+To add bookable functionality to your resource model just use the `\Rinvex\Bookings\Traits\Bookable` trait like this:
 
 ```php
 namespace App\Models;
@@ -46,170 +47,223 @@ namespace App\Models;
 use Rinvex\Bookings\Traits\Bookable;
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model
+class Room extends Model
 {
     use Bookable;
 }
 ```
 
-That's it, we only have to use that trait in our Event model! Now your events will be bookable.
+That's it, you only have to use that trait in your Room model! Now your rooms will be bookable.
 
-### Add Bookings to your USER model
+### Add bookable functionality to your user model
 
-Bookings could be made by customers themeselves, or by agents on behalf of customers; **Rinvex Bookings** could handle both situations intelligently. To add Bookings support for your `Customer` and `Agent` models, follow these simple steps:
+To add bookable functionality to your user model just use the `\Rinvex\Bookings\Traits\HasBookings` trait like this:
 
 ```php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Traits\IsBookingAgent;
-use Rinvex\Bookings\Traits\IsBookingCustomer;
+use Rinvex\Bookings\Traits\HasBookings;
 
 class User extends Model
 {
-    //
-}
-
-
-class Agent extends User
-{
-    use IsBookingAgent;
-}
-
-
-class Customer extends Model
-{
-    use IsBookingCustomer;
+    use HasBookings;
 }
 ```
 
-That's it, we only have to use either `IsBookingAgent` or `IsBookingCustomer` traits user model(s)!
+Again, that's all you need to do! Now your User model can book resources.
 
 ### Create a new booking
 
-Creating a new booking is straightforward, and could be done in many right ways. Let's see how could we do that:
+Creating a new booking is straight forward, and could be done in many ways. Let's see how could we do that:
 
 ```php
-// Create a new booking via Bookable model
-$event = \App\Models\Event::find(1);
-$customer = \App\Models\Customer::find(1);
-$event->newBooking($customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
+$room = \App\Models\Room::find(1);
+$user = \App\Models\User::find(1);
+$booking = app('rinvex.bookings.booking');
 
-// Create a new booking via agent model
-$event = \App\Models\Event::find(1);
-$agent = \App\Models\Agent::find(1);
-$customer = \App\Models\Customer::find(1);
-$agent->newBooking($event, $customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
+// Create a new booking via resource model (user, starts, ends)
+$room->newBooking($user, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
 
-// Create a new booking via customer model
-$event = \App\Models\Event::find(1);
-$customer = \App\Models\Customer::find(1);
-$customer->newBooking($event, '2017-07-05 12:44:12', '2017-07-10 18:30:11', 8.4);
+// Create a new booking via user model (resource, starts, ends)
+$user->newBooking($room, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
+
+// Create a new booking explicitly
+$booking->make(['starts_at' => \Carbon\Carbon::now(), 'ends_at' => \Carbon\Carbon::tomorrow()])
+        ->user()->associate($user)
+        ->bookable()->associate($room)
+        ->save();
 ```
 
-As you can see, there's many right ways to create a new booking, it's up to you to use the appropriate method in the appropriate situation, according to the context.
+> **Notes:**
+> - As you can see, there's many ways to create a new booking, use whatever suits your context.
+> - Booking price is calculated automatically on the fly according to the resource price, custom prices, and booking rates.
+> - **Rinvex Bookings** is intelegent enough to detect date format and convert if required, the above example show the explicitly correct format, but you still can write something like: 'Tomorrow 1pm' and it will be converted automatically for you.
 
-### Create a booking rate
+### Query booking models
 
-Booking rates are special criteria used to modify the default booking price. For example, let’s assume that you have a model charged per hour, and you need to set a higher price for the first “2” hours to cover certain costs, while discounting pricing if booked more than “5” hours. That’s totally achievable through booking rates. Simply set the amount of units to apply this criteria on, and state the percentage you’d like to have increased or decreased from the default price using +/- signs, i.e. -10%, and of course select the operator from: (`**^**` means the first X units, `**<**` means when booking is less than X units, `**>**` means when booking is greater than X units)
-
-To create a booking rate, follow these steps:
+You can get more details about a specific booking as follows:
 
 ```php
-$event = \App\Models\Event::find(1);
-$event->newRate('+15%', '^', 2); // Increate unit price by 15% for the first 2 units (probably hours)
-$event->newRate('-10%', '>', 5); // Discount unit price by 10% if booking is greater than 5 units (probably hours)
+$booking = app('rinvex.bookings.booking')->find(1);
+
+$bookable = $booking->bookable; // Get the owning resource model
+$user = $booking->user; // Get the owning user model
+
+$booking->isPast(); // Check if the booking is past
+$booking->isFuture(); // Check if the booking is future
+$booking->isCurrent(); // Check if the booking is current
+$booking->isCancelled(); // Check if the booking is cancelled
 ```
 
-### Create a booking availability
-
-Booking availabilities are the times that your model is allowed to be booked at. For example, let’s you've a Coworking Space business, and one of your rooms is a Conference Room, which is only available Sunday through Thursday, from 09:00 am till 05:00 pm. Not just that, let's say you need to charge more for peak hours at Thursday! That's totally achievable through booking avialabilities, where you can set both time frames and their prices too. Awesome, huh?
-
-To create a booking availability, follow these steps:
+And as expected, you can query bookings by date as well:
 
 ```php
-$event = \App\Models\Event::find(1);
-$event->newAvailability('sun', '09:00 am', '05:00 pm');
-$event->newAvailability('mon', '09:00 am', '05:00 pm');
-$event->newAvailability('tue', '09:00 am', '05:00 pm');
-$event->newAvailability('wed', '09:00 am', '05:00 pm');
-$event->newAvailability('thu', '09:00 am', '05:00 pm', 10.5);
+$pastBookings = app('rinvex.bookings.booking')->past(); // Get the past bookings
+$futureBookings = app('rinvex.bookings.booking')->future(); // Get the future bookings
+$currentBookings = app('rinvex.bookings.booking')->current(); // Get the current bookings
+$cancelledBookings = app('rinvex.bookings.booking')->cancelled(); // Get the cancelled bookings
+
+$bookingsSAfter = app('rinvex.bookings.booking')->startsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$bookingsStartsBefore = app('rinvex.bookings.booking')->startsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$bookingsSBetween = app('rinvex.bookings.booking')->startsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$bookingsEndsAfter = app('rinvex.bookings.booking')->endsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$bookingsEndsBefore = app('rinvex.bookings.booking')->endsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$bookingsEndsBetween = app('rinvex.bookings.booking')->endsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$bookingsCancelledAfter = app('rinvex.bookings.booking')->cancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$bookingsCancelledBefore = app('rinvex.bookings.booking')->cancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$bookingsCancelledBetween = app('rinvex.bookings.booking')->cancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$room = \App\Models\Room::find(1);
+$bookingsOfBookable = app('rinvex.bookings.booking')->ofBookable($room)->get(); // Get bookings of the given resource
+
+$user = \App\Models\User::find(1);
+$bookingsOfUser = app('rinvex.bookings.booking')->ofUser($user)->get(); // Get bookings of the given user
 ```
 
-Piece of cake, right? You just set the day, from-to times, and optionally the custom unit price (which should override the default bookable unit price).
+### Create a new booking rate
 
-> **Note:** If you don't create any availabilities, then the model can be booked at any time.
+Booking rates are special criteria used to modify the default booking price. For example, let’s assume that you have a resource charged per hour, and you need to set a higher price for the first "2" hours to cover certain costs, while discounting pricing if booked more than "5" hours. That’s totally achievable through booking rates. Simply set the amount of units to apply this criteria on, and state the percentage you’d like to have increased or decreased from the default price using +/- signs, i.e. -10%, and of course select the operator from: (**`^`** means the first starting X units, **`<`** means when booking is less than X units, **`>`** means when booking is greater than X units). Allowed percentages could be between -100% and +100%.
 
-### Get bookable details
-
-You can query the bookable model for further details, using the intuitive API as follows:
+To create a new booking rate, follow these steps:
 
 ```php
-$event = \App\Models\Event::find(1);
-$agent = \App\Models\Agent::find(1);
-$customer = \App\Models\Customer::find(1);
-
-$event->bookings; // Get all bookings
-$event->pastBookings; // Get past bookings
-$event->futureBookings; // Get future bookings
-$event->currentBookings; // Get current bookings
-$event->cancelledBookings; // Get cancelled bookings
-
-$event->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$event->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$event->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
-
-$event->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$event->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$event->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
-
-$event->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$event->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$event->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
-
-$event->bookingsByAgent($agent->id)->get(); // Get bookings by the given agent
-$event->bookingsByCustomer($customer->id)->get(); // Get bookings by the given customer
-
-// Get all rates
-$event->rates;
-
-// Get all availabilities
-$event->availabilities;
+$room = \App\Models\Room::find(1);
+$room->newRate('15', '^', 2); // Increate unit price by 15% for the first 2 units (probably hours)
+$room->newRate('-10', '>', 5); // Discount unit price by 10% if booking is greater than 5 units (probably hours)
 ```
 
-All the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$event->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
-
-### Get bookings via agent/customer instance
-
-Just like how you query your bookable models, you can query agent and/or customer models to retrieve booking related info so easily. Look at these examples:
+Alternatively you can create a new booking rate explicitly as follows:
 
 ```php
-$event = \App\Models\Event::find(1);
-$customer = \App\Models\Customer::find(1);
-
-$customer->bookings; // Get all bookings
-$customer->pastBookings; // Get past bookings
-$customer->futureBookings; // Get future bookings
-$customer->currentBookings; // Get current bookings
-$customer->cancelledBookings; // Get cancelled bookings
-
-$customer->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$customer->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$customer->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
-
-$customer->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$customer->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$customer->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
-
-$customer->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$customer->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$customer->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
-
-$customer->bookingsOf(get_class($event))->get(); // Get bookings of the given model
-$customer->isBooked($event); // Check if the person booked the given model
+$room = \App\Models\Room::find(1);
+$rate = app('rinvex.bookings.rate');
+$rate->make(['percentage' => '15', 'operator' => '^', 'amount' => 2])
+     ->bookable()->associate($room)
+     ->save();
 ```
 
-Same functionality applies for both agents and customers, and just like bookable models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$customer->bookings()->where('starts_at', '>', new \Carbon\Carbo())->first()`.
+And here's the booking rate relations:
+
+```php
+$bookable = $rate->bookable; // Get the owning resource model
+```
+
+> **Notes:**
+> - All booking rate percentages should NEVER contain the `%` sign, it's known that this field is for percentage already.
+> - When adding new booking rate with positive percentage, the `+` sign is NOT required, and will be omitted anyway if entered.
+
+### Create a new custom price
+
+Custom prices are set according to specific time based criteria. For example, let’s say you've a Coworking Space business, and one of your rooms is a Conference Room, and you would like to charge differently for both Monday and Wednesday. Will assume that Monday from 09:00 am till 05:00 pm is a peak hours, so you need to charge more, and Wednesday from 11:30 am to 03:45 pm is dead hours so you'd like to charge less! That's totally achievable through custom prices, where you can set both time frames and their prices too using +/- percentage. It works the same way as [Booking Rates](#create-a-new-booking-rate) but on a time based criteria. Awesome, huh?
+
+To create a custom price, follow these steps:
+
+```php
+$room = \App\Models\Room::find(1);
+$room->newPrice('mon', '09:00:00', '17:00:00', '26'); // Increase pricing on Monday from 09:00 am to 05:00 pm by 26%
+$room->newPrice('wed', '11:30:00', '15:45:00', '-10.5'); // Decrease pricing on Wednesday from 11:30 am to 03:45 pm by 10.5%
+```
+
+Piece of cake, right? You just set the day, from-to times, and the +/- percentage to increase/decrease your unit price.
+
+And here's the custom price relations:
+
+```php
+$bookable = $room->bookable; // Get the owning resource model
+```
+
+> **Notes:**
+> - If you don't create any custom prices, then the resource will be booked at the default resource price.
+> - **Rinvex Bookings** is intelegent enough to detect time format and convert if required, the above example show the explicitly correct format, but you still can write something like: '09:00 am' and it will be converted automatically for you.
+
+### Query resource models
+
+You can query your resource models for further details, using the intuitive API as follows:
+
+```php
+$room = \App\Models\Room::find(1);
+
+$room->bookings; // Get all bookings
+$room->pastBookings; // Get past bookings
+$room->futureBookings; // Get future bookings
+$room->currentBookings; // Get current bookings
+$room->cancelledBookings; // Get cancelled bookings
+
+$room->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$room->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$room->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$room->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$room->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$room->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$room->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$room->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$room->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$user = \App\Models\User::find(1);
+$room->bookingsOf($user)->get(); // Get bookings of the given user
+
+$room->rates; // Get all booking rates
+$room->prices; // Get all custom prices
+```
+
+All the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$room->bookings()->where('starts_at', '>', new \Carbon\Carbon())->first()`.
+
+### Query user models
+
+Just like how you query your resources, you can query users to retrieve related booking info easily. Look at these examples:
+
+```php
+$user = \App\Models\User::find(1);
+
+$user->bookings; // Get all bookings
+$user->pastBookings; // Get past bookings
+$user->futureBookings; // Get future bookings
+$user->currentBookings; // Get current bookings
+$user->cancelledBookings; // Get cancelled bookings
+
+$user->bookingsStartsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$user->bookingsStartsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$user->bookingsStartsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$user->bookingsEndsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$user->bookingsEndsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$user->bookingsEndsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$user->bookingsCancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$user->bookingsCancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$user->bookingsCancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$room = \App\Models\Room::find(1);
+$user->isBooked($room); // Check if the user booked the given room
+$user->bookingsOf($room)->get(); // Get bookings by the user for the given room
+```
+
+Just like resource models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$user->bookings()->where('starts_at', '>', new \Carbon\Carbon())->first()`.
 
 
 ## Changelog
@@ -253,4 +307,4 @@ Rinvex is a software solutions startup, specialized in integrated enterprise sol
 
 This software is released under [The MIT License (MIT)](LICENSE).
 
-(c) 2016-2017 Rinvex LLC, Some rights reserved.
+(c) 2016-2018 Rinvex LLC, Some rights reserved.
