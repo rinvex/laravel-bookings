@@ -112,6 +112,6 @@ class Price extends Model
      */
     public function bookable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('bookable', 'bookable_type', 'bookable_id');
     }
 }
