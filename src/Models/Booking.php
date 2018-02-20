@@ -18,8 +18,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int                                                $bookable_id
  * @property string                                             $bookable_type
  * @property string                                             $currency
- * @property int                                                $user_id
- * @property string                                             $user_type
+ * @property int                                                $customer_id
+ * @property string                                             $customer_type
  * @property \Carbon\Carbon                                     $starts_at
  * @property \Carbon\Carbon                                     $ends_at
  * @property float                                              $price
@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Carbon\Carbon|null                                $created_at
  * @property \Carbon\Carbon|null                                $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $user
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $customer
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelled()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledAfter($date)
@@ -41,7 +41,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBetween($startsAt, $endsAt)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking future()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofBookable(\Illuminate\Database\Eloquent\Model $bookable)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofUser(\Illuminate\Database\Eloquent\Model $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofCustomer(\Illuminate\Database\Eloquent\Model $customer)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking past()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking range()
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
@@ -50,8 +50,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCancelledAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCurrency($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUserType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCustomerType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereEndsAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereNotes($value)
@@ -74,8 +74,8 @@ class Booking extends Model
     protected $fillable = [
         'bookable_id',
         'bookable_type',
-        'user_id',
-        'user_type',
+        'customer_id',
+        'customer_type',
         'starts_at',
         'ends_at',
         'price',
@@ -91,8 +91,8 @@ class Booking extends Model
     protected $casts = [
         'bookable_id' => 'integer',
         'bookable_type' => 'string',
-        'user_id' => 'integer',
-        'user_type' => 'string',
+        'customer_id' => 'integer',
+        'customer_type' => 'string',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'price' => 'float',
@@ -118,8 +118,8 @@ class Booking extends Model
     protected $rules = [
         'bookable_id' => 'required|integer',
         'bookable_type' => 'required|string',
-        'user_id' => 'required|integer',
-        'user_type' => 'required|string',
+        'customer_id' => 'required|integer',
+        'customer_type' => 'required|string',
         'starts_at' => 'required|date',
         'ends_at' => 'required|date',
         'price' => 'required|numeric',
@@ -268,13 +268,13 @@ class Booking extends Model
     }
 
     /**
-     * Get the owning user.
+     * Get the booking customer.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function user(): MorphTo
+    public function customer(): MorphTo
     {
-        return $this->morphTo('user', 'user_type', 'user_id');
+        return $this->morphTo('customer', 'customer_type', 'customer_id');
     }
 
     /**
@@ -291,16 +291,16 @@ class Booking extends Model
     }
 
     /**
-     * Get bookings of the given user.
+     * Get bookings of the given customer.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \Illuminate\Database\Eloquent\Model   $user
+     * @param \Illuminate\Database\Eloquent\Model   $customer
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOfUser(Builder $builder, Model $user): Builder
+    public function scopeOfCustomer(Builder $builder, Model $customer): Builder
     {
-        return $builder->where('user_type', $user->getMorphClass())->where('user_id', $user->getKey());
+        return $builder->where('customer_type', $customer->getMorphClass())->where('customer_id', $customer->getKey());
     }
 
     /**
