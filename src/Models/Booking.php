@@ -177,19 +177,6 @@ class Booking extends Model
      */
     public static function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null): array
     {
-        switch ($bookable->unit) {
-            case 'd':
-                $method = 'addDay';
-                break;
-            case 'm':
-                $method = 'addMinute';
-                break;
-            case 'h':
-            default:
-                $method = 'addHour';
-                break;
-        }
-
         $prices = $bookable->prices->map(function (Price $price) {
             return [
                 'weekday' => $price->weekday,
@@ -201,6 +188,8 @@ class Booking extends Model
 
         $totalUnits = 0;
         $totalPrice = 0;
+        $method = 'add'.ucfirst($bookable->unit).'s';
+
         for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->$method()) {
             // Count units
             $totalUnits++;
