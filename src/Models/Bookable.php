@@ -39,12 +39,8 @@ abstract class Bookable extends Model implements Sortable
         'style',
         'sort_order',
         'capacity',
-        'early_booking_limit',
-        'late_booking_limit',
-        'late_cancellation_limit',
-        'maximum_booking_length',
-        'minimum_booking_length',
-        'booking_interval_limit',
+        'maximum_units',
+        'minimum_units',
     ];
 
     /**
@@ -55,19 +51,15 @@ abstract class Bookable extends Model implements Sortable
         'title' => 'string',
         'description' => 'string',
         'is_active' => 'boolean',
-        'base_cost' => 'number',
-        'unit_cost' => 'number',
+        'base_cost' => 'float',
+        'unit_cost' => 'float',
         'unit' => 'string',
         'currency' => 'string',
         'style' => 'string',
         'sort_order' => 'integer',
         'capacity' => 'integer',
-        'early_booking_limit' => 'integer',
-        'late_booking_limit' => 'integer',
-        'late_cancellation_limit' => 'integer',
-        'maximum_booking_length' => 'integer',
-        'minimum_booking_length' => 'integer',
-        'booking_interval_limit' => 'integer',
+        'maximum_units' => 'integer',
+        'minimum_units' => 'integer',
         'deleted_at' => 'datetime',
     ];
 
