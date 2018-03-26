@@ -151,8 +151,8 @@ To create a new booking rate, follow these steps:
 
 ```php
 $room = \App\Models\Room::find(1);
-$room->newRate('15', '^', 2); // Increate unit price by 15% for the first 2 units (probably hours)
-$room->newRate('-10', '>', 5); // Discount unit price by 10% if booking is greater than 5 units (probably hours)
+$room->newRate('15', '^', 2); // Increase unit price by 15% for the first 2 units
+$room->newRate('-10', '>', 5); // Decrease unit price by 10% if booking is greater than 5 units
 ```
 
 Alternatively you can create a new booking rate explicitly as follows:
