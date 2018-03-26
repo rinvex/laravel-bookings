@@ -170,12 +170,12 @@ class Booking extends Model
      * Calculate the booking price.
      *
      * @param \Illuminate\Database\Eloquent\Model $bookable
-     * @param string                              $startsAt
-     * @param string                              $endsAt
+     * @param \Carbon\Carbon                      $startsAt
+     * @param \Carbon\Carbon                      $endsAt
      *
      * @return array
      */
-    public static function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null): array
+    public function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null): array
     {
         $prices = $bookable->prices->map(function (Price $price) {
             return [
