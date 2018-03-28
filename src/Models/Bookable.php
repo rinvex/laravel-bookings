@@ -34,13 +34,14 @@ abstract class Bookable extends Model implements Sortable
         'is_active',
         'base_cost',
         'unit_cost',
-        'unit',
         'currency',
-        'style',
-        'sort_order',
-        'capacity',
+        'unit',
         'maximum_units',
         'minimum_units',
+        'is_recurring',
+        'sort_order',
+        'capacity',
+        'style',
     ];
 
     /**
@@ -53,13 +54,14 @@ abstract class Bookable extends Model implements Sortable
         'is_active' => 'boolean',
         'base_cost' => 'float',
         'unit_cost' => 'float',
-        'unit' => 'string',
         'currency' => 'string',
-        'style' => 'string',
-        'sort_order' => 'integer',
-        'capacity' => 'integer',
+        'unit' => 'string',
         'maximum_units' => 'integer',
         'minimum_units' => 'integer',
+        'is_recurring' => 'boolean',
+        'sort_order' => 'integer',
+        'capacity' => 'integer',
+        'style' => 'string',
         'deleted_at' => 'datetime',
     ];
 

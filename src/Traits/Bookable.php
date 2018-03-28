@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rinvex\Bookings\Traits;
 
-use Rinvex\Bookings\Models\Rate;
-use Rinvex\Bookings\Models\Price;
 use Rinvex\Bookings\Models\Booking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -37,6 +35,26 @@ trait Bookable
     }
 
     /**
+     * The resource may have many addons.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function addons(): MorphMany
+    {
+        return $this->morphMany(config('rinvex.bookings.models.addon'), 'bookable');
+    }
+
+    /**
+     * The resource may have many availabilities.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function availabilities(): MorphMany
+    {
+        return $this->morphMany(config('rinvex.bookings.models.availability'), 'bookable');
+    }
+
+    /**
      * The resource may have many rates.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
@@ -44,16 +62,6 @@ trait Bookable
     public function rates(): MorphMany
     {
         return $this->morphMany(config('rinvex.bookings.models.rate'), 'bookable');
-    }
-
-    /**
-     * The resource may have many prices.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function prices(): MorphMany
-    {
-        return $this->morphMany(config('rinvex.bookings.models.price'), 'bookable');
     }
 
     /**
@@ -74,48 +82,6 @@ trait Bookable
             'customer_type' => $customer->getMorphClass(),
             'starts_at' => (new Carbon($startsAt))->toDateTimeString(),
             'ends_at' => (new Carbon($endsAt))->toDateTimeString(),
-        ]);
-    }
-
-    /**
-     * Create a new booking rate.
-     *
-     * @param float  $percentage
-     * @param string $operator
-     * @param int    $amount
-     *
-     * @return \Rinvex\Bookings\Models\Rate
-     */
-    public function newRate(float $percentage, string $operator, int $amount): Rate
-    {
-        return $this->rates()->create([
-            'bookable_id' => static::getKey(),
-            'bookable_type' => static::getMorphClass(),
-            'percentage' => $percentage,
-            'operator' => $operator,
-            'amount' => $amount,
-        ]);
-    }
-
-    /**
-     * Create a new booking price.
-     *
-     * @param string $weekday
-     * @param string $startsAt
-     * @param string $endsAt
-     * @param float  $percentage
-     *
-     * @return \Rinvex\Bookings\Models\Price
-     */
-    public function newPrice(string $weekday, string $startsAt, string $endsAt, float $percentage): Price
-    {
-        return $this->prices()->create([
-            'bookable_id' => static::getKey(),
-            'bookable_type' => static::getMorphClass(),
-            'percentage' => $percentage,
-            'weekday' => $weekday,
-            'starts_at' => (new Carbon($startsAt))->toTimeString(),
-            'ends_at' => (new Carbon($endsAt))->toTimeString(),
         ]);
     }
 }

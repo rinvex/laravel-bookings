@@ -6,16 +6,18 @@ return [
 
     // Bookings Database Tables
     'tables' => [
+        'addons' => 'addons',
         'bookings' => 'bookings',
         'rates' => 'booking_rates',
-        'prices' => 'booking_prices',
+        'availabilities' => 'booking_availabilities',
     ],
 
     // Bookings Models
     'models' => [
         'rate' => \Rinvex\Bookings\Models\Rate::class,
-        'price' => \Rinvex\Bookings\Models\Price::class,
+        'addon' => \Rinvex\Bookings\Models\Addon::class,
         'booking' => \Rinvex\Bookings\Models\Booking::class,
+        'availability' => \Rinvex\Bookings\Models\Availability::class,
     ],
 
 ];

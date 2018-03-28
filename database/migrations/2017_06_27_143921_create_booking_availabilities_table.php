@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBookingPricesTable extends Migration
+class CreateBookingAvailabilitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,14 +15,15 @@ class CreateBookingPricesTable extends Migration
      */
     public function up(): void
     {
-        Schema::create(config('rinvex.bookings.tables.prices'), function (Blueprint $table) {
+        Schema::create(config('rinvex.bookings.tables.availabilities'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
-            $table->char('weekday', 3);
-            $table->time('starts_at');
-            $table->time('ends_at');
-            $table->tinyInteger('percentage');
+            $table->string('is_available');
+            $table->string('range');
+            $table->string('range_from')->nullable();
+            $table->string('range_to')->nullable();
+            $table->smallInteger('priority')->unsigned()->nullable();
             $table->timestamps();
         });
     }
@@ -34,6 +35,6 @@ class CreateBookingPricesTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(config('rinvex.bookings.tables.prices'));
+        Schema::dropIfExists(config('rinvex.bookings.tables.availabilities'));
     }
 }

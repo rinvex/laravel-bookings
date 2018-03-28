@@ -10,39 +10,33 @@ use Rinvex\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * Rinvex\Bookings\Models\Rate.
+ * Rinvex\Bookings\Models\Availability.
  *
  * @property int                                                $id
  * @property int                                                $bookable_id
  * @property string                                             $bookable_type
+ * @property int                                                $is_available
  * @property string                                             $range
  * @property string                                             $range_from
  * @property string                                             $range_to
- * @property float                                              $base_cost
- * @property string                                             $base_cost_modifier
- * @property float                                              $unit_cost
- * @property string                                             $unit_cost_modifier
  * @property int                                                $priority
  * @property \Carbon\Carbon|null                                $created_at
  * @property \Carbon\Carbon|null                                $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereBaseCost($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereBaseCostModifier($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereBookableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereBookableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereRange($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereRangeFrom($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereRangeTo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate wherePriority($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereUnitCost($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereUnitCostModifier($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Rate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereBookableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereBookableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereIsAvailable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereRange($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereRangeFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereRangeTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Availability whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Rate extends Model
+class Availability extends Model
 {
     use ValidatingTrait;
     use CacheableEloquent;
@@ -53,13 +47,10 @@ class Rate extends Model
     protected $fillable = [
         'bookable_id',
         'bookable_type',
+        'is_available',
         'range',
         'range_from',
         'range_to',
-        'base_cost',
-        'base_cost_modifier',
-        'unit_cost',
-        'unit_cost_modifier',
         'priority',
     ];
 
@@ -69,13 +60,10 @@ class Rate extends Model
     protected $casts = [
         'bookable_id' => 'integer',
         'bookable_type' => 'string',
+        'is_available' => 'boolean',
         'range' => 'string',
         'range_from' => 'string',
         'range_to' => 'string',
-        'base_cost' => 'float',
-        'base_cost_modifier' => 'string',
-        'unit_cost' => 'float',
-        'unit_cost_modifier' => 'string',
         'priority' => 'integer',
     ];
 
@@ -95,13 +83,10 @@ class Rate extends Model
     protected $rules = [
         'bookable_id' => 'required|integer',
         'bookable_type' => 'required|string',
+        'is_available' => 'required|boolean',
         'range' => 'required|string|in:unit,date,month,week,day,datetime,time,time-sun,time-mon,time-tue,time-wed,time-thu,time-fri,time-sat',
         'range_from' => 'required|string|max:150',
         'range_to' => 'required|string|max:150',
-        'base_cost' => 'required|numeric',
-        'base_cost_modifier' => 'required|string|in:+,-,×,÷',
-        'unit_cost' => 'required|numeric',
-        'unit_cost_modifier' => 'required|string|in:+,-,×,÷',
         'priority' => 'nullable|integer',
     ];
 
@@ -122,7 +107,7 @@ class Rate extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('rinvex.bookings.tables.rates'));
+        $this->setTable(config('rinvex.bookings.tables.availabilities'));
     }
 
     /**
