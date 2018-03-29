@@ -19,7 +19,7 @@ class CreateBookingAddonsTable extends Migration
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
-            $table->string('name');
+            $table->string('slug');
             $table->{$this->jsonable()}('title')->nullable();
             $table->{$this->jsonable()}('description')->nullable();
             $table->string('base_cost')->nullable();
