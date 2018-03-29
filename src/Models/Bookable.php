@@ -29,7 +29,7 @@ abstract class Bookable extends Model implements Sortable
      */
     protected $fillable = [
         'slug',
-        'title',
+        'name',
         'description',
         'is_active',
         'base_cost',
@@ -49,7 +49,7 @@ abstract class Bookable extends Model implements Sortable
      */
     protected $casts = [
         'slug' => 'string',
-        'title' => 'string',
+        'name' => 'string',
         'description' => 'string',
         'is_active' => 'boolean',
         'base_cost' => 'float',
@@ -77,7 +77,7 @@ abstract class Bookable extends Model implements Sortable
      * {@inheritdoc}
      */
     public $translatable = [
-        'title',
+        'name',
         'description',
     ];
 
@@ -128,7 +128,7 @@ abstract class Bookable extends Model implements Sortable
     {
         return SlugOptions::create()
                           ->doNotGenerateSlugsOnUpdate()
-                          ->generateSlugsFrom('title')
+                          ->generateSlugsFrom('name')
                           ->saveSlugsTo('slug');
     }
 

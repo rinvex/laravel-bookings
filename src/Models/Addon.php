@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int                                                $bookable_id
  * @property string                                             $bookable_type
  * @property string                                             $slug
- * @property string                                             $title
+ * @property string                                             $name
  * @property string                                             $description
  * @property float                                              $base_cost
  * @property string                                             $base_cost_modifier
@@ -54,7 +54,7 @@ class Addon extends Model
         'bookable_id',
         'bookable_type',
         'slug',
-        'title',
+        'name',
         'description',
         'base_cost',
         'base_cost_modifier',
@@ -112,7 +112,7 @@ class Addon extends Model
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string',
             'slug' => 'required|alpha_dash|max:150|unique:'.config('rinvex.bookings.tables.addons').',slug',
-            'title' => 'required|string|max:150',
+            'name' => 'required|string|max:150',
             'description' => 'nullable|string|max:10000',
             'base_cost' => 'required|numeric',
             'base_cost_modifier' => 'required|string|in:+,-,×,÷',
