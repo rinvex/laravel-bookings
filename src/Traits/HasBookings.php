@@ -26,6 +26,18 @@ trait HasBookings
     abstract public function morphMany($related, $name, $type = null, $id = null, $localKey = null);
 
     /**
+     * Boot the HasBookings trait for the model.
+     *
+     * @return void
+     */
+    public static function bootHasBookings()
+    {
+        static::deleted(function (self $model) {
+            $model->bookings()->delete();
+        });
+    }
+
+    /**
      * The customer may have many bookings.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany

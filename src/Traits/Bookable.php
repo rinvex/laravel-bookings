@@ -13,6 +13,18 @@ trait Bookable
     use BookingScopes;
 
     /**
+     * Boot the Bookable trait for the model.
+     *
+     * @return void
+     */
+    public static function bootBookable()
+    {
+        static::deleted(function (self $model) {
+            $model->bookings()->delete();
+        });
+    }
+
+    /**
      * The resource may have many bookings.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
