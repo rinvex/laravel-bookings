@@ -5,10 +5,6 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Rinvex\Bookings\Models\BookableRate;
-use Rinvex\Bookings\Models\BookableAddon;
-use Rinvex\Bookings\Models\BookableBooking;
-use Rinvex\Bookings\Models\BookableAvailability;
 use Rinvex\Bookings\Console\Commands\MigrateCommand;
 use Rinvex\Bookings\Console\Commands\PublishCommand;
 use Rinvex\Bookings\Console\Commands\RollbackCommand;

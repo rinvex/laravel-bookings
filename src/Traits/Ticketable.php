@@ -70,7 +70,7 @@ trait Ticketable
     /**
      * Attach the given bookings to the model.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array  $ids
+     * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
      *
      * @return void
      */
