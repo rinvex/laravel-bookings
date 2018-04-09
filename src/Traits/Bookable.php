@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rinvex\Bookings\Traits;
 
-use Rinvex\Bookings\Models\BookableBooking;
 use Illuminate\Database\Eloquent\Model;
+use Rinvex\Bookings\Models\BookableBooking;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait Bookable
@@ -86,7 +86,7 @@ trait Bookable
     /**
      * Attach the given bookings to the model.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array  $ids
+     * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
      *
      * @return void
      */
@@ -100,7 +100,7 @@ trait Bookable
     /**
      * Attach the given rates to the model.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array  $ids
+     * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
      *
      * @return void
      */
@@ -114,7 +114,7 @@ trait Bookable
     /**
      * Attach the given addons to the model.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array  $ids
+     * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
      *
      * @return void
      */
@@ -128,7 +128,7 @@ trait Bookable
     /**
      * Attach the given availabilities to the model.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array  $ids
+     * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
      *
      * @return void
      */
