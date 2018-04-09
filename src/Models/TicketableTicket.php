@@ -13,12 +13,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\HasTranslations;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Spatie\EloquentSortable\SortableTrait;
-use Rinvex\Bookings\Traits\Bookable as BookableTrait;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-abstract class Bookable extends Model implements Sortable
+class TicketableTicket extends Model implements Sortable
 {
     use HasSlug;
-    use BookableTrait;
     use SortableTrait;
     use HasTranslations;
     use ValidatingTrait;
@@ -28,40 +27,32 @@ abstract class Bookable extends Model implements Sortable
      * {@inheritdoc}
      */
     protected $fillable = [
+        'ticketable_id',
+        'ticketable_type',
         'slug',
         'name',
         'description',
         'is_active',
-        'base_cost',
-        'unit_cost',
+        'price',
         'currency',
-        'unit',
-        'maximum_units',
-        'minimum_units',
-        'is_recurring',
+        'quantity',
         'sort_order',
-        'capacity',
-        'style',
     ];
 
     /**
      * {@inheritdoc}
      */
     protected $casts = [
+        'ticketable_id' => 'integer',
+        'ticketable_type' => 'string',
         'slug' => 'string',
         'name' => 'string',
         'description' => 'string',
         'is_active' => 'boolean',
-        'base_cost' => 'float',
-        'unit_cost' => 'float',
+        'price' => 'float',
         'currency' => 'string',
-        'unit' => 'string',
-        'maximum_units' => 'integer',
-        'minimum_units' => 'integer',
-        'is_recurring' => 'boolean',
+        'quantity' => 'integer',
         'sort_order' => 'integer',
-        'capacity' => 'integer',
-        'style' => 'string',
         'deleted_at' => 'datetime',
     ];
 
@@ -93,22 +84,39 @@ abstract class Bookable extends Model implements Sortable
      *
      * @var array
      */
-    protected $rules = [
-        'slug' => 'required|alpha_dash|max:150',
-        'name' => 'required|string|max:150',
-        'description' => 'nullable|string|max:10000',
-        'is_active' => 'sometimes|boolean',
-        'base_cost' => 'required|numeric',
-        'unit_cost' => 'required|numeric',
-        'currency' => 'required|string|size:3',
-        'unit' => 'required|string|in:minute,hour,day,month',
-        'maximum_units' => 'nullable|integer|max:10000',
-        'minimum_units' => 'nullable|integer|max:10000',
-        'is_recurring' => 'nullable|boolean',
-        'sort_order' => 'nullable|integer|max:10000000',
-        'capacity' => 'nullable|integer|max:10000000',
-        'style' => 'nullable|string|max:150',
-    ];
+    protected $rules = [];
+
+    /**
+     * Whether the model should throw a
+     * ValidationException if it fails validation.
+     *
+     * @var bool
+     */
+    protected $throwValidationExceptions = true;
+
+    /**
+     * Create a new Eloquent model instance.
+     *
+     * @param array $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->setTable(config('rinvex.bookings.tables.ticketable_tickets'));
+        $this->setRules([
+            'ticketable_id' => 'required|integer',
+            'ticketable_type' => 'required|string',
+            'slug' => 'required|alpha_dash|max:150|unique:'.config('rinvex.bookings.tables.ticketable_tickets').',slug,NULL,id,ticketable_id,'.($this->ticketable_id ?? 'null').',ticketable_type,'.($this->ticketable_type ?? 'null'),
+            'name' => 'required|string|max:150',
+            'description' => 'nullable|string|max:10000',
+            'is_active' => 'sometimes|boolean',
+            'price' => 'required|numeric',
+            'currency' => 'required|alpha|size:3',
+            'quantity' => 'nullable|integer|max:10000000',
+            'sort_order' => 'nullable|integer|max:10000000',
+        ]);
+    }
 
     /**
      * Get the active resources.
@@ -169,5 +177,15 @@ abstract class Bookable extends Model implements Sortable
         $this->update(['is_active' => false]);
 
         return $this;
+    }
+
+    /**
+     * Get the owning resource model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
+    public function ticketable(): MorphTo
+    {
+        return $this->morphTo('ticketable', 'ticketable_type', 'ticketable_id');
     }
 }

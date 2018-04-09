@@ -5,22 +5,13 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Models;
 
 use Spatie\Sluggable\SlugOptions;
-use Rinvex\Support\Traits\HasSlug;
-use Spatie\EloquentSortable\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Rinvex\Support\Traits\HasTranslations;
 use Rinvex\Support\Traits\ValidatingTrait;
-use Spatie\EloquentSortable\SortableTrait;
-use Rinvex\Bookings\Traits\Bookable as BookableTrait;
 
-abstract class Bookable extends Model implements Sortable
+class TicketableBooking extends Model
 {
-    use HasSlug;
-    use BookableTrait;
-    use SortableTrait;
-    use HasTranslations;
     use ValidatingTrait;
     use CacheableEloquent;
 
@@ -28,40 +19,22 @@ abstract class Bookable extends Model implements Sortable
      * {@inheritdoc}
      */
     protected $fillable = [
-        'slug',
-        'name',
-        'description',
-        'is_active',
-        'base_cost',
-        'unit_cost',
+        'ticket_id',
+        'customer_id',
+        'paid',
         'currency',
-        'unit',
-        'maximum_units',
-        'minimum_units',
-        'is_recurring',
-        'sort_order',
-        'capacity',
-        'style',
+        'notes',
     ];
 
     /**
      * {@inheritdoc}
      */
     protected $casts = [
-        'slug' => 'string',
-        'name' => 'string',
-        'description' => 'string',
-        'is_active' => 'boolean',
-        'base_cost' => 'float',
-        'unit_cost' => 'float',
+        'ticket_id' => 'integer',
+        'customer_id' => 'integer',
+        'paid' => 'float',
         'currency' => 'string',
-        'unit' => 'string',
-        'maximum_units' => 'integer',
-        'minimum_units' => 'integer',
-        'is_recurring' => 'boolean',
-        'sort_order' => 'integer',
-        'capacity' => 'integer',
-        'style' => 'string',
+        'notes' => 'string',
         'deleted_at' => 'datetime',
     ];
 
@@ -74,41 +47,37 @@ abstract class Bookable extends Model implements Sortable
     ];
 
     /**
-     * {@inheritdoc}
-     */
-    public $translatable = [
-        'name',
-        'description',
-    ];
-
-    /**
-     * {@inheritdoc}
-     */
-    public $sortable = [
-        'order_column_name' => 'sort_order',
-    ];
-
-    /**
      * The default rules that the model will validate against.
      *
      * @var array
      */
     protected $rules = [
-        'slug' => 'required|alpha_dash|max:150',
-        'name' => 'required|string|max:150',
-        'description' => 'nullable|string|max:10000',
-        'is_active' => 'sometimes|boolean',
-        'base_cost' => 'required|numeric',
-        'unit_cost' => 'required|numeric',
-        'currency' => 'required|string|size:3',
-        'unit' => 'required|string|in:minute,hour,day,month',
-        'maximum_units' => 'nullable|integer|max:10000',
-        'minimum_units' => 'nullable|integer|max:10000',
-        'is_recurring' => 'nullable|boolean',
-        'sort_order' => 'nullable|integer|max:10000000',
-        'capacity' => 'nullable|integer|max:10000000',
-        'style' => 'nullable|string|max:150',
+        'ticket_id' => 'required|integer',
+        'customer_id' => 'required|integer',
+        'paid' => 'required|numeric',
+        'currency' => 'required|alpha|size:3',
+        'notes' => 'nullable|string|max:10000',
     ];
+
+    /**
+     * Whether the model should throw a
+     * ValidationException if it fails validation.
+     *
+     * @var bool
+     */
+    protected $throwValidationExceptions = true;
+
+    /**
+     * Create a new Eloquent model instance.
+     *
+     * @param array $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->setTable(config('rinvex.bookings.tables.ticketable_bookings'));
+    }
 
     /**
      * Get the active resources.

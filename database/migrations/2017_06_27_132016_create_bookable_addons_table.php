@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBookingAddonsTable extends Migration
+class CreateBookableAddonsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CreateBookingAddonsTable extends Migration
      */
     public function up(): void
     {
-        Schema::create(config('rinvex.bookings.tables.addons'), function (Blueprint $table) {
+        Schema::create(config('rinvex.bookings.tables.bookable_addons'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
@@ -27,6 +27,7 @@ class CreateBookingAddonsTable extends Migration
             $table->string('unit_cost')->nullable();
             $table->char('unit_cost_modifier', 1)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -37,7 +38,7 @@ class CreateBookingAddonsTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(config('rinvex.bookings.tables.addons'));
+        Schema::dropIfExists(config('rinvex.bookings.tables.bookable_addons'));
     }
 
     /**

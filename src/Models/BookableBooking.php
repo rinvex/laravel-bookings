@@ -11,59 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-/**
- * Rinvex\Bookings\Models\Booking.
- *
- * @property int                                                $id
- * @property int                                                $bookable_id
- * @property string                                             $bookable_type
- * @property string                                             $currency
- * @property int                                                $customer_id
- * @property string                                             $customer_type
- * @property \Carbon\Carbon                                     $starts_at
- * @property \Carbon\Carbon                                     $ends_at
- * @property float                                              $price
- * @property array                                              $price_equation
- * @property \Carbon\Carbon                                     $cancelled_at
- * @property string                                             $notes
- * @property \Carbon\Carbon|null                                $created_at
- * @property \Carbon\Carbon|null                                $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $customer
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelled()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledAfter($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBefore($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBetween($startsAt, $endsAt)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking current()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsAfter($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBefore($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBetween($startsAt, $endsAt)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking future()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofBookable(\Illuminate\Database\Eloquent\Model $bookable)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofCustomer(\Illuminate\Database\Eloquent\Model $customer)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking past()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking range()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBefore($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBetween($startsAt, $endsAt)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCancelledAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCurrency($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCustomerType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereEndsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking wherePriceEquation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereStartsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUpdatedAt($value)
- * @mixin \Eloquent
- */
-class Booking extends Model
+abstract class BookableBooking extends Model
 {
     use ValidatingTrait;
     use CacheableEloquent;
@@ -156,13 +104,13 @@ class Booking extends Model
     {
         parent::boot();
 
-        static::validating(function (self $booking) {
-            list($price, $priceEquation, $currency) = is_null($booking->price)
-                ? $booking->calculatePrice($booking->bookable, $booking->starts_at, $booking->ends_at) : [$booking->price, $booking->price_equation, $booking->currency];
+        static::validating(function (self $bookableAvailability) {
+            list($price, $priceEquation, $currency) = is_null($bookableAvailability->price)
+                ? $bookableAvailability->calculatePrice($bookableAvailability->bookable, $bookableAvailability->starts_at, $bookableAvailability->ends_at) : [$bookableAvailability->price, $bookableAvailability->price_equation, $bookableAvailability->currency];
 
-            $booking->price_equation = $priceEquation;
-            $booking->currency = $currency;
-            $booking->price = $price;
+            $bookableAvailability->price_equation = $priceEquation;
+            $bookableAvailability->currency = $currency;
+            $bookableAvailability->price = $price;
         });
     }
 
@@ -206,29 +154,29 @@ class Booking extends Model
             $totalPrice += $customPrice !== false ? $bookable->price + (($bookable->price * $prices[$customPrice]['percentage']) / 100) : $bookable->price;
         }
 
-        $rates = $bookable->rates->map(function (Rate $rate) {
+        $bookableRates = $bookable->rates->map(function (BookableRate $bookableRate) {
             return [
-                'percentage' => $rate->percentage,
-                'operator' => $rate->operator,
-                'amount' => $rate->amount,
+                'percentage' => $bookableRate->percentage,
+                'operator' => $bookableRate->operator,
+                'amount' => $bookableRate->amount,
             ];
         })->toArray();
 
-        foreach ($rates as $rate) {
-            switch ($rate['operator']) {
+        foreach ($bookableRates as $bookableRate) {
+            switch ($bookableRate['operator']) {
                 case '^':
-                    $units = $totalUnits <= $rate['amount'] ? $totalUnits : $rate['amount'];
-                    $totalPrice += (($rate['percentage'] * $bookable->price) / 100) * $units;
+                    $units = $totalUnits <= $bookableRate['amount'] ? $totalUnits : $bookableRate['amount'];
+                    $totalPrice += (($bookableRate['percentage'] * $bookable->price) / 100) * $units;
                     break;
                 case '>':
-                    $totalPrice += $totalUnits > $rate['amount'] ? ((($rate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits > $bookableRate['amount'] ? ((($bookableRate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
                     break;
                 case '<':
-                    $totalPrice += $totalUnits < $rate['amount'] ? ((($rate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits < $bookableRate['amount'] ? ((($bookableRate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
                     break;
                 case '=':
                 default:
-                    $totalPrice += $totalUnits === $rate['amount'] ? ((($rate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
+                    $totalPrice += $totalUnits === $bookableRate['amount'] ? ((($bookableRate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
                     break;
             }
         }
@@ -240,7 +188,7 @@ class Booking extends Model
             'total_units' => $totalUnits,
             'total_price' => $totalPrice,
             'prices' => $prices,
-            'rates' => $rates,
+            'rates' => $bookableRates,
         ];
 
         return [$totalPrice, $priceEquation, $bookable->currency];

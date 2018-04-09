@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBookingsTable extends Migration
+class CreateBookableBookingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,19 +15,21 @@ class CreateBookingsTable extends Migration
      */
     public function up(): void
     {
-        Schema::create(config('rinvex.bookings.tables.bookings'), function (Blueprint $table) {
+        Schema::create(config('rinvex.bookings.tables.bookable_bookings'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
             $table->morphs('customer');
             $table->string('currency', 3);
-            $table->timestamp('starts_at')->useCurrent();
-            $table->timestamp('ends_at')->useCurrent();
+            $table->dateTime('starts_at')->nullable();
+            $table->dateTime('ends_at')->nullable();
+            $table->dateTime('cancelled_at')->nullable();
+            $table->string('timezone')->nullable();
             $table->decimal('price')->default('0.00');
             $table->{$this->jsonable()}('price_equation')->nullable();
-            $table->timestamp('cancelled_at')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -38,7 +40,7 @@ class CreateBookingsTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(config('rinvex.bookings.tables.bookings'));
+        Schema::dropIfExists(config('rinvex.bookings.tables.bookable_bookings'));
     }
 
     /**

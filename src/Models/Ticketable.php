@@ -6,20 +6,17 @@ namespace Rinvex\Bookings\Models;
 
 use Spatie\Sluggable\SlugOptions;
 use Rinvex\Support\Traits\HasSlug;
-use Spatie\EloquentSortable\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\HasTranslations;
 use Rinvex\Support\Traits\ValidatingTrait;
-use Spatie\EloquentSortable\SortableTrait;
-use Rinvex\Bookings\Traits\Bookable as BookableTrait;
+use Rinvex\Bookings\Traits\Ticketable as TicketableTrait;
 
-abstract class Bookable extends Model implements Sortable
+abstract class Ticketable extends Model
 {
     use HasSlug;
-    use BookableTrait;
-    use SortableTrait;
+    use TicketableTrait;
     use HasTranslations;
     use ValidatingTrait;
     use CacheableEloquent;
@@ -31,17 +28,11 @@ abstract class Bookable extends Model implements Sortable
         'slug',
         'name',
         'description',
-        'is_active',
-        'base_cost',
-        'unit_cost',
-        'currency',
-        'unit',
-        'maximum_units',
-        'minimum_units',
-        'is_recurring',
-        'sort_order',
-        'capacity',
-        'style',
+        'is_public',
+        'starts_at',
+        'ends_at',
+        'timezone',
+        'location',
     ];
 
     /**
@@ -51,17 +42,11 @@ abstract class Bookable extends Model implements Sortable
         'slug' => 'string',
         'name' => 'string',
         'description' => 'string',
-        'is_active' => 'boolean',
-        'base_cost' => 'float',
-        'unit_cost' => 'float',
-        'currency' => 'string',
-        'unit' => 'string',
-        'maximum_units' => 'integer',
-        'minimum_units' => 'integer',
-        'is_recurring' => 'boolean',
-        'sort_order' => 'integer',
-        'capacity' => 'integer',
-        'style' => 'string',
+        'is_public' => 'boolean',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+        'timezone' => 'string',
+        'location' => 'string',
         'deleted_at' => 'datetime',
     ];
 
@@ -82,13 +67,6 @@ abstract class Bookable extends Model implements Sortable
     ];
 
     /**
-     * {@inheritdoc}
-     */
-    public $sortable = [
-        'order_column_name' => 'sort_order',
-    ];
-
-    /**
      * The default rules that the model will validate against.
      *
      * @var array
@@ -97,41 +75,43 @@ abstract class Bookable extends Model implements Sortable
         'slug' => 'required|alpha_dash|max:150',
         'name' => 'required|string|max:150',
         'description' => 'nullable|string|max:10000',
-        'is_active' => 'sometimes|boolean',
-        'base_cost' => 'required|numeric',
-        'unit_cost' => 'required|numeric',
-        'currency' => 'required|string|size:3',
-        'unit' => 'required|string|in:minute,hour,day,month',
-        'maximum_units' => 'nullable|integer|max:10000',
-        'minimum_units' => 'nullable|integer|max:10000',
-        'is_recurring' => 'nullable|boolean',
-        'sort_order' => 'nullable|integer|max:10000000',
-        'capacity' => 'nullable|integer|max:10000000',
-        'style' => 'nullable|string|max:150',
+        'is_public' => 'sometimes|boolean',
+        'starts_at' => 'required|string',
+        'ends_at' => 'required|string',
+        'timezone' => 'required|string|timezone',
+        'location' => 'nullable|string',
     ];
 
     /**
-     * Get the active resources.
+     * Whether the model should throw a
+     * ValidationException if it fails validation.
+     *
+     * @var bool
+     */
+    protected $throwValidationExceptions = true;
+
+    /**
+     * Get the public resources.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive(Builder $builder): Builder
+    public function scopePublic(Builder $builder): Builder
     {
-        return $builder->where('is_active', true);
+        return $builder->where('is_public', true);
     }
 
     /**
-     * Get the inactive resources.
+     * Get the private resources.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInactive(Builder $builder): Builder
+    public function scopePrivate(Builder $builder): Builder
     {
-        return $builder->where('is_active', false);
+        return $builder->where('is_public', false);
     }
 
     /**
@@ -152,9 +132,9 @@ abstract class Bookable extends Model implements Sortable
      *
      * @return $this
      */
-    public function makeActive()
+    public function makePublic()
     {
-        $this->update(['is_active' => true]);
+        $this->update(['is_public' => true]);
 
         return $this;
     }
@@ -164,9 +144,9 @@ abstract class Bookable extends Model implements Sortable
      *
      * @return $this
      */
-    public function makeInactive()
+    public function makePrivate()
     {
-        $this->update(['is_active' => false]);
+        $this->update(['is_public' => false]);
 
         return $this;
     }

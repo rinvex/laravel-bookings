@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rinvex\Bookings\Traits;
 
-use Rinvex\Bookings\Models\Booking;
+use Rinvex\Bookings\Models\BookableBooking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -26,6 +26,13 @@ trait HasBookings
     abstract public function morphMany($related, $name, $type = null, $id = null, $localKey = null);
 
     /**
+     * Get the booking model name.
+     *
+     * @return string
+     */
+    abstract public static function getBookingModel(): string;
+
+    /**
      * Boot the HasBookings trait for the model.
      *
      * @return void
@@ -44,7 +51,7 @@ trait HasBookings
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(config('rinvex.bookings.models.booking'), 'customer');
+        return $this->morphMany(static::getBookingModel(), 'customer');
     }
 
     /**
@@ -78,9 +85,9 @@ trait HasBookings
      * @param string                              $startsAt
      * @param string                              $endsAt
      *
-     * @return \Rinvex\Bookings\Models\Booking
+     * @return \Rinvex\Bookings\Models\BookableBooking
      */
-    public function newBooking(Model $bookable, string $startsAt, string $endsAt): Booking
+    public function newBooking(Model $bookable, string $startsAt, string $endsAt): BookableBooking
     {
         return $this->bookings()->create([
             'bookable_id' => $bookable->getKey(),
