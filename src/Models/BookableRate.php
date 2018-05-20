@@ -62,13 +62,13 @@ abstract class BookableRate extends Model
     protected $rules = [
         'bookable_id' => 'required|integer',
         'bookable_type' => 'required|string',
-        'range' => 'required|string|in:unit,date,month,week,day,datetime,time,time-sun,time-mon,time-tue,time-wed,time-thu,time-fri,time-sat',
+        'range' => 'required|in:unit,date,month,week,day,datetime,time,time-sun,time-mon,time-tue,time-wed,time-thu,time-fri,time-sat',
         'range_from' => 'required|string|max:150',
         'range_to' => 'required|string|max:150',
         'base_cost' => 'required|numeric',
-        'base_cost_modifier' => 'required|string|in:+,-,×,÷',
+        'base_cost_modifier' => 'required|in:+,-,×,÷',
         'unit_cost' => 'required|numeric',
-        'unit_cost_modifier' => 'required|string|in:+,-,×,÷',
+        'unit_cost_modifier' => 'required|in:+,-,×,÷',
         'priority' => 'nullable|integer',
     ];
 

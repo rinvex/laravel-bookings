@@ -82,9 +82,9 @@ abstract class BookableAddon extends Model
             'name' => 'required|string|max:150',
             'description' => 'nullable|string|max:10000',
             'base_cost' => 'required|numeric',
-            'base_cost_modifier' => 'required|string|in:+,-,×,÷',
+            'base_cost_modifier' => 'required|in:+,-,×,÷',
             'unit_cost' => 'required|numeric',
-            'unit_cost_modifier' => 'required|string|in:+,-,×,÷',
+            'unit_cost_modifier' => 'required|in:+,-,×,÷',
         ]);
     }
 

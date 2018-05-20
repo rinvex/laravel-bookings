@@ -57,7 +57,7 @@ abstract class BookableAvailability extends Model
         'bookable_id' => 'required|integer',
         'bookable_type' => 'required|string',
         'is_available' => 'required|boolean',
-        'range' => 'required|string|in:unit,date,month,week,day,datetime,time,time-sun,time-mon,time-tue,time-wed,time-thu,time-fri,time-sat',
+        'range' => 'required|in:unit,date,month,week,day,datetime,time,time-sun,time-mon,time-tue,time-wed,time-thu,time-fri,time-sat',
         'range_from' => 'required|string|max:150',
         'range_to' => 'required|string|max:150',
         'priority' => 'nullable|integer',

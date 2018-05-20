@@ -101,7 +101,7 @@ abstract class Bookable extends Model implements Sortable
         'base_cost' => 'required|numeric',
         'unit_cost' => 'required|numeric',
         'currency' => 'required|string|size:3',
-        'unit' => 'required|string|in:minute,hour,day,month',
+        'unit' => 'required|in:minute,hour,day,month',
         'maximum_units' => 'nullable|integer|max:10000',
         'minimum_units' => 'nullable|integer|max:10000',
         'is_recurring' => 'nullable|boolean',
