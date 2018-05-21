@@ -23,6 +23,9 @@ class TicketableBooking extends Model
         'customer_id',
         'paid',
         'currency',
+        'is_approved',
+        'is_confirmed',
+        'is_attended',
         'notes',
     ];
 
@@ -34,6 +37,9 @@ class TicketableBooking extends Model
         'customer_id' => 'integer',
         'paid' => 'float',
         'currency' => 'string',
+        'is_approved' => 'boolean',
+        'is_confirmed' => 'boolean',
+        'is_attended' => 'boolean',
         'notes' => 'string',
         'deleted_at' => 'datetime',
     ];
@@ -56,6 +62,9 @@ class TicketableBooking extends Model
         'customer_id' => 'required|integer',
         'paid' => 'required|numeric',
         'currency' => 'required|alpha|size:3',
+        'is_approved' => 'sometimes|boolean',
+        'is_confirmed' => 'sometimes|boolean',
+        'is_attended' => 'sometimes|boolean',
         'notes' => 'nullable|string|max:10000',
     ];
 

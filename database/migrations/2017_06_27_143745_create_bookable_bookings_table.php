@@ -28,6 +28,9 @@ class CreateBookableBookingsTable extends Migration
             $table->decimal('price')->default('0.00');
             $table->{$this->jsonable()}('price_equation')->nullable();
             $table->text('notes')->nullable();
+            $table->boolean('is_approved')->default(false);
+            $table->boolean('is_confirmed')->default(false);
+            $table->boolean('is_attended')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

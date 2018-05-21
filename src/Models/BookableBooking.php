@@ -29,6 +29,9 @@ abstract class BookableBooking extends Model
         'price',
         'currency',
         'price_equation',
+        'is_approved',
+        'is_confirmed',
+        'is_attended',
         'cancelled_at',
         'notes',
     ];
@@ -46,6 +49,9 @@ abstract class BookableBooking extends Model
         'price' => 'float',
         'currency' => 'string',
         'price_equation' => 'json',
+        'is_approved' => 'boolean',
+        'is_confirmed' => 'boolean',
+        'is_attended' => 'boolean',
         'cancelled_at' => 'datetime',
         'notes' => 'string',
     ];
@@ -73,6 +79,9 @@ abstract class BookableBooking extends Model
         'price' => 'required|numeric',
         'currency' => 'required|alpha|size:3',
         'price_equation' => 'nullable|array',
+        'is_approved' => 'sometimes|boolean',
+        'is_confirmed' => 'sometimes|boolean',
+        'is_attended' => 'sometimes|boolean',
         'cancelled_at' => 'nullable|date',
         'notes' => 'nullable|string|max:10000',
     ];
