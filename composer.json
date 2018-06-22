@@ -64,6 +64,11 @@
             "Rinvex\\Bookings\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Rinvex\\Bookings\\Tests\\": "tests"
+        }
+    },
     "config": {
         "sort-packages": true,
         "preferred-install": "dist",
