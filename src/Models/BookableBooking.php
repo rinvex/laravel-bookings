@@ -111,7 +111,7 @@ abstract class BookableBooking extends Model
 
     /**
      * @TODO: refactor
-     *      
+     *
      * {@inheritdoc}
      */
     protected static function boot()
@@ -132,7 +132,6 @@ abstract class BookableBooking extends Model
      * @TODO: refactor
      *
      * Calculate the booking price.
-     *
      *
      * @param \Illuminate\Database\Eloquent\Model $bookable
      * @param \Carbon\Carbon                      $startsAt
