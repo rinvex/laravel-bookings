@@ -7,7 +7,6 @@ return [
     // Bookings Database Tables
     'tables' => [
         'bookable_rates' => 'bookable_rates',
-        'bookable_addons' => 'bookable_addons',
         'bookable_bookings' => 'bookable_bookings',
         'bookable_availabilities' => 'bookable_availabilities',
         'ticketable_bookings' => 'ticketable_bookings',

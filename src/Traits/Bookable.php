@@ -58,13 +58,6 @@ trait Bookable
     abstract public static function getRateModel(): string;
 
     /**
-     * Get the addon model name.
-     *
-     * @return string
-     */
-    abstract public static function getAddonModel(): string;
-
-    /**
      * Get the availability model name.
      *
      * @return string
@@ -112,20 +105,6 @@ trait Bookable
     }
 
     /**
-     * Attach the given addons to the model.
-     *
-     * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
-     *
-     * @return void
-     */
-    public function setAddonsAttribute($addons): void
-    {
-        static::saved(function (self $model) use ($addons) {
-            $this->addons()->sync($addons);
-        });
-    }
-
-    /**
      * Attach the given availabilities to the model.
      *
      * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
@@ -159,16 +138,6 @@ trait Bookable
     public function bookingsBy(Model $customer): MorphMany
     {
         return $this->bookings()->where('customer_type', $customer->getMorphClass())->where('customer_id', $customer->getKey());
-    }
-
-    /**
-     * The resource may have many addons.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function addons(): MorphMany
-    {
-        return $this->morphMany(static::getAddonModel(), 'bookable');
     }
 
     /**
