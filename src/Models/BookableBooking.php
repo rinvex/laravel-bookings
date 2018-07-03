@@ -28,6 +28,7 @@ abstract class BookableBooking extends Model
         'ends_at',
         'price',
         'currency',
+        'actual_paid',
         'price_equation',
         'is_approved',
         'is_confirmed',
@@ -48,6 +49,7 @@ abstract class BookableBooking extends Model
         'ends_at' => 'datetime',
         'price' => 'float',
         'currency' => 'string',
+        'actual_paid' => 'float',
         'price_equation' => 'json',
         'is_approved' => 'boolean',
         'is_confirmed' => 'boolean',
@@ -78,6 +80,7 @@ abstract class BookableBooking extends Model
         'ends_at' => 'required|date',
         'price' => 'required|numeric',
         'currency' => 'required|alpha|size:3',
+        'actual_paid' => 'required|numeric',
         'price_equation' => 'nullable|array',
         'is_approved' => 'sometimes|boolean',
         'is_confirmed' => 'sometimes|boolean',
@@ -107,6 +110,8 @@ abstract class BookableBooking extends Model
     }
 
     /**
+     * @TODO: refactor
+     *      
      * {@inheritdoc}
      */
     protected static function boot()
@@ -124,7 +129,10 @@ abstract class BookableBooking extends Model
     }
 
     /**
+     * @TODO: refactor
+     *
      * Calculate the booking price.
+     *
      *
      * @param \Illuminate\Database\Eloquent\Model $bookable
      * @param \Carbon\Carbon                      $startsAt

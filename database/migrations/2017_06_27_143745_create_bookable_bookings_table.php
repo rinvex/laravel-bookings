@@ -26,6 +26,7 @@ class CreateBookableBookingsTable extends Migration
             $table->dateTime('canceled_at')->nullable();
             $table->string('timezone')->nullable();
             $table->decimal('price')->default('0.00');
+            $table->decimal('actual_paid')->default('0.00');
             $table->{$this->jsonable()}('price_equation')->nullable();
             $table->text('notes')->nullable();
             $table->boolean('is_approved')->default(false);
