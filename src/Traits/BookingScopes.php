@@ -17,7 +17,7 @@ trait BookingScopes
     public function pastBookings(): MorphMany
     {
         return $this->bookings()
-                    ->whereNull('cancelled_at')
+                    ->whereNull('canceled_at')
                     ->whereNotNull('ends_at')
                     ->where('ends_at', '<', now());
     }
@@ -30,7 +30,7 @@ trait BookingScopes
     public function futureBookings(): MorphMany
     {
         return $this->bookings()
-                    ->whereNull('cancelled_at')
+                    ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
                     ->where('starts_at', '>', now());
     }
@@ -43,7 +43,7 @@ trait BookingScopes
     public function currentBookings(): MorphMany
     {
         return $this->bookings()
-                    ->whereNull('cancelled_at')
+                    ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
                     ->whereNotNull('ends_at')
                     ->where('starts_at', '<', now())
@@ -58,7 +58,7 @@ trait BookingScopes
     public function cancelledBookings(): MorphMany
     {
         return $this->bookings()
-                    ->whereNotNull('cancelled_at');
+                    ->whereNotNull('canceled_at');
     }
 
     /**
@@ -71,7 +71,7 @@ trait BookingScopes
     public function bookingsStartsBefore(string $date): MorphMany
     {
         return $this->bookings()
-                    ->whereNull('cancelled_at')
+                    ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
                     ->where('starts_at', '<', new Carbon($date));
     }
@@ -86,7 +86,7 @@ trait BookingScopes
     public function bookingsStartsAfter(string $date): MorphMany
     {
         return $this->bookings()
-                    ->whereNull('cancelled_at')
+                    ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
                     ->where('starts_at', '>', new Carbon($date));
     }
@@ -102,7 +102,7 @@ trait BookingScopes
     public function bookingsStartsBetween(string $startsAt, string $endsAt): MorphMany
     {
         return $this->bookings()
-                    ->whereNull('cancelled_at')
+                    ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
                     ->where('starts_at', '>', new Carbon($startsAt))
                     ->where('starts_at', '<', new Carbon($endsAt));
@@ -118,7 +118,7 @@ trait BookingScopes
     public function bookingsEndsBefore(string $date): MorphMany
     {
         return $this->bookings()
-                    ->whereNull('cancelled_at')
+                    ->whereNull('canceled_at')
                     ->whereNotNull('ends_at')
                     ->where('ends_at', '<', new Carbon($date));
     }
@@ -133,7 +133,7 @@ trait BookingScopes
     public function bookingsEndsAfter(string $date): MorphMany
     {
         return $this->bookings()
-                    ->whereNull('cancelled_at')
+                    ->whereNull('canceled_at')
                     ->whereNotNull('ends_at')
                     ->where('ends_at', '>', new Carbon($date));
     }
@@ -149,7 +149,7 @@ trait BookingScopes
     public function bookingsEndsBetween(string $startsAt, string $endsAt): MorphMany
     {
         return $this->bookings()
-                    ->whereNull('cancelled_at')
+                    ->whereNull('canceled_at')
                     ->whereNotNull('ends_at')
                     ->where('ends_at', '>', new Carbon($startsAt))
                     ->where('ends_at', '<', new Carbon($endsAt));
@@ -165,8 +165,8 @@ trait BookingScopes
     public function bookingsCancelledBefore(string $date): MorphMany
     {
         return $this->bookings()
-                    ->whereNotNull('cancelled_at')
-                    ->where('cancelled_at', '<', new Carbon($date));
+                    ->whereNotNull('canceled_at')
+                    ->where('canceled_at', '<', new Carbon($date));
     }
 
     /**
@@ -179,8 +179,8 @@ trait BookingScopes
     public function bookingsCancelledAfter(string $date): MorphMany
     {
         return $this->bookings()
-                    ->whereNotNull('cancelled_at')
-                    ->where('cancelled_at', '>', new Carbon($date));
+                    ->whereNotNull('canceled_at')
+                    ->where('canceled_at', '>', new Carbon($date));
     }
 
     /**
@@ -194,8 +194,8 @@ trait BookingScopes
     public function bookingsCancelledBetween(string $startsAt, string $endsAt): MorphMany
     {
         return $this->bookings()
-                    ->whereNotNull('cancelled_at')
-                    ->where('cancelled_at', '>', new Carbon($startsAt))
-                    ->where('cancelled_at', '<', new Carbon($endsAt));
+                    ->whereNotNull('canceled_at')
+                    ->where('canceled_at', '>', new Carbon($startsAt))
+                    ->where('canceled_at', '<', new Carbon($endsAt));
     }
 }

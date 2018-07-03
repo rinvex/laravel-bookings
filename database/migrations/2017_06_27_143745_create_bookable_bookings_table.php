@@ -23,7 +23,7 @@ class CreateBookableBookingsTable extends Migration
             $table->string('currency', 3);
             $table->dateTime('starts_at')->nullable();
             $table->dateTime('ends_at')->nullable();
-            $table->dateTime('cancelled_at')->nullable();
+            $table->dateTime('canceled_at')->nullable();
             $table->string('timezone')->nullable();
             $table->decimal('price')->default('0.00');
             $table->{$this->jsonable()}('price_equation')->nullable();

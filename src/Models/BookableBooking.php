@@ -32,7 +32,7 @@ abstract class BookableBooking extends Model
         'is_approved',
         'is_confirmed',
         'is_attended',
-        'cancelled_at',
+        'canceled_at',
         'notes',
     ];
 
@@ -52,7 +52,7 @@ abstract class BookableBooking extends Model
         'is_approved' => 'boolean',
         'is_confirmed' => 'boolean',
         'is_attended' => 'boolean',
-        'cancelled_at' => 'datetime',
+        'canceled_at' => 'datetime',
         'notes' => 'string',
     ];
 
@@ -82,7 +82,7 @@ abstract class BookableBooking extends Model
         'is_approved' => 'sometimes|boolean',
         'is_confirmed' => 'sometimes|boolean',
         'is_attended' => 'sometimes|boolean',
-        'cancelled_at' => 'nullable|date',
+        'canceled_at' => 'nullable|date',
         'notes' => 'nullable|string|max:10000',
     ];
 
@@ -258,7 +258,7 @@ abstract class BookableBooking extends Model
      */
     public function scopePast(Builder $builder): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
                        ->where('ends_at', '<', now());
     }
@@ -272,7 +272,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeFuture(Builder $builder): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '>', now());
     }
@@ -286,7 +286,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeCurrent(Builder $builder): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->whereNotNull('ends_at')
                        ->where('starts_at', '<', now())
@@ -302,7 +302,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeCancelled(Builder $builder): Builder
     {
-        return $builder->whereNotNull('cancelled_at');
+        return $builder->whereNotNull('canceled_at');
     }
 
     /**
@@ -315,7 +315,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeStartsBefore(Builder $builder, string $date): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '<', new Carbon($date));
     }
@@ -330,7 +330,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeStartsAfter(Builder $builder, string $date): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '>', new Carbon($date));
     }
@@ -346,7 +346,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeStartsBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '>=', new Carbon($startsAt))
                        ->where('starts_at', '<=', new Carbon($endsAt));
@@ -362,7 +362,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeEndsBefore(Builder $builder, string $date): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
                        ->where('ends_at', '<', new Carbon($date));
     }
@@ -377,7 +377,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeEndsAfter(Builder $builder, string $date): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
                        ->where('ends_at', '>', new Carbon($date));
     }
@@ -393,7 +393,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeEndsBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
                        ->where('ends_at', '>=', new Carbon($startsAt))
                        ->where('ends_at', '<=', new Carbon($endsAt));
@@ -409,8 +409,8 @@ abstract class BookableBooking extends Model
      */
     public function scopeCancelledBefore(Builder $builder, string $date): Builder
     {
-        return $builder->whereNotNull('cancelled_at')
-                       ->where('cancelled_at', '<', new Carbon($date));
+        return $builder->whereNotNull('canceled_at')
+                       ->where('canceled_at', '<', new Carbon($date));
     }
 
     /**
@@ -423,8 +423,8 @@ abstract class BookableBooking extends Model
      */
     public function scopeCancelledAfter(Builder $builder, string $date): Builder
     {
-        return $builder->whereNotNull('cancelled_at')
-                       ->where('cancelled_at', '>', new Carbon($date));
+        return $builder->whereNotNull('canceled_at')
+                       ->where('canceled_at', '>', new Carbon($date));
     }
 
     /**
@@ -438,9 +438,9 @@ abstract class BookableBooking extends Model
      */
     public function scopeCancelledBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
-        return $builder->whereNotNull('cancelled_at')
-                       ->where('cancelled_at', '>=', new Carbon($startsAt))
-                       ->where('cancelled_at', '<=', new Carbon($endsAt));
+        return $builder->whereNotNull('canceled_at')
+                       ->where('canceled_at', '>=', new Carbon($startsAt))
+                       ->where('canceled_at', '<=', new Carbon($endsAt));
     }
 
     /**
@@ -454,7 +454,7 @@ abstract class BookableBooking extends Model
      */
     public function scopeRange(Builder $builder, string $startsAt, string $endsAt): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '>=', new Carbon($startsAt))
                        ->where(function (Builder $builder) use ($endsAt) {
@@ -473,7 +473,7 @@ abstract class BookableBooking extends Model
      */
     public function isCancelled(): bool
     {
-        return (bool) $this->cancelled_at;
+        return (bool) $this->canceled_at;
     }
 
     /**
