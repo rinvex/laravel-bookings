@@ -19,10 +19,10 @@ class CreateBookableAvailabilitiesTable extends Migration
             // Columns
             $table->increments('id');
             $table->morphs('bookable');
-            $table->string('is_available');
             $table->string('range');
-            $table->string('range_from')->nullable();
-            $table->string('range_to')->nullable();
+            $table->string('from')->nullable();
+            $table->string('to')->nullable();
+            $table->boolean('is_bookable')->default(false);
             $table->smallInteger('priority')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -20,10 +20,10 @@ abstract class BookableAvailability extends Model
     protected $fillable = [
         'bookable_id',
         'bookable_type',
-        'is_available',
         'range',
-        'range_from',
-        'range_to',
+        'from',
+        'to',
+        'is_bookable',
         'priority',
     ];
 
@@ -33,10 +33,10 @@ abstract class BookableAvailability extends Model
     protected $casts = [
         'bookable_id' => 'integer',
         'bookable_type' => 'string',
-        'is_available' => 'boolean',
         'range' => 'string',
-        'range_from' => 'string',
-        'range_to' => 'string',
+        'from' => 'string',
+        'to' => 'string',
+        'is_bookable' => 'boolean',
         'priority' => 'integer',
     ];
 
@@ -56,10 +56,10 @@ abstract class BookableAvailability extends Model
     protected $rules = [
         'bookable_id' => 'required|integer',
         'bookable_type' => 'required|string',
-        'is_available' => 'required|boolean',
-        'range' => 'required|in:unit,date,month,week,day,datetime,time,time-sun,time-mon,time-tue,time-wed,time-thu,time-fri,time-sat',
-        'range_from' => 'required|string|max:150',
-        'range_to' => 'required|string|max:150',
+        'range' => 'required|in:datetimes,dates,months,weeks,days,times,sundays,mondays,tuesdays,wednesdays,thursdays,fridays,saturdays',
+        'from' => 'required|string|max:150',
+        'to' => 'required|string|max:150',
+        'is_bookable' => 'required|boolean',
         'priority' => 'nullable|integer',
     ];
 

@@ -20,12 +20,10 @@ class CreateBookableRatesTable extends Migration
             $table->increments('id');
             $table->morphs('bookable');
             $table->string('range');
-            $table->string('range_from')->nullable();
-            $table->string('range_to')->nullable();
+            $table->string('from')->nullable();
+            $table->string('to')->nullable();
             $table->string('base_cost')->nullable();
-            $table->char('base_cost_modifier', 1)->nullable();
             $table->string('unit_cost')->nullable();
-            $table->char('unit_cost_modifier', 1)->nullable();
             $table->smallInteger('priority')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();

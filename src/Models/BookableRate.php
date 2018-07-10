@@ -21,12 +21,10 @@ abstract class BookableRate extends Model
         'bookable_id',
         'bookable_type',
         'range',
-        'range_from',
-        'range_to',
+        'from',
+        'to',
         'base_cost',
-        'base_cost_modifier',
         'unit_cost',
-        'unit_cost_modifier',
         'priority',
     ];
 
@@ -37,12 +35,10 @@ abstract class BookableRate extends Model
         'bookable_id' => 'integer',
         'bookable_type' => 'string',
         'range' => 'string',
-        'range_from' => 'string',
-        'range_to' => 'string',
+        'from' => 'string',
+        'to' => 'string',
         'base_cost' => 'float',
-        'base_cost_modifier' => 'string',
         'unit_cost' => 'float',
-        'unit_cost_modifier' => 'string',
         'priority' => 'integer',
     ];
 
@@ -62,13 +58,11 @@ abstract class BookableRate extends Model
     protected $rules = [
         'bookable_id' => 'required|integer',
         'bookable_type' => 'required|string',
-        'range' => 'required|in:unit,date,month,week,day,datetime,time,time-sun,time-mon,time-tue,time-wed,time-thu,time-fri,time-sat',
-        'range_from' => 'required|string|max:150',
-        'range_to' => 'required|string|max:150',
-        'base_cost' => 'required|numeric',
-        'base_cost_modifier' => 'required|in:+,-,×,÷',
+        'range' => 'required|in:datetimes,dates,months,weeks,days,times,sundays,mondays,tuesdays,wednesdays,thursdays,fridays,saturdays',
+        'from' => 'required|string|max:150',
+        'to' => 'required|string|max:150',
+        'base_cost' => 'nullable|numeric',
         'unit_cost' => 'required|numeric',
-        'unit_cost_modifier' => 'required|in:+,-,×,÷',
         'priority' => 'nullable|integer',
     ];
 
