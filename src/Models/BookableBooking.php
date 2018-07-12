@@ -129,7 +129,7 @@ abstract class BookableBooking extends Model
     }
 
     /**
-     * @TODO: refactor
+     * @TODO: implement rates, availabilites, minimum & maximum units
      *
      * Calculate the booking price.
      *
@@ -141,73 +141,24 @@ abstract class BookableBooking extends Model
      */
     public function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null): array
     {
-        $prices = $bookable->prices->map(function (Price $price) {
-            return [
-                'weekday' => $price->weekday,
-                'starts_at' => $price->starts_at,
-                'ends_at' => $price->ends_at,
-                'percentage' => $price->percentage,
-            ];
-        });
-
         $totalUnits = 0;
-        $totalPrice = 0;
-        $method = 'add'.ucfirst($bookable->unit).'s';
+        $method = 'add'.ucfirst($bookable->unit);
 
         for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->$method()) {
             // Count units
             $totalUnits++;
-
-            // Get applicable custom prices. Use first custom price matched, and ignore
-            // others. We should not have multiple custom prices for same time range anyway!
-            $customPrice = $prices->search(function ($price) use ($date, $bookable) {
-                $dayMatched = $price['weekday'] === mb_strtolower($date->format('D'));
-
-                return $bookable->unit === 'd' ? $dayMatched : $dayMatched && (new Carbon($date->format('H:i:s')))->between(new Carbon($price['starts_at']), new Carbon($price['ends_at']));
-            });
-
-            // Use custom price if exists (custom price is a +/- percentage of original resource price)
-            $totalPrice += $customPrice !== false ? $bookable->price + (($bookable->price * $prices[$customPrice]['percentage']) / 100) : $bookable->price;
         }
 
-        $bookableRates = $bookable->rates->map(function (BookableRate $bookableRate) {
-            return [
-                'percentage' => $bookableRate->percentage,
-                'operator' => $bookableRate->operator,
-                'amount' => $bookableRate->amount,
-            ];
-        })->toArray();
+        $totalPrice = $bookable->base_cost + ($bookable->unit_cost * $totalUnits);
 
-        foreach ($bookableRates as $bookableRate) {
-            switch ($bookableRate['operator']) {
-                case '^':
-                    $units = $totalUnits <= $bookableRate['amount'] ? $totalUnits : $bookableRate['amount'];
-                    $totalPrice += (($bookableRate['percentage'] * $bookable->price) / 100) * $units;
-                    break;
-                case '>':
-                    $totalPrice += $totalUnits > $bookableRate['amount'] ? ((($bookableRate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
-                    break;
-                case '<':
-                    $totalPrice += $totalUnits < $bookableRate['amount'] ? ((($bookableRate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
-                    break;
-                case '=':
-                default:
-                    $totalPrice += $totalUnits === $bookableRate['amount'] ? ((($bookableRate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
-                    break;
-            }
-        }
-
-        $priceEquation = [
-            'price' => $bookable->price,
+        return [
+            'base_cost' => $bookable->base_cost,
+            'unit_cost' => $bookable->unit_cost,
             'unit' => $bookable->unit,
             'currency' => $bookable->currency,
             'total_units' => $totalUnits,
             'total_price' => $totalPrice,
-            'prices' => $prices,
-            'rates' => $bookableRates,
         ];
-
-        return [$totalPrice, $priceEquation, $bookable->currency];
     }
 
     /**
