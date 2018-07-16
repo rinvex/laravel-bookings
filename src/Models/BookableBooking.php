@@ -10,6 +10,7 @@ use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Spatie\SchemalessAttributes\SchemalessAttributes;
 
 abstract class BookableBooking extends Model
 {
@@ -28,12 +29,10 @@ abstract class BookableBooking extends Model
         'ends_at',
         'price',
         'currency',
+        'formula',
         'actual_paid',
-        'price_equation',
-        'is_approved',
-        'is_confirmed',
-        'is_attended',
         'canceled_at',
+        'options',
         'notes',
     ];
 
@@ -49,12 +48,10 @@ abstract class BookableBooking extends Model
         'ends_at' => 'datetime',
         'price' => 'float',
         'currency' => 'string',
+        'formula' => 'json',
         'actual_paid' => 'float',
-        'price_equation' => 'json',
-        'is_approved' => 'boolean',
-        'is_confirmed' => 'boolean',
-        'is_attended' => 'boolean',
         'canceled_at' => 'datetime',
+        'options' => 'array',
         'notes' => 'string',
     ];
 
@@ -80,12 +77,10 @@ abstract class BookableBooking extends Model
         'ends_at' => 'required|date',
         'price' => 'required|numeric',
         'currency' => 'required|alpha|size:3',
+        'formula' => 'nullable|array',
         'actual_paid' => 'required|numeric',
-        'price_equation' => 'nullable|array',
-        'is_approved' => 'sometimes|boolean',
-        'is_confirmed' => 'sometimes|boolean',
-        'is_attended' => 'sometimes|boolean',
         'canceled_at' => 'nullable|date',
+        'options' => 'nullable|array',
         'notes' => 'nullable|string|max:10000',
     ];
 
@@ -119,13 +114,33 @@ abstract class BookableBooking extends Model
         parent::boot();
 
         static::validating(function (self $bookableAvailability) {
-            list($price, $priceEquation, $currency) = is_null($bookableAvailability->price)
-                ? $bookableAvailability->calculatePrice($bookableAvailability->bookable, $bookableAvailability->starts_at, $bookableAvailability->ends_at) : [$bookableAvailability->price, $bookableAvailability->price_equation, $bookableAvailability->currency];
+            list($price, $formula, $currency) = is_null($bookableAvailability->price)
+                ? $bookableAvailability->calculatePrice($bookableAvailability->bookable, $bookableAvailability->starts_at, $bookableAvailability->ends_at) : [$bookableAvailability->price, $bookableAvailability->formula, $bookableAvailability->currency];
 
-            $bookableAvailability->price_equation = $priceEquation;
             $bookableAvailability->currency = $currency;
+            $bookableAvailability->formula = $formula;
             $bookableAvailability->price = $price;
         });
+    }
+
+    /**
+     * Get options attributes.
+     *
+     * @return \Spatie\SchemalessAttributes\SchemalessAttributes
+     */
+    public function getOptionsAttribute(): SchemalessAttributes
+    {
+        return SchemalessAttributes::createForModel($this, 'options');
+    }
+
+    /**
+     * Scope with options attributes.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithOptions(): Builder
+    {
+        return SchemalessAttributes::scopeWithSchemalessAttributes('options');
     }
 
     /**

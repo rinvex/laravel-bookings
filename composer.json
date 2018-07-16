@@ -47,6 +47,7 @@
         "rinvex/cacheable": "dev-develop",
         "rinvex/support": "dev-develop",
         "spatie/eloquent-sortable": "^3.4.0",
+        "spatie/laravel-schemaless-attributes": "~1.1.0",
         "spatie/laravel-sluggable": "^2.1.0",
         "spatie/laravel-translatable": "^2.1.0",
         "watson/validating": "^3.1.0"
