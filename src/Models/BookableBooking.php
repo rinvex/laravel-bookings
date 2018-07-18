@@ -28,9 +28,10 @@ abstract class BookableBooking extends Model
         'starts_at',
         'ends_at',
         'price',
+        'quantity',
+        'total_paid',
         'currency',
         'formula',
-        'actual_paid',
         'canceled_at',
         'options',
         'notes',
@@ -47,9 +48,10 @@ abstract class BookableBooking extends Model
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'price' => 'float',
+        'quantity' => 'integer',
+        'total_paid' => 'float',
         'currency' => 'string',
         'formula' => 'json',
-        'actual_paid' => 'float',
         'canceled_at' => 'datetime',
         'options' => 'array',
         'notes' => 'string',
@@ -76,9 +78,10 @@ abstract class BookableBooking extends Model
         'starts_at' => 'required|date',
         'ends_at' => 'required|date',
         'price' => 'required|numeric',
+        'quantity' => 'required|integer',
+        'total_paid' => 'required|numeric',
         'currency' => 'required|alpha|size:3',
         'formula' => 'nullable|array',
-        'actual_paid' => 'required|numeric',
         'canceled_at' => 'nullable|date',
         'options' => 'nullable|array',
         'notes' => 'nullable|string|max:10000',
@@ -151,20 +154,29 @@ abstract class BookableBooking extends Model
      * @param \Illuminate\Database\Eloquent\Model $bookable
      * @param \Carbon\Carbon                      $startsAt
      * @param \Carbon\Carbon                      $endsAt
+     * @param int                                 $quantity
      *
      * @return array
      */
-    public function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null): array
+    public function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null, int $quantity = 1): array
     {
         $totalUnits = 0;
-        $method = 'add'.ucfirst($bookable->unit);
 
-        for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->$method()) {
-            // Count units
-            $totalUnits++;
+        switch ($bookable->unit) {
+            case 'use':
+                $totalUnits = 1;
+                $totalPrice = $bookable->base_cost + ($bookable->unit_cost * $totalUnits * $quantity);
+                break;
+            default:
+                $method = 'add'.ucfirst($bookable->unit);
+
+                for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->$method()) {
+                    $totalUnits++;
+                }
+
+                $totalPrice = $bookable->base_cost + ($bookable->unit_cost * $totalUnits * $quantity);
+                break;
         }
-
-        $totalPrice = $bookable->base_cost + ($bookable->unit_cost * $totalUnits);
 
         return [
             'base_cost' => $bookable->base_cost,

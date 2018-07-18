@@ -20,13 +20,14 @@ class CreateBookableBookingsTable extends Migration
             $table->increments('id');
             $table->morphs('bookable');
             $table->morphs('customer');
-            $table->string('currency', 3);
             $table->dateTime('starts_at')->nullable();
             $table->dateTime('ends_at')->nullable();
             $table->dateTime('canceled_at')->nullable();
             $table->string('timezone')->nullable();
             $table->decimal('price')->default('0.00');
-            $table->decimal('actual_paid')->default('0.00');
+            $table->integer('quantity')->unsigned();
+            $table->decimal('total_paid')->default('0.00');
+            $table->string('currency', 3);
             $table->{$this->jsonable()}('formula')->nullable();
             $table->schemalessAttributes('options');
             $table->text('notes')->nullable();
