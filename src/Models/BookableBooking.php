@@ -117,7 +117,7 @@ abstract class BookableBooking extends Model
         parent::boot();
 
         static::validating(function (self $bookableAvailability) {
-            list($price, $formula, $currency) = is_null($bookableAvailability->price)
+            [$price, $formula, $currency] = is_null($bookableAvailability->price)
                 ? $bookableAvailability->calculatePrice($bookableAvailability->bookable, $bookableAvailability->starts_at, $bookableAvailability->ends_at) : [$bookableAvailability->price, $bookableAvailability->formula, $bookableAvailability->currency];
 
             $bookableAvailability->currency = $currency;
@@ -170,7 +170,7 @@ abstract class BookableBooking extends Model
             default:
                 $method = 'add'.ucfirst($bookable->unit);
 
-                for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->$method()) {
+                for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->{$method}()) {
                     $totalUnits++;
                 }
 

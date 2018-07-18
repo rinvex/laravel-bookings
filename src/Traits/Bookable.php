@@ -80,6 +80,7 @@ trait Bookable
      * Attach the given bookings to the model.
      *
      * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
+     * @param mixed                                                                         $bookings
      *
      * @return void
      */
@@ -94,6 +95,7 @@ trait Bookable
      * Attach the given rates to the model.
      *
      * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
+     * @param mixed                                                                         $rates
      *
      * @return void
      */
@@ -108,6 +110,7 @@ trait Bookable
      * Attach the given availabilities to the model.
      *
      * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
+     * @param mixed                                                                         $availabilities
      *
      * @return void
      */
