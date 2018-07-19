@@ -104,7 +104,7 @@ abstract class BookableBooking extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('rinvex.bookings.tables.bookings'));
+        $this->setTable(config('rinvex.bookings.tables.bookable_bookings'));
     }
 
     /**
