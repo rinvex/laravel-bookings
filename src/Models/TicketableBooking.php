@@ -130,7 +130,7 @@ class TicketableBooking extends Model
      *
      * @return $this
      */
-    public function makeActive()
+    public function activate()
     {
         $this->update(['is_active' => true]);
 
@@ -142,7 +142,7 @@ class TicketableBooking extends Model
      *
      * @return $this
      */
-    public function makeInactive()
+    public function deactivate()
     {
         $this->update(['is_active' => false]);
 
