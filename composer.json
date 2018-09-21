@@ -2,6 +2,7 @@
     "name": "rinvex/bookings",
     "description": "Rinvex Bookings is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It has a simple architecture, with powerful underlying to afford solid platform for your business.",
     "keywords": [
+        "cost",
         "usage",
         "rinvex",
         "booking",
@@ -46,12 +47,13 @@
         "rinvex/cacheable": "dev-develop",
         "rinvex/support": "dev-develop",
         "spatie/eloquent-sortable": "^3.4.0",
+        "spatie/laravel-schemaless-attributes": "~1.1.0",
         "spatie/laravel-sluggable": "^2.1.0",
         "spatie/laravel-translatable": "^2.1.0",
         "watson/validating": "^3.1.0"
     },
     "require-dev": {
-        "codedungeon/phpunit-result-printer": "^0.6.0",
+        "codedungeon/phpunit-result-printer": "^0.19.0",
         "illuminate/container": "~5.6.0",
         "phpunit/phpunit": "^7.0.0"
     },
@@ -61,6 +63,11 @@
         ],
         "psr-4": {
             "Rinvex\\Bookings\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rinvex\\Bookings\\Tests\\": "tests"
         }
     },
     "config": {

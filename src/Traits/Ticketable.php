@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Models\BookableBooking;
+use Rinvex\Bookings\Models\TicketableBooking;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-trait Bookable
+trait Ticketable
 {
-    use BookingScopes;
-
     /**
      * Register a saved model event with the dispatcher.
      *
@@ -48,28 +46,21 @@ trait Bookable
      *
      * @return string
      */
-    abstract public static function getBookingModel(): string;
+    abstract public function getBookingModel(): string;
 
     /**
-     * Get the rate model name.
+     * Get the ticket model name.
      *
      * @return string
      */
-    abstract public static function getRateModel(): string;
+    abstract public function getTicketModel(): string;
 
     /**
-     * Get the availability model name.
-     *
-     * @return string
-     */
-    abstract public static function getAvailabilityModel(): string;
-
-    /**
-     * Boot the Bookable trait for the model.
+     * Boot the Ticketable trait for the model.
      *
      * @return void
      */
-    public static function bootBookable()
+    public static function bootTicketable()
     {
         static::deleted(function (self $model) {
             $model->bookings()->delete();
@@ -92,33 +83,13 @@ trait Bookable
     }
 
     /**
-     * Attach the given rates to the model.
+     * The resource may have many tickets.
      *
-     * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
-     * @param mixed                                                                         $rates
-     *
-     * @return void
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function setRatesAttribute($rates): void
+    public function tickets(): MorphMany
     {
-        static::saved(function (self $model) use ($rates) {
-            $this->rates()->sync($rates);
-        });
-    }
-
-    /**
-     * Attach the given availabilities to the model.
-     *
-     * @param \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|array $ids
-     * @param mixed                                                                         $availabilities
-     *
-     * @return void
-     */
-    public function setAvailabilitiesAttribute($availabilities): void
-    {
-        static::saved(function (self $model) use ($availabilities) {
-            $this->availabilities()->sync($availabilities);
-        });
+        return $this->morphMany(static::getTicketModel(), 'ticketable');
     }
 
     /**
@@ -128,7 +99,7 @@ trait Bookable
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(static::getBookingModel(), 'bookable');
+        return $this->morphMany(static::getBookingModel(), 'ticketable');
     }
 
     /**
@@ -144,43 +115,23 @@ trait Bookable
     }
 
     /**
-     * The resource may have many availabilities.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function availabilities(): MorphMany
-    {
-        return $this->morphMany(static::getAvailabilityModel(), 'bookable');
-    }
-
-    /**
-     * The resource may have many rates.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function rates(): MorphMany
-    {
-        return $this->morphMany(static::getRateModel(), 'bookable');
-    }
-
-    /**
      * Book the model for the given customer at the given dates with the given price.
      *
      * @param \Illuminate\Database\Eloquent\Model $customer
-     * @param string                              $startsAt
-     * @param string                              $endsAt
+     * @param float                               $paid
+     * @param string                              $currency
      *
-     * @return \Rinvex\Bookings\Models\BookableBooking
+     * @return \Rinvex\Bookings\Models\TicketableBooking
      */
-    public function newBooking(Model $customer, string $startsAt, string $endsAt): BookableBooking
+    public function newBooking(Model $customer, float $paid, string $currency): TicketableBooking
     {
         return $this->bookings()->create([
-            'bookable_id' => static::getKey(),
-            'bookable_type' => static::getMorphClass(),
+            'ticketable_id' => static::getKey(),
+            'ticketable_type' => static::getMorphClass(),
             'customer_id' => $customer->getKey(),
             'customer_type' => $customer->getMorphClass(),
-            'starts_at' => (new Carbon($startsAt))->toDateTimeString(),
-            'ends_at' => (new Carbon($endsAt))->toDateTimeString(),
+            'paid' => $paid,
+            'currency' => $currency,
         ]);
     }
 }

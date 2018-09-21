@@ -10,60 +10,9 @@ use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Spatie\SchemalessAttributes\SchemalessAttributes;
 
-/**
- * Rinvex\Bookings\Models\Booking.
- *
- * @property int                                                $id
- * @property int                                                $bookable_id
- * @property string                                             $bookable_type
- * @property string                                             $currency
- * @property int                                                $user_id
- * @property string                                             $user_type
- * @property \Carbon\Carbon                                     $starts_at
- * @property \Carbon\Carbon                                     $ends_at
- * @property float                                              $price
- * @property array                                              $price_equation
- * @property \Carbon\Carbon                                     $cancelled_at
- * @property string                                             $notes
- * @property \Carbon\Carbon|null                                $created_at
- * @property \Carbon\Carbon|null                                $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $bookable
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $user
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelled()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledAfter($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBefore($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking cancelledBetween($startsAt, $endsAt)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking current()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsAfter($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBefore($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking endsBetween($startsAt, $endsAt)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking future()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofBookable(\Illuminate\Database\Eloquent\Model $bookable)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking ofUser(\Illuminate\Database\Eloquent\Model $user)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking past()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking range()
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsAfter($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBefore($date)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking startsBetween($startsAt, $endsAt)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCancelledAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereCurrency($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUserType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereEndsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking wherePriceEquation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereBookableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereStartsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Rinvex\Bookings\Models\Booking whereUpdatedAt($value)
- * @mixin \Eloquent
- */
-class Booking extends Model
+abstract class BookableBooking extends Model
 {
     use ValidatingTrait;
     use CacheableEloquent;
@@ -74,14 +23,17 @@ class Booking extends Model
     protected $fillable = [
         'bookable_id',
         'bookable_type',
-        'user_id',
-        'user_type',
+        'customer_id',
+        'customer_type',
         'starts_at',
         'ends_at',
         'price',
+        'quantity',
+        'total_paid',
         'currency',
-        'price_equation',
-        'cancelled_at',
+        'formula',
+        'canceled_at',
+        'options',
         'notes',
     ];
 
@@ -91,14 +43,17 @@ class Booking extends Model
     protected $casts = [
         'bookable_id' => 'integer',
         'bookable_type' => 'string',
-        'user_id' => 'integer',
-        'user_type' => 'string',
+        'customer_id' => 'integer',
+        'customer_type' => 'string',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'price' => 'float',
+        'quantity' => 'integer',
+        'total_paid' => 'float',
         'currency' => 'string',
-        'price_equation' => 'json',
-        'cancelled_at' => 'datetime',
+        'formula' => 'json',
+        'canceled_at' => 'datetime',
+        'options' => 'array',
         'notes' => 'string',
     ];
 
@@ -118,14 +73,17 @@ class Booking extends Model
     protected $rules = [
         'bookable_id' => 'required|integer',
         'bookable_type' => 'required|string',
-        'user_id' => 'required|integer',
-        'user_type' => 'required|string',
+        'customer_id' => 'required|integer',
+        'customer_type' => 'required|string',
         'starts_at' => 'required|date',
         'ends_at' => 'required|date',
         'price' => 'required|numeric',
+        'quantity' => 'required|integer',
+        'total_paid' => 'required|numeric',
         'currency' => 'required|alpha|size:3',
-        'price_equation' => 'nullable|array',
-        'cancelled_at' => 'nullable|date',
+        'formula' => 'nullable|array',
+        'canceled_at' => 'nullable|date',
+        'options' => 'nullable|array',
         'notes' => 'nullable|string|max:10000',
     ];
 
@@ -146,115 +104,88 @@ class Booking extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('rinvex.bookings.tables.bookings'));
+        $this->setTable(config('rinvex.bookings.tables.bookable_bookings'));
     }
 
     /**
+     * @TODO: refactor
+     *
      * {@inheritdoc}
      */
     protected static function boot()
     {
         parent::boot();
 
-        static::validating(function (self $booking) {
-            list($price, $priceEquation, $currency) = is_null($booking->price)
-                ? $booking->calculatePrice($booking->bookable, $booking->starts_at, $booking->ends_at) : [$booking->price, $booking->price_equation, $booking->currency];
+        static::validating(function (self $bookableAvailability) {
+            [$price, $formula, $currency] = is_null($bookableAvailability->price)
+                ? $bookableAvailability->calculatePrice($bookableAvailability->bookable, $bookableAvailability->starts_at, $bookableAvailability->ends_at) : [$bookableAvailability->price, $bookableAvailability->formula, $bookableAvailability->currency];
 
-            $booking->price_equation = $priceEquation;
-            $booking->currency = $currency;
-            $booking->price = $price;
+            $bookableAvailability->currency = $currency;
+            $bookableAvailability->formula = $formula;
+            $bookableAvailability->price = $price;
         });
     }
 
     /**
+     * Get options attributes.
+     *
+     * @return \Spatie\SchemalessAttributes\SchemalessAttributes
+     */
+    public function getOptionsAttribute(): SchemalessAttributes
+    {
+        return SchemalessAttributes::createForModel($this, 'options');
+    }
+
+    /**
+     * Scope with options attributes.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithOptions(): Builder
+    {
+        return SchemalessAttributes::scopeWithSchemalessAttributes('options');
+    }
+
+    /**
+     * @TODO: implement rates, availabilites, minimum & maximum units
+     *
      * Calculate the booking price.
      *
      * @param \Illuminate\Database\Eloquent\Model $bookable
-     * @param string                              $startsAt
-     * @param string                              $endsAt
+     * @param \Carbon\Carbon                      $startsAt
+     * @param \Carbon\Carbon                      $endsAt
+     * @param int                                 $quantity
      *
      * @return array
      */
-    public static function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null): array
+    public function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null, int $quantity = 1): array
     {
-        switch ($bookable->unit) {
-            case 'd':
-                $method = 'addDay';
-                break;
-            case 'm':
-                $method = 'addMinute';
-                break;
-            case 'h':
-            default:
-                $method = 'addHour';
-                break;
-        }
-
-        $prices = $bookable->prices->map(function (Price $price) {
-            return [
-                'weekday' => $price->weekday,
-                'starts_at' => $price->starts_at,
-                'ends_at' => $price->ends_at,
-                'percentage' => $price->percentage,
-            ];
-        });
-
         $totalUnits = 0;
-        $totalPrice = 0;
-        for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->$method()) {
-            // Count units
-            $totalUnits++;
 
-            // Get applicable custom prices. Use first custom price matched, and ignore
-            // others. We should not have multiple custom prices for same time range anyway!
-            $customPrice = $prices->search(function ($price) use ($date, $bookable) {
-                $dayMatched = $price['weekday'] === mb_strtolower($date->format('D'));
+        switch ($bookable->unit) {
+            case 'use':
+                $totalUnits = 1;
+                $totalPrice = $bookable->base_cost + ($bookable->unit_cost * $totalUnits * $quantity);
+                break;
+            default:
+                $method = 'add'.ucfirst($bookable->unit);
 
-                return $bookable->unit === 'd' ? $dayMatched : $dayMatched && (new Carbon($date->format('H:i:s')))->between(new Carbon($price['starts_at']), new Carbon($price['ends_at']));
-            });
+                for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->{$method}()) {
+                    $totalUnits++;
+                }
 
-            // Use custom price if exists (custom price is a +/- percentage of original resource price)
-            $totalPrice += $customPrice !== false ? $bookable->price + (($bookable->price * $prices[$customPrice]['percentage']) / 100) : $bookable->price;
+                $totalPrice = $bookable->base_cost + ($bookable->unit_cost * $totalUnits * $quantity);
+                break;
         }
 
-        $rates = $bookable->rates->map(function (Rate $rate) {
-            return [
-                'percentage' => $rate->percentage,
-                'operator' => $rate->operator,
-                'amount' => $rate->amount,
-            ];
-        })->toArray();
-
-        foreach ($rates as $rate) {
-            switch ($rate['operator']) {
-                case '^':
-                    $units = $totalUnits <= $rate['amount'] ? $totalUnits : $rate['amount'];
-                    $totalPrice += (($rate['percentage'] * $bookable->price) / 100) * $units;
-                    break;
-                case '>':
-                    $totalPrice += $totalUnits > $rate['amount'] ? ((($rate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
-                    break;
-                case '<':
-                    $totalPrice += $totalUnits < $rate['amount'] ? ((($rate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
-                    break;
-                case '=':
-                default:
-                    $totalPrice += $totalUnits === $rate['amount'] ? ((($rate['percentage'] * $bookable->price) / 100) * $totalUnits) : 0;
-                    break;
-            }
-        }
-
-        $priceEquation = [
-            'price' => $bookable->price,
+        return [
+            'base_cost' => $bookable->base_cost,
+            'unit_cost' => $bookable->unit_cost,
             'unit' => $bookable->unit,
             'currency' => $bookable->currency,
             'total_units' => $totalUnits,
             'total_price' => $totalPrice,
-            'prices' => $prices,
-            'rates' => $rates,
         ];
-
-        return [$totalPrice, $priceEquation, $bookable->currency];
     }
 
     /**
@@ -264,17 +195,17 @@ class Booking extends Model
      */
     public function bookable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('bookable', 'bookable_type', 'bookable_id');
     }
 
     /**
-     * Get the owning user.
+     * Get the booking customer.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function user(): MorphTo
+    public function customer(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('customer', 'customer_type', 'customer_id');
     }
 
     /**
@@ -291,16 +222,16 @@ class Booking extends Model
     }
 
     /**
-     * Get bookings of the given user.
+     * Get bookings of the given customer.
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \Illuminate\Database\Eloquent\Model   $user
+     * @param \Illuminate\Database\Eloquent\Model   $customer
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOfUser(Builder $builder, Model $user): Builder
+    public function scopeOfCustomer(Builder $builder, Model $customer): Builder
     {
-        return $builder->where('user_type', $user->getMorphClass())->where('user_id', $user->getKey());
+        return $builder->where('customer_type', $customer->getMorphClass())->where('customer_id', $customer->getKey());
     }
 
     /**
@@ -312,7 +243,7 @@ class Booking extends Model
      */
     public function scopePast(Builder $builder): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
                        ->where('ends_at', '<', now());
     }
@@ -326,7 +257,7 @@ class Booking extends Model
      */
     public function scopeFuture(Builder $builder): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '>', now());
     }
@@ -340,7 +271,7 @@ class Booking extends Model
      */
     public function scopeCurrent(Builder $builder): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->whereNotNull('ends_at')
                        ->where('starts_at', '<', now())
@@ -356,7 +287,7 @@ class Booking extends Model
      */
     public function scopeCancelled(Builder $builder): Builder
     {
-        return $builder->whereNotNull('cancelled_at');
+        return $builder->whereNotNull('canceled_at');
     }
 
     /**
@@ -369,7 +300,7 @@ class Booking extends Model
      */
     public function scopeStartsBefore(Builder $builder, string $date): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '<', new Carbon($date));
     }
@@ -384,7 +315,7 @@ class Booking extends Model
      */
     public function scopeStartsAfter(Builder $builder, string $date): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '>', new Carbon($date));
     }
@@ -400,7 +331,7 @@ class Booking extends Model
      */
     public function scopeStartsBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '>=', new Carbon($startsAt))
                        ->where('starts_at', '<=', new Carbon($endsAt));
@@ -416,7 +347,7 @@ class Booking extends Model
      */
     public function scopeEndsBefore(Builder $builder, string $date): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
                        ->where('ends_at', '<', new Carbon($date));
     }
@@ -431,7 +362,7 @@ class Booking extends Model
      */
     public function scopeEndsAfter(Builder $builder, string $date): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
                        ->where('ends_at', '>', new Carbon($date));
     }
@@ -447,7 +378,7 @@ class Booking extends Model
      */
     public function scopeEndsBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
                        ->where('ends_at', '>=', new Carbon($startsAt))
                        ->where('ends_at', '<=', new Carbon($endsAt));
@@ -463,8 +394,8 @@ class Booking extends Model
      */
     public function scopeCancelledBefore(Builder $builder, string $date): Builder
     {
-        return $builder->whereNotNull('cancelled_at')
-                       ->where('cancelled_at', '<', new Carbon($date));
+        return $builder->whereNotNull('canceled_at')
+                       ->where('canceled_at', '<', new Carbon($date));
     }
 
     /**
@@ -477,8 +408,8 @@ class Booking extends Model
      */
     public function scopeCancelledAfter(Builder $builder, string $date): Builder
     {
-        return $builder->whereNotNull('cancelled_at')
-                       ->where('cancelled_at', '>', new Carbon($date));
+        return $builder->whereNotNull('canceled_at')
+                       ->where('canceled_at', '>', new Carbon($date));
     }
 
     /**
@@ -492,9 +423,9 @@ class Booking extends Model
      */
     public function scopeCancelledBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
-        return $builder->whereNotNull('cancelled_at')
-                       ->where('cancelled_at', '>=', new Carbon($startsAt))
-                       ->where('cancelled_at', '<=', new Carbon($endsAt));
+        return $builder->whereNotNull('canceled_at')
+                       ->where('canceled_at', '>=', new Carbon($startsAt))
+                       ->where('canceled_at', '<=', new Carbon($endsAt));
     }
 
     /**
@@ -508,7 +439,7 @@ class Booking extends Model
      */
     public function scopeRange(Builder $builder, string $startsAt, string $endsAt): Builder
     {
-        return $builder->whereNull('cancelled_at')
+        return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->where('starts_at', '>=', new Carbon($startsAt))
                        ->where(function (Builder $builder) use ($endsAt) {
@@ -527,7 +458,7 @@ class Booking extends Model
      */
     public function isCancelled(): bool
     {
-        return (bool) $this->cancelled_at;
+        return (bool) $this->canceled_at;
     }
 
     /**
