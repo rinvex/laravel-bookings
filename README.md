@@ -2,17 +2,17 @@
 
 **Rinvex Bookings** is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It has a simple architecture, with powerful underlying to afford solid platform for your business.
 
-[![Packagist](https://img.shields.io/packagist/v/rinvex/bookings.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/rinvex/bookings)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/rinvex/bookings.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/rinvex/bookings/)
-[![Code Climate](https://img.shields.io/codeclimate/github/rinvex/bookings.svg?label=CodeClimate&style=flat-square)](https://codeclimate.com/github/rinvex/bookings)
-[![Travis](https://img.shields.io/travis/rinvex/bookings.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/rinvex/bookings)
+[![Packagist](https://img.shields.io/packagist/v/rinvex/laravel-bookings.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/rinvex/laravel-bookings)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/rinvex/laravel-bookings.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/rinvex/laravel-bookings/)
+[![Code Climate](https://img.shields.io/codeclimate/github/rinvex/laravel-bookings.svg?label=CodeClimate&style=flat-square)](https://codeclimate.com/github/rinvex/laravel-bookings)
+[![Travis](https://img.shields.io/travis/rinvex/laravel-bookings.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/rinvex/laravel-bookings)
 [![StyleCI](https://styleci.io/repos/96481479/shield)](https://styleci.io/repos/96481479)
-[![License](https://img.shields.io/packagist/l/rinvex/bookings.svg?label=License&style=flat-square)](https://github.com/rinvex/bookings/blob/develop/LICENSE)
+[![License](https://img.shields.io/packagist/l/rinvex/laravel-bookings.svg?label=License&style=flat-square)](https://github.com/rinvex/laravel-bookings/blob/develop/LICENSE)
 
 
 ## Considerations
 
-- **Rinvex Bookings** is for bookable resources, and has nothing to do with price plans and subscriptions. If you're looking for subscription management system, you may have to look at **[rinvex/subscriptions](https://github.com/rinvex/subscriptions).**
+- **Rinvex Bookings** is for bookable resources, and has nothing to do with price plans and subscriptions. If you're looking for subscription management system, you may have to look at **[rinvex/laravel-subscriptions](https://github.com/rinvex/laravel-subscriptions).**
 - **Rinvex Bookings** assumes that your resource model has at least three fields, `price` as a decimal field, and lastly `unit` as a string field which accepts one of (minute, hour, day, month) respectively.
 - Payments and ordering are out of scope for **Rinvex Bookings**, so you've to take care of this yourself. Booking price is calculated by this package, so you may need to hook into the process or listen to saved bookings to issue invoice, or trigger payment process.
 - You may extend **Rinvex Bookings** functionality to add features like: minimum and maximum units, and many more. These features may be supported natively sometime in the future.
@@ -22,7 +22,7 @@
 
 1. Install the package via composer:
     ```shell
-    composer require rinvex/bookings
+    composer require rinvex/laravel-bookings
     ```
 
 2. Execute migrations via the following command:

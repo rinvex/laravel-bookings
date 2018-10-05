@@ -1,6 +1,7 @@
 {
-    "name": "rinvex/bookings",
+    "name": "rinvex/laravel-bookings",
     "description": "Rinvex Bookings is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It has a simple architecture, with powerful underlying to afford solid platform for your business.",
+    "type": "library",
     "keywords": [
         "cost",
         "usage",
@@ -17,9 +18,9 @@
     "homepage": "https://rinvex.com",
     "support": {
         "email": "help@rinvex.com",
-        "issues": "https://github.com/rinvex/bookings/issues",
-        "source": "https://github.com/rinvex/bookings",
-        "docs": "https://github.com/rinvex/bookings/blob/master/README.md"
+        "issues": "https://github.com/rinvex/laravel-bookings/issues",
+        "source": "https://github.com/rinvex/laravel-bookings",
+        "docs": "https://github.com/rinvex/laravel-bookings/blob/master/README.md"
     },
     "authors": [
         {
@@ -35,17 +36,17 @@
         },
         {
             "name": "The Generous Laravel Community",
-            "homepage": "https://github.com/rinvex/bookings/contributors"
+            "homepage": "https://github.com/rinvex/laravel-bookings/contributors"
         }
     ],
     "require": {
         "php": "^7.1.3",
-        "illuminate/console": "~5.6.0",
-        "illuminate/database": "~5.6.0",
-        "illuminate/support": "~5.6.0",
+        "illuminate/console": "~5.7.0",
+        "illuminate/database": "~5.7.0",
+        "illuminate/support": "~5.7.0",
         "nesbot/carbon": "~1.22",
-        "rinvex/cacheable": "dev-develop",
-        "rinvex/support": "dev-develop",
+        "rinvex/laravel-cacheable": "^1.0.0",
+        "rinvex/laravel-support": "v1.0.0",
         "spatie/eloquent-sortable": "^3.4.0",
         "spatie/laravel-schemaless-attributes": "~1.1.0",
         "spatie/laravel-sluggable": "^2.1.0",
@@ -53,8 +54,8 @@
         "watson/validating": "^3.1.0"
     },
     "require-dev": {
-        "codedungeon/phpunit-result-printer": "^0.19.0",
-        "illuminate/container": "~5.6.0",
+        "codedungeon/phpunit-result-printer": "^0.22.0",
+        "illuminate/container": "~5.7.0",
         "phpunit/phpunit": "^7.0.0"
     },
     "autoload": {
@@ -70,15 +71,15 @@
             "Rinvex\\Bookings\\Tests\\": "tests"
         }
     },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
     "config": {
         "sort-packages": true,
         "preferred-install": "dist",
         "optimize-autoloader": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        },
         "laravel": {
             "providers": [
                 "Rinvex\\Bookings\\Providers\\BookingsServiceProvider"
