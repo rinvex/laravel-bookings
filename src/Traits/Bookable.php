@@ -7,6 +7,7 @@ namespace Rinvex\Bookings\Traits;
 use Illuminate\Database\Eloquent\Model;
 use Rinvex\Bookings\Models\BookableBooking;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Carbon\Carbon;
 
 trait Bookable
 {
