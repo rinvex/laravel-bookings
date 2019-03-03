@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 
 
+## [v2.0.0] - 2019-03-03
+- Rename environment variable QUEUE_DRIVER to QUEUE_CONNECTION
+- Require PHP 7.2 & Laravel 5.8
+- Tweak and simplify FormRequest validations
+
 ## [v1.0.1] - 2018-12-22
 - Add missing use statement
 - Update composer dependencies
@@ -76,6 +81,7 @@ This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 ## v0.0.1 - 2017-09-08
 - Tag first release
 
+[v2.0.0]: https://github.com/rinvex/laravel-bookings/compare/v1.0.1...v2.0.0
 [v1.0.1]: https://github.com/rinvex/laravel-bookings/compare/v1.0.0...v1.0.1
 [v1.0.0]: https://github.com/rinvex/laravel-bookings/compare/v0.0.3...v1.0.0
 [v0.0.3]: https://github.com/rinvex/laravel-bookings/compare/v0.0.2...v0.0.3
