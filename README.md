@@ -4,7 +4,6 @@
 
 [![Packagist](https://img.shields.io/packagist/v/rinvex/laravel-bookings.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/rinvex/laravel-bookings)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/rinvex/laravel-bookings.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/rinvex/laravel-bookings/)
-[![Code Climate](https://img.shields.io/codeclimate/github/rinvex/laravel-bookings.svg?label=CodeClimate&style=flat-square)](https://codeclimate.com/github/rinvex/laravel-bookings)
 [![Travis](https://img.shields.io/travis/rinvex/laravel-bookings.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/rinvex/laravel-bookings)
 [![StyleCI](https://styleci.io/repos/96481479/shield)](https://styleci.io/repos/96481479)
 [![License](https://img.shields.io/packagist/l/rinvex/laravel-bookings.svg?label=License&style=flat-square)](https://github.com/rinvex/laravel-bookings/blob/develop/LICENSE)
