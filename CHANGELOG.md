@@ -87,6 +87,7 @@ This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 ## v0.0.1 - 2017-09-08
 - Tag first release
 
+[v2.1.0]: https://github.com/rinvex/laravel-bookings/compare/v2.0.0...v2.1.0
 [v2.0.0]: https://github.com/rinvex/laravel-bookings/compare/v1.0.1...v2.0.0
 [v1.0.1]: https://github.com/rinvex/laravel-bookings/compare/v1.0.0...v1.0.1
 [v1.0.0]: https://github.com/rinvex/laravel-bookings/compare/v0.0.3...v1.0.0
