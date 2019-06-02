@@ -25,14 +25,14 @@
     composer require rinvex/laravel-bookings
     ```
 
-2. Execute migrations via the following command:
-    ```shell
-    php artisan rinvex:migrate:bookings
-    ```
-
-3. **Optional** if you want to change the configurations:
+2. Publish resources (migrations and config files):
     ```shell
     php artisan rinvex:publish:bookings
+    ```
+
+3. Execute migrations via the following command:
+    ```shell
+    php artisan rinvex:migrate:bookings
     ```
 
 4. Done!
