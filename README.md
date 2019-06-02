@@ -4,7 +4,6 @@
 
 [![Packagist](https://img.shields.io/packagist/v/rinvex/laravel-bookings.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/rinvex/laravel-bookings)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/rinvex/laravel-bookings.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/rinvex/laravel-bookings/)
-[![Code Climate](https://img.shields.io/codeclimate/github/rinvex/laravel-bookings.svg?label=CodeClimate&style=flat-square)](https://codeclimate.com/github/rinvex/laravel-bookings)
 [![Travis](https://img.shields.io/travis/rinvex/laravel-bookings.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/rinvex/laravel-bookings)
 [![StyleCI](https://styleci.io/repos/96481479/shield)](https://styleci.io/repos/96481479)
 [![License](https://img.shields.io/packagist/l/rinvex/laravel-bookings.svg?label=License&style=flat-square)](https://github.com/rinvex/laravel-bookings/blob/develop/LICENSE)
@@ -25,14 +24,14 @@
     composer require rinvex/laravel-bookings
     ```
 
-2. Execute migrations via the following command:
-    ```shell
-    php artisan rinvex:migrate:bookings
-    ```
-
-3. **Optional** if you want to change the configurations:
+2. Publish resources (migrations and config files):
     ```shell
     php artisan rinvex:publish:bookings
+    ```
+
+3. Execute migrations via the following command:
+    ```shell
+    php artisan rinvex:migrate:bookings
     ```
 
 4. Done!
@@ -85,7 +84,9 @@ Creating a new booking is straight forward, and could be done in many ways. Let'
 ```php
 $room = \App\Models\Room::find(1);
 $customer = \App\Models\Customer::find(1);
-$bookableAvailability = app('rinvex.bookings.bookable-booking');
+
+// Extends \Rinvex\Bookings\Models\BookableBooking
+$serviceBooking = new \App\Models\ServiceBooking;
 
 // Create a new booking via resource model (customer, starts, ends)
 $room->newBooking($customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
@@ -94,7 +95,7 @@ $room->newBooking($customer, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
 $customer->newBooking($room, '2017-07-05 12:44:12', '2017-07-10 18:30:11');
 
 // Create a new booking explicitly
-$bookableAvailability->make(['starts_at' => \Carbon\Carbon::now(), 'ends_at' => \Carbon\Carbon::tomorrow()])
+$serviceBooking->make(['starts_at' => \Carbon\Carbon::now(), 'ends_at' => \Carbon\Carbon::tomorrow()])
         ->customer()->associate($customer)
         ->bookable()->associate($room)
         ->save();
@@ -110,42 +111,46 @@ $bookableAvailability->make(['starts_at' => \Carbon\Carbon::now(), 'ends_at' => 
 You can get more details about a specific booking as follows:
 
 ```php
-$bookableAvailability = app('rinvex.bookings.bookable-booking')->find(1);
+// Extends \Rinvex\Bookings\Models\BookableBooking
+$serviceBooking = \App\Models\ServiceBooking::find(1);
 
-$bookable = $bookableAvailability->bookable; // Get the owning resource model
-$customer = $bookableAvailability->customer; // Get the owning customer model
+$bookable = $serviceBooking->bookable; // Get the owning resource model
+$customer = $serviceBooking->customer; // Get the owning customer model
 
-$bookableAvailability->isPast(); // Check if the booking is past
-$bookableAvailability->isFuture(); // Check if the booking is future
-$bookableAvailability->isCurrent(); // Check if the booking is current
-$bookableAvailability->isCancelled(); // Check if the booking is cancelled
+$serviceBooking->isPast(); // Check if the booking is past
+$serviceBooking->isFuture(); // Check if the booking is future
+$serviceBooking->isCurrent(); // Check if the booking is current
+$serviceBooking->isCancelled(); // Check if the booking is cancelled
 ```
 
 And as expected, you can query bookings by date as well:
 
 ```php
-$pastBookings = app('rinvex.bookings.bookable-booking')->past(); // Get the past bookings
-$futureBookings = app('rinvex.bookings.bookable-booking')->future(); // Get the future bookings
-$currentBookings = app('rinvex.bookings.bookable-booking')->current(); // Get the current bookings
-$cancelledBookings = app('rinvex.bookings.bookable-booking')->cancelled(); // Get the cancelled bookings
+// Extends \Rinvex\Bookings\Models\BookableBooking
+$serviceBooking = new \App\Models\ServiceBooking;
 
-$bookableAvailabilitysSAfter = app('rinvex.bookings.bookable-booking')->startsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$bookableAvailabilitysStartsBefore = app('rinvex.bookings.bookable-booking')->startsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$bookableAvailabilitysSBetween = app('rinvex.bookings.bookable-booking')->startsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$pastBookings = $serviceBooking->past(); // Get the past bookings
+$futureBookings = $serviceBooking->future(); // Get the future bookings
+$currentBookings = $serviceBooking->current(); // Get the current bookings
+$cancelledBookings = $serviceBooking->cancelled(); // Get the cancelled bookings
 
-$bookableAvailabilitysEndsAfter = app('rinvex.bookings.bookable-booking')->endsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$bookableAvailabilitysEndsBefore = app('rinvex.bookings.bookable-booking')->endsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$bookableAvailabilitysEndsBetween = app('rinvex.bookings.bookable-booking')->endsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$serviceBookingsAfter = $serviceBooking->startsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$serviceBookingsStartsBefore = $serviceBooking->startsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$serviceBookingsBetween = $serviceBooking->startsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
-$bookableAvailabilitysCancelledAfter = app('rinvex.bookings.bookable-booking')->cancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
-$bookableAvailabilitysCancelledBefore = app('rinvex.bookings.bookable-booking')->cancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
-$bookableAvailabilitysCancelledBetween = app('rinvex.bookings.bookable-booking')->cancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+$serviceBookingsEndsAfter = $serviceBooking->endsAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$serviceBookingsEndsBefore = $serviceBooking->endsBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$serviceBookingsEndsBetween = $serviceBooking->endsBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
+
+$serviceBookingsCancelledAfter = $serviceBooking->cancelledAfter('2017-06-21 19:28:51')->get(); // Get bookings starts after the given date
+$serviceBookingsCancelledBefore = $serviceBooking->cancelledBefore('2017-06-21 19:28:51')->get(); // Get bookings starts before the given date
+$serviceBookingsCancelledBetween = $serviceBooking->cancelledBetween('2017-06-21 19:28:51', '2017-07-01 12:00:00')->get(); // Get bookings starts between the given dates
 
 $room = \App\Models\Room::find(1);
-$bookableAvailabilitysOfBookable = app('rinvex.bookings.bookable-booking')->ofBookable($room)->get(); // Get bookings of the given resource
+$serviceBookingsOfBookable = $serviceBooking->ofBookable($room)->get(); // Get bookings of the given resource
 
 $customer = \App\Models\Customer::find(1);
-$bookableAvailabilitysOfCustomer = app('rinvex.bookings.bookable-booking')->ofCustomer($customer)->get(); // Get bookings of the given customer
+$serviceBookingsOfCustomer = $serviceBooking->ofCustomer($customer)->get(); // Get bookings of the given customer
 ```
 
 ### Create a new booking rate
@@ -164,8 +169,11 @@ Alternatively you can create a new booking rate explicitly as follows:
 
 ```php
 $room = \App\Models\Room::find(1);
-$bookableRate = app('rinvex.bookings.bookable-rate');
-$bookableRate->make(['percentage' => '15', 'operator' => '^', 'amount' => 2])
+
+// Extends \Rinvex\Bookings\Models\BookableRate
+$serviceRate = new \App\Models\ServiceRate;
+
+$serviceRate->make(['percentage' => '15', 'operator' => '^', 'amount' => 2])
      ->bookable()->associate($room)
      ->save();
 ```
@@ -173,7 +181,7 @@ $bookableRate->make(['percentage' => '15', 'operator' => '^', 'amount' => 2])
 And here's the booking rate relations:
 
 ```php
-$bookable = $bookableRate->bookable; // Get the owning resource model
+$bookable = $serviceRate->bookable; // Get the owning resource model
 ```
 
 > **Notes:**
@@ -269,6 +277,9 @@ $customer->bookingsOf($room)->get(); // Get bookings by the customer for the giv
 ```
 
 Just like resource models, all the above properties and methods are actually relationships, so you can call the raw relation methods and chain like any normal Eloquent relationship. E.g. `$customer->bookings()->where('starts_at', '>', new \Carbon\Carbon())->first()`.
+
+
+**⚠️ Documentation not complete, the package is under developement, and some part may encounter refactoring! ⚠️**
 
 
 ## Changelog
