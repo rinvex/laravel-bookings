@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 
 
+## [v3.0.2] - 2019-12-18
+- Fix `migrate:reset` args as it doesn't accept --step
+
 ## [v3.0.1] - 2019-09-23
 - Fix outdated package version
 
@@ -96,6 +99,7 @@ This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 ## v0.0.1 - 2017-09-08
 - Tag first release
 
+[v3.0.2]: https://github.com/rinvex/laravel-bookings/compare/v3.0.1...v3.0.2
 [v3.0.1]: https://github.com/rinvex/laravel-bookings/compare/v3.0.0...v3.0.1
 [v3.0.0]: https://github.com/rinvex/laravel-bookings/compare/v2.1.1...v3.0.0
 [v2.1.1]: https://github.com/rinvex/laravel-bookings/compare/v2.1.0...v2.1.1
