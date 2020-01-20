@@ -48,5 +48,6 @@ class BookingsServiceProvider extends ServiceProvider
         // Publish Resources
         ! $this->app->runningInConsole() || $this->publishesConfig('rinvex/laravel-bookings');
         ! $this->app->runningInConsole() || $this->publishesMigrations('rinvex/laravel-bookings');
+        ! $this->app['config']['rinvex.bookings.autoload_migrations'] || $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
     }
 }
