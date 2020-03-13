@@ -488,6 +488,6 @@ abstract class BookableBooking extends Model
      */
     public function isCurrent(): bool
     {
-        return ! $this->isCancelled() && now()->between($this->starts_at, $this->ends_at);
+        return ! $this->isCancelled() && Carbon::now()->between($this->starts_at, $this->ends_at);
     }
 }
