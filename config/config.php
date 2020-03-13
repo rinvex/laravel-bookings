@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 return [
 
+    // Manage autoload migrations
+    'autoload_migrations' => true,
+
     // Bookings Database Tables
     'tables' => [
         'bookable_rates' => 'bookable_rates',
