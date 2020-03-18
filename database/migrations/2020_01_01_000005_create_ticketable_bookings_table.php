@@ -17,9 +17,9 @@ class CreateTicketableBookingsTable extends Migration
     {
         Schema::create(config('rinvex.bookings.tables.ticketable_bookings'), function (Blueprint $table) {
             // Columns
-            $table->increments('id');
-            $table->integer('ticket_id')->unsigned();
-            $table->integer('customer_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('ticket_id')->unsigned();
+            $table->bigInteger('customer_id')->unsigned();
             $table->decimal('paid')->default('0.00');
             $table->string('currency', 3)->nullable();
             $table->boolean('is_approved')->default(false);

@@ -17,7 +17,7 @@ class CreateTicketableTicketsTable extends Migration
     {
         Schema::create(config('rinvex.bookings.tables.ticketable_tickets'), function (Blueprint $table) {
             // Columns
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->morphs('ticketable');
             $table->string('slug');
             $table->{$this->jsonable()}('name');
@@ -25,7 +25,7 @@ class CreateTicketableTicketsTable extends Migration
             $table->boolean('is_active')->default(true);
             $table->decimal('price')->default('0.00');
             $table->string('currency', 3)->nullable();
-            $table->integer('quantity')->nullable()->default(-1);
+            $table->bigInteger('quantity')->nullable()->default(-1);
             $table->mediumInteger('sort_order')->unsigned()->default(0);
             $table->timestamps();
             $table->softDeletes();
