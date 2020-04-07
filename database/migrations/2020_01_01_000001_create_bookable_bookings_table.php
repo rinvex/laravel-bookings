@@ -17,7 +17,7 @@ class CreateBookableBookingsTable extends Migration
     {
         Schema::create(config('rinvex.bookings.tables.bookable_bookings'), function (Blueprint $table) {
             // Columns
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->morphs('bookable');
             $table->morphs('customer');
             $table->dateTime('starts_at')->nullable();
@@ -25,7 +25,7 @@ class CreateBookableBookingsTable extends Migration
             $table->dateTime('canceled_at')->nullable();
             $table->string('timezone')->nullable();
             $table->decimal('price')->default('0.00');
-            $table->bigInteger('quantity')->unsigned();
+            $table->integer('quantity')->unsigned();
             $table->decimal('total_paid')->default('0.00');
             $table->string('currency', 3);
             $table->{$this->jsonable()}('formula')->nullable();

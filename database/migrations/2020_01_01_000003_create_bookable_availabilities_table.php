@@ -17,7 +17,7 @@ class CreateBookableAvailabilitiesTable extends Migration
     {
         Schema::create(config('rinvex.bookings.tables.bookable_availabilities'), function (Blueprint $table) {
             // Columns
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->morphs('bookable');
             $table->string('range');
             $table->string('from')->nullable();
