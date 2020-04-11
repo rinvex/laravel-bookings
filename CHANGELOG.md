@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 
 
+## [v4.0.5] - 2020-04-12
+- Fix ServiceProvider registerCommands method compatibility
+
 ## [v4.0.4] - 2020-04-09
 - Tweak artisan command registration
 - Reverse commit "Convert database int fields into bigInteger"
@@ -128,6 +131,7 @@ This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 ## v0.0.1 - 2017-09-08
 - Tag first release
 
+[v4.0.5]: https://github.com/rinvex/laravel-bookings/compare/v4.0.4...v4.0.5
 [v4.0.4]: https://github.com/rinvex/laravel-bookings/compare/v4.0.3...v4.0.4
 [v4.0.3]: https://github.com/rinvex/laravel-bookings/compare/v4.0.2...v4.0.3
 [v4.0.2]: https://github.com/rinvex/laravel-bookings/compare/v4.0.1...v4.0.2
