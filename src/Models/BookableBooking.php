@@ -72,9 +72,9 @@ abstract class BookableBooking extends Model
      */
     protected $rules = [
         'bookable_id' => 'required|integer',
-        'bookable_type' => 'required|string',
+        'bookable_type' => 'required|string|strip_tags|max:150',
         'customer_id' => 'required|integer',
-        'customer_type' => 'required|string',
+        'customer_type' => 'required|string|strip_tags|max:150',
         'starts_at' => 'required|date',
         'ends_at' => 'required|date',
         'price' => 'required|numeric',
@@ -84,7 +84,7 @@ abstract class BookableBooking extends Model
         'formula' => 'nullable|array',
         'canceled_at' => 'nullable|date',
         'options' => 'nullable|array',
-        'notes' => 'nullable|string|max:10000',
+        'notes' => 'nullable|string|strip_tags|max:10000',
     ];
 
     /**
