@@ -90,6 +90,6 @@ abstract class BookableAvailability extends Model
      */
     public function bookable(): MorphTo
     {
-        return $this->morphTo('bookable', 'bookable_type', 'bookable_id');
+        return $this->morphTo('bookable', 'bookable_type', 'bookable_id', 'id');
     }
 }

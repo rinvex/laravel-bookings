@@ -195,7 +195,7 @@ abstract class BookableBooking extends Model
      */
     public function bookable(): MorphTo
     {
-        return $this->morphTo('bookable', 'bookable_type', 'bookable_id');
+        return $this->morphTo('bookable', 'bookable_type', 'bookable_id', 'id');
     }
 
     /**
@@ -205,7 +205,7 @@ abstract class BookableBooking extends Model
      */
     public function customer(): MorphTo
     {
-        return $this->morphTo('customer', 'customer_type', 'customer_id');
+        return $this->morphTo('customer', 'customer_type', 'customer_id', 'id');
     }
 
     /**

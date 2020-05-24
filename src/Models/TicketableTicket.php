@@ -186,6 +186,6 @@ class TicketableTicket extends Model implements Sortable
      */
     public function ticketable(): MorphTo
     {
-        return $this->morphTo('ticketable', 'ticketable_type', 'ticketable_id');
+        return $this->morphTo('ticketable', 'ticketable_type', 'ticketable_id', 'id');
     }
 }
