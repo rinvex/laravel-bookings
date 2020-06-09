@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Rinvex\Bookings\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Cacheable\CacheableEloquent;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 abstract class BookableAvailability extends Model
 {
     use ValidatingTrait;
-    use CacheableEloquent;
 
     /**
      * {@inheritdoc}

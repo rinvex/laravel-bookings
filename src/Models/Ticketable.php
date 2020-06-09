@@ -7,7 +7,6 @@ namespace Rinvex\Bookings\Models;
 use Spatie\Sluggable\SlugOptions;
 use Rinvex\Support\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\HasTranslations;
 use Rinvex\Support\Traits\ValidatingTrait;
@@ -19,7 +18,6 @@ abstract class Ticketable extends Model
     use TicketableTrait;
     use HasTranslations;
     use ValidatingTrait;
-    use CacheableEloquent;
 
     /**
      * {@inheritdoc}

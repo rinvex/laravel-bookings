@@ -6,14 +6,12 @@ namespace Rinvex\Bookings\Models;
 
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\ValidatingTrait;
 
 class TicketableBooking extends Model
 {
     use ValidatingTrait;
-    use CacheableEloquent;
 
     /**
      * {@inheritdoc}

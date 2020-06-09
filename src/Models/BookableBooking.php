@@ -6,7 +6,6 @@ namespace Rinvex\Bookings\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -15,7 +14,6 @@ use Spatie\SchemalessAttributes\SchemalessAttributes;
 abstract class BookableBooking extends Model
 {
     use ValidatingTrait;
-    use CacheableEloquent;
 
     /**
      * {@inheritdoc}
