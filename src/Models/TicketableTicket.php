@@ -8,7 +8,6 @@ use Spatie\Sluggable\SlugOptions;
 use Rinvex\Support\Traits\HasSlug;
 use Spatie\EloquentSortable\Sortable;
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Cacheable\CacheableEloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\HasTranslations;
 use Rinvex\Support\Traits\ValidatingTrait;
@@ -21,7 +20,6 @@ class TicketableTicket extends Model implements Sortable
     use SortableTrait;
     use HasTranslations;
     use ValidatingTrait;
-    use CacheableEloquent;
 
     /**
      * {@inheritdoc}
@@ -106,7 +104,7 @@ class TicketableTicket extends Model implements Sortable
         $this->setTable(config('rinvex.bookings.tables.ticketable_tickets'));
         $this->setRules([
             'ticketable_id' => 'required|integer',
-            'ticketable_type' => 'required|string',
+            'ticketable_type' => 'required|string|strip_tags|max:150',
             'slug' => 'required|alpha_dash|max:150|unique:'.config('rinvex.bookings.tables.ticketable_tickets').',slug,NULL,id,ticketable_id,'.($this->ticketable_id ?? 'null').',ticketable_type,'.($this->ticketable_type ?? 'null'),
             'name' => 'required|string|strip_tags|max:150',
             'description' => 'nullable|string|max:10000',
