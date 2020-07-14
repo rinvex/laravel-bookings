@@ -63,7 +63,7 @@ class TicketableBooking extends Model
         'is_approved' => 'sometimes|boolean',
         'is_confirmed' => 'sometimes|boolean',
         'is_attended' => 'sometimes|boolean',
-        'notes' => 'nullable|string|strip_tags|max:10000',
+        'notes' => 'nullable|string|strip_tags|max:32768',
     ];
 
     /**

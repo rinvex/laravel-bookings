@@ -107,12 +107,12 @@ class TicketableTicket extends Model implements Sortable
             'ticketable_type' => 'required|string|strip_tags|max:150',
             'slug' => 'required|alpha_dash|max:150|unique:'.config('rinvex.bookings.tables.ticketable_tickets').',slug,NULL,id,ticketable_id,'.($this->ticketable_id ?? 'null').',ticketable_type,'.($this->ticketable_type ?? 'null'),
             'name' => 'required|string|strip_tags|max:150',
-            'description' => 'nullable|string|max:10000',
+            'description' => 'nullable|string|max:32768',
             'is_active' => 'sometimes|boolean',
             'price' => 'required|numeric',
             'currency' => 'required|alpha|size:3',
-            'quantity' => 'nullable|integer|max:10000',
-            'sort_order' => 'nullable|integer|max:10000',
+            'quantity' => 'nullable|integer|max:100000',
+            'sort_order' => 'nullable|integer|max:100000',
         ]);
     }
 

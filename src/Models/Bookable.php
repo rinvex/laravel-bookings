@@ -96,18 +96,18 @@ abstract class Bookable extends Model implements Sortable
     protected $rules = [
         'slug' => 'required|alpha_dash|max:150',
         'name' => 'required|string|strip_tags|max:150',
-        'description' => 'nullable|string|max:10000',
+        'description' => 'nullable|string|max:32768',
         'is_active' => 'sometimes|boolean',
         'base_cost' => 'required|numeric',
         'unit_cost' => 'required|numeric',
         'currency' => 'required|string|size:3',
         'unit' => 'required|in:minute,hour,day,month',
-        'maximum_units' => 'nullable|integer|max:10000',
-        'minimum_units' => 'nullable|integer|max:10000',
+        'maximum_units' => 'nullable|integer|max:100000',
+        'minimum_units' => 'nullable|integer|max:100000',
         'is_cancelable' => 'nullable|boolean',
         'is_recurring' => 'nullable|boolean',
-        'sort_order' => 'nullable|integer|max:10000',
-        'capacity' => 'nullable|integer|max:10000',
+        'sort_order' => 'nullable|integer|max:100000',
+        'capacity' => 'nullable|integer|max:100000',
         'style' => 'nullable|string|strip_tags|max:150',
     ];
 
