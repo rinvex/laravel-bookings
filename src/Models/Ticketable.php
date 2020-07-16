@@ -76,7 +76,7 @@ abstract class Ticketable extends Model
         'is_public' => 'sometimes|boolean',
         'starts_at' => 'required|date',
         'ends_at' => 'required|date',
-        'timezone' => 'nullable|string|max:32|timezone',
+        'timezone' => 'nullable|string|max:64|timezone',
         'location' => 'nullable|string|strip_tags|max:1500',
     ];
 
