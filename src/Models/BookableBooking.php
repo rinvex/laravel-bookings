@@ -82,7 +82,7 @@ abstract class BookableBooking extends Model
         'formula' => 'nullable|array',
         'canceled_at' => 'nullable|date',
         'options' => 'nullable|array',
-        'notes' => 'nullable|string|strip_tags|max:10000',
+        'notes' => 'nullable|string|strip_tags|max:32768',
     ];
 
     /**

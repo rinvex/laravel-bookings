@@ -72,11 +72,11 @@ abstract class Ticketable extends Model
     protected $rules = [
         'slug' => 'required|alpha_dash|max:150',
         'name' => 'required|string|strip_tags|max:150',
-        'description' => 'nullable|string|max:10000',
+        'description' => 'nullable|string|max:32768',
         'is_public' => 'sometimes|boolean',
         'starts_at' => 'required|date',
         'ends_at' => 'required|date',
-        'timezone' => 'required|string|max:150|timezone',
+        'timezone' => 'nullable|string|max:64|timezone',
         'location' => 'nullable|string|strip_tags|max:1500',
     ];
 
