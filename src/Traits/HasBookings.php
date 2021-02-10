@@ -51,7 +51,7 @@ trait HasBookings
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(static::getBookingModel(), 'customer');
+        return $this->morphMany(static::getBookingModel(), 'customer', 'customer_type', 'customer_id');
     }
 
     /**

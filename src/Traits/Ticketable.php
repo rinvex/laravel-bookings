@@ -89,7 +89,7 @@ trait Ticketable
      */
     public function tickets(): MorphMany
     {
-        return $this->morphMany(static::getTicketModel(), 'ticketable');
+        return $this->morphMany(static::getTicketModel(), 'ticketable', 'ticketable_type', 'ticketable_id');
     }
 
     /**
@@ -99,7 +99,7 @@ trait Ticketable
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(static::getBookingModel(), 'ticketable');
+        return $this->morphMany(static::getBookingModel(), 'ticketable', 'ticketable_type', 'ticketable_id');
     }
 
     /**
