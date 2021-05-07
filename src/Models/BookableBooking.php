@@ -68,22 +68,7 @@ abstract class BookableBooking extends Model
      *
      * @var array
      */
-    protected $rules = [
-        'bookable_id' => 'required|integer',
-        'bookable_type' => 'required|string|strip_tags|max:150',
-        'customer_id' => 'required|integer',
-        'customer_type' => 'required|string|strip_tags|max:150',
-        'starts_at' => 'required|date',
-        'ends_at' => 'required|date',
-        'price' => 'required|numeric',
-        'quantity' => 'required|integer',
-        'total_paid' => 'required|numeric',
-        'currency' => 'required|alpha|size:3',
-        'formula' => 'nullable|array',
-        'canceled_at' => 'nullable|date',
-        'options' => 'nullable|array',
-        'notes' => 'nullable|string|strip_tags|max:32768',
-    ];
+    protected $rules = [];
 
     /**
      * Whether the model should throw a
@@ -103,6 +88,22 @@ abstract class BookableBooking extends Model
         parent::__construct($attributes);
 
         $this->setTable(config('rinvex.bookings.tables.bookable_bookings'));
+        $this->setRules([
+            'bookable_id' => 'required|integer',
+            'bookable_type' => 'required|string|strip_tags|max:150',
+            'customer_id' => 'required|integer',
+            'customer_type' => 'required|string|strip_tags|max:150',
+            'starts_at' => 'required|date',
+            'ends_at' => 'required|date',
+            'price' => 'required|numeric',
+            'quantity' => 'required|integer',
+            'total_paid' => 'required|numeric',
+            'currency' => 'required|alpha|size:3',
+            'formula' => 'nullable|array',
+            'canceled_at' => 'nullable|date',
+            'options' => 'nullable|array',
+            'notes' => 'nullable|string|strip_tags|max:32768',
+        ]);
     }
 
     /**

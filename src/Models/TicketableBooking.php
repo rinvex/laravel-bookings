@@ -55,16 +55,7 @@ class TicketableBooking extends Model
      *
      * @var array
      */
-    protected $rules = [
-        'ticket_id' => 'required|integer',
-        'customer_id' => 'required|integer',
-        'paid' => 'required|numeric',
-        'currency' => 'required|alpha|size:3',
-        'is_approved' => 'sometimes|boolean',
-        'is_confirmed' => 'sometimes|boolean',
-        'is_attended' => 'sometimes|boolean',
-        'notes' => 'nullable|string|strip_tags|max:32768',
-    ];
+    protected $rules = [];
 
     /**
      * Whether the model should throw a
@@ -84,6 +75,16 @@ class TicketableBooking extends Model
         parent::__construct($attributes);
 
         $this->setTable(config('rinvex.bookings.tables.ticketable_bookings'));
+        $this->setRules([
+            'ticket_id' => 'required|integer',
+            'customer_id' => 'required|integer',
+            'paid' => 'required|numeric',
+            'currency' => 'required|alpha|size:3',
+            'is_approved' => 'sometimes|boolean',
+            'is_confirmed' => 'sometimes|boolean',
+            'is_attended' => 'sometimes|boolean',
+            'notes' => 'nullable|string|strip_tags|max:32768',
+        ]);
     }
 
     /**

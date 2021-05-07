@@ -53,16 +53,7 @@ abstract class BookableRate extends Model
      *
      * @var array
      */
-    protected $rules = [
-        'bookable_id' => 'required|integer',
-        'bookable_type' => 'required|string|strip_tags|max:150',
-        'range' => 'required|in:datetimes,dates,months,weeks,days,times,sunday,monday,tuesday,wednesday,thursday,friday,saturday',
-        'from' => 'required|string|strip_tags|max:150',
-        'to' => 'required|string|strip_tags|max:150',
-        'base_cost' => 'nullable|numeric',
-        'unit_cost' => 'required|numeric',
-        'priority' => 'nullable|integer',
-    ];
+    protected $rules = [];
 
     /**
      * Whether the model should throw a
@@ -82,6 +73,16 @@ abstract class BookableRate extends Model
         parent::__construct($attributes);
 
         $this->setTable(config('rinvex.bookings.tables.bookable_rates'));
+        $this->setRules([
+            'bookable_id' => 'required|integer',
+            'bookable_type' => 'required|string|strip_tags|max:150',
+            'range' => 'required|in:datetimes,dates,months,weeks,days,times,sunday,monday,tuesday,wednesday,thursday,friday,saturday',
+            'from' => 'required|string|strip_tags|max:150',
+            'to' => 'required|string|strip_tags|max:150',
+            'base_cost' => 'nullable|numeric',
+            'unit_cost' => 'required|numeric',
+            'priority' => 'nullable|integer',
+        ]);
     }
 
     /**
