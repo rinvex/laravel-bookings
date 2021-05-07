@@ -20,8 +20,8 @@ class CreateTicketableTicketsTable extends Migration
             $table->increments('id');
             $table->morphs('ticketable');
             $table->string('slug');
-            $table->{$this->jsonable()}('name');
-            $table->{$this->jsonable()}('description')->nullable();
+            $table->json('name');
+            $table->json('description')->nullable();
             $table->boolean('is_active')->default(true);
             $table->decimal('price')->default('0.00');
             $table->string('currency', 3)->nullable();
@@ -40,19 +40,5 @@ class CreateTicketableTicketsTable extends Migration
     public function down()
     {
         Schema::dropIfExists(config('rinvex.bookings.tables.ticketable_tickets'));
-    }
-
-    /**
-     * Get jsonable column data type.
-     *
-     * @return string
-     */
-    protected function jsonable(): string
-    {
-        $driverName = DB::connection()->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $dbVersion = DB::connection()->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION);
-        $isOldVersion = version_compare($dbVersion, '5.7.8', 'lt');
-
-        return $driverName === 'mysql' && $isOldVersion ? 'text' : 'json';
     }
 }
