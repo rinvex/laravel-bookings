@@ -102,8 +102,6 @@ abstract class Bookable extends Model implements Sortable
      */
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
         $this->setRules([
             'slug' => 'required|alpha_dash|max:150',
             'name' => 'required|string|strip_tags|max:150',
@@ -121,6 +119,8 @@ abstract class Bookable extends Model implements Sortable
             'capacity' => 'nullable|integer|max:100000',
             'style' => 'nullable|string|strip_tags|max:150',
         ]);
+
+        parent::__construct($attributes);
     }
 
     /**

@@ -72,8 +72,6 @@ class TicketableBooking extends Model
      */
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
         $this->setTable(config('rinvex.bookings.tables.ticketable_bookings'));
         $this->setRules([
             'ticket_id' => 'required|integer',
@@ -85,6 +83,8 @@ class TicketableBooking extends Model
             'is_attended' => 'sometimes|boolean',
             'notes' => 'nullable|string|strip_tags|max:32768',
         ]);
+
+        parent::__construct($attributes);
     }
 
     /**

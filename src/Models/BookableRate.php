@@ -70,8 +70,6 @@ abstract class BookableRate extends Model
      */
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
         $this->setTable(config('rinvex.bookings.tables.bookable_rates'));
         $this->setRules([
             'bookable_id' => 'required|integer',
@@ -83,6 +81,8 @@ abstract class BookableRate extends Model
             'unit_cost' => 'required|numeric',
             'priority' => 'nullable|integer',
         ]);
+
+        parent::__construct($attributes);
     }
 
     /**

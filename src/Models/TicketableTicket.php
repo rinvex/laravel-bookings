@@ -99,8 +99,6 @@ class TicketableTicket extends Model implements Sortable
      */
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
         $this->setTable(config('rinvex.bookings.tables.ticketable_tickets'));
         $this->setRules([
             'ticketable_id' => 'required|integer',
@@ -114,6 +112,8 @@ class TicketableTicket extends Model implements Sortable
             'quantity' => 'nullable|integer|max:100000',
             'sort_order' => 'nullable|integer|max:100000',
         ]);
+
+        parent::__construct($attributes);
     }
 
     /**

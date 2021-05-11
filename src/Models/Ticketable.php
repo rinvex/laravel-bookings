@@ -86,8 +86,6 @@ abstract class Ticketable extends Model
      */
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
         $this->setRules([
             'slug' => 'required|alpha_dash|max:150',
             'name' => 'required|string|strip_tags|max:150',
@@ -98,6 +96,8 @@ abstract class Ticketable extends Model
             'timezone' => 'nullable|string|max:64|timezone',
             'location' => 'nullable|string|strip_tags|max:1500',
         ]);
+
+        parent::__construct($attributes);
     }
 
     /**
