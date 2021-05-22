@@ -102,7 +102,7 @@ abstract class Bookable extends Model implements Sortable
      */
     public function __construct(array $attributes = [])
     {
-        $this->setRules([
+        $this->mergeRules([
             'slug' => 'required|alpha_dash|max:150',
             'name' => 'required|string|strip_tags|max:150',
             'description' => 'nullable|string|max:32768',

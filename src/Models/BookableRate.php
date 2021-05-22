@@ -71,7 +71,7 @@ abstract class BookableRate extends Model
     public function __construct(array $attributes = [])
     {
         $this->setTable(config('rinvex.bookings.tables.bookable_rates'));
-        $this->setRules([
+        $this->mergeRules([
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string|strip_tags|max:150',
             'range' => 'required|in:datetimes,dates,months,weeks,days,times,sunday,monday,tuesday,wednesday,thursday,friday,saturday',

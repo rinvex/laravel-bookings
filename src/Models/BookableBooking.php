@@ -86,7 +86,7 @@ abstract class BookableBooking extends Model
     public function __construct(array $attributes = [])
     {
         $this->setTable(config('rinvex.bookings.tables.bookable_bookings'));
-        $this->setRules([
+        $this->mergeRules([
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string|strip_tags|max:150',
             'customer_id' => 'required|integer',

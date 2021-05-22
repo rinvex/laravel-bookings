@@ -73,7 +73,7 @@ class TicketableBooking extends Model
     public function __construct(array $attributes = [])
     {
         $this->setTable(config('rinvex.bookings.tables.ticketable_bookings'));
-        $this->setRules([
+        $this->mergeRules([
             'ticket_id' => 'required|integer',
             'customer_id' => 'required|integer',
             'paid' => 'required|numeric',
