@@ -69,16 +69,7 @@ abstract class Ticketable extends Model
      *
      * @var array
      */
-    protected $rules = [
-        'slug' => 'required|alpha_dash|max:150',
-        'name' => 'required|string|strip_tags|max:150',
-        'description' => 'nullable|string|max:32768',
-        'is_public' => 'sometimes|boolean',
-        'starts_at' => 'required|date',
-        'ends_at' => 'required|date',
-        'timezone' => 'nullable|string|max:64|timezone',
-        'location' => 'nullable|string|strip_tags|max:1500',
-    ];
+    protected $rules = [];
 
     /**
      * Whether the model should throw a
@@ -87,6 +78,27 @@ abstract class Ticketable extends Model
      * @var bool
      */
     protected $throwValidationExceptions = true;
+
+    /**
+     * Create a new Eloquent model instance.
+     *
+     * @param array $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        $this->mergeRules([
+            'slug' => 'required|alpha_dash|max:150',
+            'name' => 'required|string|strip_tags|max:150',
+            'description' => 'nullable|string|max:32768',
+            'is_public' => 'sometimes|boolean',
+            'starts_at' => 'required|date',
+            'ends_at' => 'required|date',
+            'timezone' => 'nullable|string|max:64|timezone',
+            'location' => 'nullable|string|strip_tags|max:1500',
+        ]);
+
+        parent::__construct($attributes);
+    }
 
     /**
      * Get the public resources.

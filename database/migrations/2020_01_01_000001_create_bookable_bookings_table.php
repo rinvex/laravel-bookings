@@ -28,7 +28,7 @@ class CreateBookableBookingsTable extends Migration
             $table->integer('quantity')->unsigned();
             $table->decimal('total_paid')->default('0.00');
             $table->string('currency', 3);
-            $table->{$this->jsonable()}('formula')->nullable();
+            $table->json('formula')->nullable();
             $table->schemalessAttributes('options');
             $table->text('notes')->nullable();
             $table->timestamps();
@@ -44,19 +44,5 @@ class CreateBookableBookingsTable extends Migration
     public function down(): void
     {
         Schema::dropIfExists(config('rinvex.bookings.tables.bookable_bookings'));
-    }
-
-    /**
-     * Get jsonable column data type.
-     *
-     * @return string
-     */
-    protected function jsonable(): string
-    {
-        $driverName = DB::connection()->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $dbVersion = DB::connection()->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION);
-        $isOldVersion = version_compare($dbVersion, '5.7.8', 'lt');
-
-        return $driverName === 'mysql' && $isOldVersion ? 'text' : 'json';
     }
 }

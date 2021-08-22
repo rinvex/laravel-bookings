@@ -129,7 +129,7 @@ trait Bookable
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(static::getBookingModel(), 'bookable');
+        return $this->morphMany(static::getBookingModel(), 'bookable', 'bookable_type', 'bookable_id');
     }
 
     /**
@@ -151,7 +151,7 @@ trait Bookable
      */
     public function availabilities(): MorphMany
     {
-        return $this->morphMany(static::getAvailabilityModel(), 'bookable');
+        return $this->morphMany(static::getAvailabilityModel(), 'bookable', 'bookable_type', 'bookable_id');
     }
 
     /**
@@ -161,7 +161,7 @@ trait Bookable
      */
     public function rates(): MorphMany
     {
-        return $this->morphMany(static::getRateModel(), 'bookable');
+        return $this->morphMany(static::getRateModel(), 'bookable', 'bookable_type', 'bookable_id');
     }
 
     /**
