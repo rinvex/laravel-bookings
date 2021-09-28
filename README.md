@@ -282,6 +282,15 @@ Just like resource models, all the above properties and methods are actually rel
 **⚠️ Documentation not complete, the package is under developement, and some part may encounter refactoring! ⚠️**
 
 
+## Roadmap
+
+**Looking for contributors!**
+
+The following are a set of limitations to be improved, or feature requests that's looking for contributors to implement, all PRs are welcome 🙂
+
+- [ ] Complete the bookable availability implementation, and document it (#32, #4)
+
+
 ## Changelog
 
 Refer to the [Changelog](CHANGELOG.md) for a full history of the project.
