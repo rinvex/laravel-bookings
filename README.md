@@ -289,6 +289,7 @@ Just like resource models, all the above properties and methods are actually rel
 The following are a set of limitations to be improved, or feature requests that's looking for contributors to implement, all PRs are welcome 🙂
 
 - [ ] Complete the bookable availability implementation, and document it (#32, #4)
+- [ ] Improve the documentation, and complete missing features, and add a workable example for each.
 
 
 ## Changelog
