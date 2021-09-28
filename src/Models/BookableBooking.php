@@ -115,14 +115,14 @@ abstract class BookableBooking extends Model
     {
         parent::boot();
 
-        static::validating(function (self $bookableAvailability) {
-            [$price, $formula, $currency] = is_null($bookableAvailability->price)
-                ? $bookableAvailability->calculatePrice($bookableAvailability->bookable, $bookableAvailability->starts_at, $bookableAvailability->ends_at) : [$bookableAvailability->price, $bookableAvailability->formula, $bookableAvailability->currency];
-
-            $bookableAvailability->currency = $currency;
-            $bookableAvailability->formula = $formula;
-            $bookableAvailability->price = $price;
-        });
+        //static::validating(function (self $bookableAvailability) {
+        //    $calculatedPrice = is_null($bookableAvailability->price)
+        //        ? $bookableAvailability->calculatePrice($bookableAvailability->bookable, $bookableAvailability->starts_at, $bookableAvailability->ends_at) : [$bookableAvailability->price, $bookableAvailability->formula, $bookableAvailability->currency];
+        //
+        //    $bookableAvailability->currency = $calculatedPrice['currency'];
+        //    $bookableAvailability->formula = $calculatedPrice['formula'];
+        //    $bookableAvailability->price = $calculatedPrice['price'];
+        //});
     }
 
     /**
