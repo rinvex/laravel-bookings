@@ -8,9 +8,11 @@ use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\ValidatingTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TicketableBooking extends Model
 {
+    use HasFactory;
     use ValidatingTrait;
 
     /**

@@ -10,9 +10,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\SchemalessAttributes\SchemalessAttributes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 abstract class BookableBooking extends Model
 {
+    use HasFactory;
     use ValidatingTrait;
 
     /**

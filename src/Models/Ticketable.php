@@ -10,11 +10,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Rinvex\Support\Traits\HasTranslations;
 use Rinvex\Support\Traits\ValidatingTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Rinvex\Bookings\Traits\Ticketable as TicketableTrait;
 
 abstract class Ticketable extends Model
 {
     use HasSlug;
+    use HasFactory;
     use TicketableTrait;
     use HasTranslations;
     use ValidatingTrait;

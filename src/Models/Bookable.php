@@ -13,10 +13,12 @@ use Rinvex\Support\Traits\HasTranslations;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Spatie\EloquentSortable\SortableTrait;
 use Rinvex\Bookings\Traits\Bookable as BookableTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 abstract class Bookable extends Model implements Sortable
 {
     use HasSlug;
+    use HasFactory;
     use BookableTrait;
     use SortableTrait;
     use HasTranslations;

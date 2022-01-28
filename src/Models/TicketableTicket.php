@@ -13,10 +13,12 @@ use Rinvex\Support\Traits\HasTranslations;
 use Rinvex\Support\Traits\ValidatingTrait;
 use Spatie\EloquentSortable\SortableTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TicketableTicket extends Model implements Sortable
 {
     use HasSlug;
+    use HasFactory;
     use SortableTrait;
     use HasTranslations;
     use ValidatingTrait;
